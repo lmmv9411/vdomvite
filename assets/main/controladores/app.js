@@ -1,9 +1,6 @@
 import { render } from "../../vdom/Render";
 import { reemplazarElemento } from "../../vdom/VDom";
 
-const path = "../componentes/"
-const modules = import.meta.glob("../componentes/*.jsx")
-
 export default function AppControlador() {
 
     const instancias = [];
@@ -23,7 +20,7 @@ export default function AppControlador() {
 
             if (i === -1) {
 
-                const modulo = await modules[`${path}${nombreClase.toLowerCase()}.jsx`]();
+                const modulo = await import(`../componentes/${nombreClase.toLowerCase()}.jsx`)
 
                 const instancia = new modulo[nombreClase]({});
 
