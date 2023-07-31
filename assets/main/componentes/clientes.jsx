@@ -15,6 +15,10 @@ export class Clientes extends Componente {
         })
     }
 
+    montado() {
+        this.nombre.focus();
+    }
+
     cambio(e) {
 
         const input = e.target
@@ -29,6 +33,11 @@ export class Clientes extends Componente {
         }
 
         this.update(newState);
+
+        if (Object.keys(newState.error).length > 0 &&
+            newState.error[input.name] !== undefined) {
+            this[input.name]?.focus();
+        }
     }
 
     render(props) {
@@ -45,6 +54,7 @@ export class Clientes extends Componente {
                     }</spam>}
 
                     <input
+                        $ref={($r) => this.nombre = $r}
                         type="text"
                         required
                         pattern=".{3,}"
@@ -61,6 +71,7 @@ export class Clientes extends Componente {
                     }</spam>}
 
                     <input
+                        $ref={($r) => this.edad = $r}
                         type="number"
                         required min={18} max={50}
                         className="form-control"
@@ -75,6 +86,7 @@ export class Clientes extends Componente {
                     </spam>}
 
                     <input
+                        $ref={($r) => this.email = $r}
                         pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
                         required
                         className="form-control"

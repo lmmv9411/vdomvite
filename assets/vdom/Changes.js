@@ -28,12 +28,13 @@ function changes($parentNode, vOldNode, vNewNode) {
             reff(vNewNode, $ref);
         }
 
-
     } else if ((typeof vOldNode === 'string' || typeof vNewNode === 'string') &&
         (vOldNode !== vNewNode) || vOldNode.type !== vNewNode.type) {
 
         const $ref = render(vNewNode);
+
         $parentNode.replaceWith($ref);
+
         reff(vNewNode, $ref);
 
     } else {
@@ -99,14 +100,52 @@ function changes($parentNode, vOldNode, vNewNode) {
                     vOldNode.children.splice(i, 1);
                     vOldNode.children.splice(i, 0, chNew);
                 }
-
             } else {
-                changes($n, chOld, chNew);
+
+                if (cond1 && comparaTypes(chOld, chNew)) {
+
+                    if (nn > on) {
+                        const index = i + 1 === nn ? i + 1 : i;
+
+                        const $ref = render(chNew);
+
+                        $parentNode.insertBefore($ref, $parentNode.children[index]);
+
+                        reff(chNew, $ref);
+
+                        vOldNode.children.splice(i, 0, chNew);
+
+                        on = vOldNode.children?.length ?? 0;
+                        nn = vNewNode.children?.length ?? 0;
+                        max = Math.max(on, nn);
+
+                    } else if (nn < on) {
+                        $n.remove();
+
+                        vOldNode.children.splice(i, 1);
+
+                        on = vOldNode.children?.length ?? 0;
+                        nn = vNewNode.children?.length ?? 0;
+                        max = Math.max(on, nn);
+                        i--;
+                    } else {
+                        equalKeys($n, chNew);
+                        vOldNode.children.splice(i, 1);
+                        vOldNode.children.splice(i, 0, chNew);
+                    }
+                } else {
+                    changes($n, chOld, chNew);
+                }
             }
 
         }
     }
 
+}
+
+function comparaTypes(vOldNode, vNewNode) {
+    return (typeof vOldNode === 'string' || typeof vNewNode === 'string')
+        && (vOldNode !== vNewNode) || vOldNode.type !== vNewNode.type
 }
 
 function reff(vNewNode, $ref) {
@@ -133,13 +172,6 @@ function equalKeys($n, vNewNode) {
     reff(vNewNode, $ref);
 }
 
-/**
- * 
- * @param {HTMLElement} $node 
- * @param {Object} vOldNode 
- * @param {Object} vNewNode 
- * @returns 
- */
 function setAttributes($node, vOldNode, vNewNode) {
 
 
@@ -174,10 +206,6 @@ function setAttributes($node, vOldNode, vNewNode) {
             }
 
         }
-    }
-
-    if (vNewNode.props && vNewNode.props["$ref"]) {
-        vNewNode.$element = $node;
     }
 
 }

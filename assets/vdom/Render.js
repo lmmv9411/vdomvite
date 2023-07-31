@@ -1,6 +1,6 @@
 import { Componente } from "./Componente.js";
 
-function render(node) {
+export function render(node) {
 
     if (!node || !node.type) {
         if (typeof node === "string" || typeof node === "number") {
@@ -22,7 +22,7 @@ function render(node) {
             if ($element.type === 'checkbox') {
                 $element.checked = v;
             } else if (k === "$ref") {
-                node.$element = $element;
+                node.props[k]($element)
             } else {
                 $element[k] = v
             }
@@ -54,5 +54,3 @@ function render(node) {
     return $element;
 
 }
-
-export { render };

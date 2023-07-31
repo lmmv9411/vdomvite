@@ -31,6 +31,11 @@ export class Componente {
      */
     construido($ref) {
         this.$element = $ref;
+        this.montado();
+    }
+
+    montado() {
+
     }
 
     /**
