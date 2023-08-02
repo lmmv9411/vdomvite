@@ -1,6 +1,4 @@
 import { Componente } from "../../vdom/Componente";
-import { render } from "../../vdom/Render";
-import { reemplazarElemento } from "../../vdom/VDom";
 import "../estilos/clientes.css"
 
 export class Clientes extends Componente {
@@ -46,7 +44,7 @@ export class Clientes extends Componente {
 
         return (
             <div>
-                <form $ref={($r) => this.formulario = $r} action="post" className="d-flex flex-column w-50 mt-2">
+                <form $ref="formulario" action="post" className="d-flex flex-column w-50 mt-2">
 
                     {error?.nombre && <spam className="text-danger d-block">{
                         error.nombre.valueMissing ? "Nombre obligatorio" :
@@ -54,7 +52,7 @@ export class Clientes extends Componente {
                     }</spam>}
 
                     <input
-                        $ref={($r) => this.nombre = $r}
+                        $ref="nombre"
                         type="text"
                         required
                         pattern=".{3,}"
@@ -71,7 +69,7 @@ export class Clientes extends Componente {
                     }</spam>}
 
                     <input
-                        $ref={($r) => this.edad = $r}
+                        $ref="edad"
                         type="number"
                         required min={18} max={50}
                         className="form-control"
@@ -86,7 +84,7 @@ export class Clientes extends Componente {
                     </spam>}
 
                     <input
-                        $ref={($r) => this.email = $r}
+                        $ref="email"
                         pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
                         required
                         className="form-control"

@@ -1,6 +1,13 @@
-import { render } from "./Render.js";
+import { render } from "./Render";
 
-function changes($parentNode, vOldNode, vNewNode) {
+let parent;
+
+export default function changes($parentNode, vOldNode, vNewNode) {
+    parent = vNewNode;
+    _changes($parentNode, vOldNode, vNewNode);
+}
+
+function _changes($parentNode, vOldNode, vNewNode) {
 
     if (($parentNode === undefined || $parentNode === null) ||
         !($parentNode instanceof Node) ||
@@ -16,7 +23,7 @@ function changes($parentNode, vOldNode, vNewNode) {
 
     } else if (vOldNode === undefined || vOldNode === null) {
 
-        const $ref = render(vNewNode);
+        const $ref = render(vNewNode, parent);
 
         if (Array.isArray($ref)) {
             for (let i = 0; i < $ref.length; i++) {
@@ -31,7 +38,7 @@ function changes($parentNode, vOldNode, vNewNode) {
     } else if ((typeof vOldNode === 'string' || typeof vNewNode === 'string') &&
         (vOldNode !== vNewNode) || vOldNode.type !== vNewNode.type) {
 
-        const $ref = render(vNewNode);
+        const $ref = render(vNewNode, parent);
 
         $parentNode.replaceWith($ref);
 
@@ -69,7 +76,7 @@ function changes($parentNode, vOldNode, vNewNode) {
                     if (nn > on) {
                         const index = i + 1 === nn ? i + 1 : i;
 
-                        const $ref = render(chNew);
+                        const $ref = render(chNew, parent);
 
                         $parentNode.insertBefore($ref, $parentNode.children[index]);
 
@@ -107,7 +114,7 @@ function changes($parentNode, vOldNode, vNewNode) {
                     if (nn > on) {
                         const index = i + 1 === nn ? i + 1 : i;
 
-                        const $ref = render(chNew);
+                        const $ref = render(chNew, parent);
 
                         $parentNode.insertBefore($ref, $parentNode.children[index]);
 
@@ -134,7 +141,7 @@ function changes($parentNode, vOldNode, vNewNode) {
                         vOldNode.children.splice(i, 0, chNew);
                     }
                 } else {
-                    changes($n, chOld, chNew);
+                    _changes($n, chOld, chNew);
                 }
             }
 
@@ -173,7 +180,7 @@ function equalKeys($n, vNewNode) {
     if (vNewNode === undefined || vNewNode === null) {
         return;
     }
-    const $ref = render(vNewNode);
+    const $ref = render(vNewNode, parent);
     $n.replaceWith($ref);
     reff(vNewNode, $ref);
 }
@@ -271,5 +278,3 @@ function compararNodos(vOldNode, vNewNode) {
 
     return true;
 }
-
-export default changes;
