@@ -20,10 +20,12 @@ function reemplazarElemento($parent, nodo) {
 
     const tmp = nodo.$element;
 
-    let $ref = nodo.$element;
+    let $ref;
 
     if (!tmp) {
         $ref = render(nodo);
+    } else {
+        $ref = tmp;
     }
 
     if (!$parent.firstChild) {
