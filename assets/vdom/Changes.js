@@ -195,12 +195,16 @@ function setAttributes($node, vOldNode, vNewNode) {
     for (let att in vOldNode.props) {
         if ((!vNewNode.props) || !(att in vNewNode.props)) {
 
-            $node[att] = "";
-            $node.removeAttribute(att.replace(/([A-Z].*)/, ''));
-
-            /*if (att === "value" && $node.tagName === "INPUT" || $node.tagName === "SELECT") {
-                $node.value = "";
-            }*/
+            switch (att) {
+                case "className":
+                    $node.removeAttribute("class");
+                    break;
+                case "$ref":
+                    parent[vOldNode.props[att]] = null;
+                    break;
+                default:
+                    $node[att] = "";
+            }
 
         }
     }
@@ -213,7 +217,7 @@ function setAttributes($node, vOldNode, vNewNode) {
             if (prop !== "$ref") {
                 $node[prop] = vNewNode.props[prop];
             } else {
-                vNewNode.$element = $node;
+                parent[vNewNode.props[prop]] = $node;
             }
 
             if ($node.type === 'checkbox') {
