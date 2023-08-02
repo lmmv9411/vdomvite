@@ -61,17 +61,14 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
             $n = $parentNode.childNodes[i] ?? $parentNode;
 
-            let cond1 = (chNew !== undefined && chOld !== undefined);
-            let cond2 = chNew?.key !== null && chOld?.key !== null;
+            let cond1 = chNew !== undefined || chOld !== undefined;
+            let cond2 = chNew?.key !== null || chOld?.key !== null;
             let cond3 = chNew?.key !== chOld?.key;
+            let cond4 = cond1 && cond2;
 
-            if (!cond1) {
-                cond1 = (chNew === undefined && chOld !== undefined) || (chNew !== undefined && chOld === undefined)
-            }
-
-            if (cond1 && cond2) {
-
-                if (cond3) {
+            if (cond4 || comparaTypes(chOld, chNew)) {
+  
+                if (!cond4 + cond3) {
 
                     if (nn > on) {
                         const index = i + 1 === nn ? i + 1 : i;
@@ -107,42 +104,10 @@ function _changes($parentNode, vOldNode, vNewNode) {
                     vOldNode.children.splice(i, 1);
                     vOldNode.children.splice(i, 0, chNew);
                 }
+
             } else {
+                _changes($n, chOld, chNew);
 
-                if (comparaTypes(chOld, chNew)) {
-
-                    if (nn > on) {
-                        const index = i + 1 === nn ? i + 1 : i;
-
-                        const $ref = render(chNew, parent);
-
-                        $parentNode.insertBefore($ref, $parentNode.children[index]);
-
-                        reff(chNew, $ref);
-
-                        vOldNode.children.splice(i, 0, chNew);
-
-                        on = vOldNode.children?.length ?? 0;
-                        nn = vNewNode.children?.length ?? 0;
-                        max = Math.max(on, nn);
-
-                    } else if (nn < on) {
-                        $n.remove();
-
-                        vOldNode.children.splice(i, 1);
-
-                        on = vOldNode.children?.length ?? 0;
-                        nn = vNewNode.children?.length ?? 0;
-                        max = Math.max(on, nn);
-                        i--;
-                    } else {
-                        equalKeys($n, chNew);
-                        vOldNode.children.splice(i, 1);
-                        vOldNode.children.splice(i, 0, chNew);
-                    }
-                } else {
-                    _changes($n, chOld, chNew);
-                }
             }
 
         }
