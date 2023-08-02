@@ -1,6 +1,7 @@
 import { Componente } from "../../vdom/Componente";
 
 export class Proveedores extends Componente {
+
     constructor(props) {
         super({
             ...props,
@@ -9,11 +10,16 @@ export class Proveedores extends Componente {
         })
     }
 
+    montado() {
+        this.nombre.focus();
+    }
+
     render(props) {
         return (
             <div>
                 <form>
                     <input
+                        $ref="nombre"
                         name="nombre"
                         type="text"
                         value={props.nombre}
