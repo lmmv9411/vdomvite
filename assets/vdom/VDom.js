@@ -17,8 +17,11 @@ function insertarElemento($parent, nodo) {
  * @param {Object} nodo
  */
 function reemplazarElemento($parent, $newParent, nodo) {
-    $parent.firstChild?.remove();
-    $parent.appendChild($newParent);
+    if (!$parent.firstChild) {
+        $parent.appendChild($newParent)
+    } else {
+        $parent.firstChild?.replaceWith($newParent)
+    }
     nodo?.construido($newParent);
 }
 

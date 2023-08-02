@@ -46,7 +46,7 @@ export class Clientes extends Componente {
 
         return (
             <div>
-                <form action="post" className="d-flex flex-column w-50 mt-2">
+                <form $ref={($r) => this.formulario = $r} action="post" className="d-flex flex-column w-50 mt-2">
 
                     {error?.nombre && <spam className="text-danger d-block">{
                         error.nombre.valueMissing ? "Nombre obligatorio" :
@@ -61,7 +61,7 @@ export class Clientes extends Componente {
                         className="form-control"
                         placeholder="nombre"
                         name="nombre"
-                        value={nombre}
+                        value={nombre.trim()}
                         onchange={this.cambio.bind(this)} />
 
                     {error?.edad && <spam className="text-danger d-block">{
@@ -92,21 +92,15 @@ export class Clientes extends Componente {
                         className="form-control"
                         type="email"
                         placeholder="email"
-                        value={email}
+                        value={email.trim()}
                         name="email"
                         onchange={this.cambio.bind(this)} />
 
                     <div className="d-flex gap-2">
                         <button
                             className="btn btn-primary"
-                            onclick={e => submit(e, this)}
-                        >Click Me!</button>
-                        <button className="btn btn-warning" onclick={async () => {
-                            const p = await import("./proveedores.jsx")
-                            reemplazarElemento(document.getElementById("app"),
-                                render(new p.Proveedores({ nombre: this.state.nombre })));
-                        }}>
-                            Proveedores
+                            onclick={submit.bind(this)}
+                        >Click Me!
                         </button>
                     </div>
 
@@ -152,12 +146,13 @@ function eliminar(e, cliente, a) {
 
 }
 
-function submit(e, a) {
+function submit(e) {
 
     e.preventDefault();
     e.stopPropagation();
 
-    const form = a.$element.querySelector("form");
+    //  const form = a.$element.querySelector("form");
+    const form = this.formulario;
 
     if (!form.checkValidity()) {
 
@@ -169,11 +164,11 @@ function submit(e, a) {
             }
         })
 
-        a.update({ error: errores })
+        this.update({ error: errores })
 
     } else {
-        const { nombre, edad, email, clientes } = a.state
+        const { nombre, edad, email, clientes } = this.state
         clientes.push({ nombre, edad, email })
-        a.update({})
+        this.update({})
     }
 }

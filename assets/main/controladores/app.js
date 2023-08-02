@@ -1,39 +1,37 @@
 import { render } from "../../vdom/Render";
 import { reemplazarElemento } from "../../vdom/VDom";
 
-export default function AppControlador() {
+const instancias = [];
 
-    const instancias = [];
+export default async function AppControlador(e) {
 
-    const links = document.querySelectorAll(".nav-link");
+    e.preventDefault();
+    e.stopPropagation();
 
-    links.forEach(link => {
+    const nombreClase = e.target.getAttribute("href").substring(1);
 
-        link.addEventListener("click", async (e) => {
+    let i = instancias.findIndex(i => i.key === nombreClase);
 
-            e.preventDefault();
-            e.stopPropagation();
+    if (i === -1) {
 
-            const nombreClase = e.target.getAttribute("href").substring(1);
+        const modulo = await import(`../componentes/${nombreClase.toLowerCase()}.jsx`)
 
-            let i = instancias.findIndex(i => i.key === nombreClase);
+        const instancia = new modulo[nombreClase]({});
 
-            if (i === -1) {
+        instancias.push({ key: nombreClase, value: instancia, render: render(instancia) });
+        i = instancias.length - 1;
+    }
 
-                const modulo = await import(`../componentes/${nombreClase.toLowerCase()}.jsx`)
+    reemplazarElemento(
+        document.querySelector("main"),
+        instancias[i].render,
+        instancias[i].value
+    )
 
-                const instancia = new modulo[nombreClase]({});
+    /*this.update({ modulo: this.instancias[i].value })
 
-                instancias.push({ key: nombreClase, value: instancia });
-                i = instancias.length - 1;
-            }
+    this.instancias[i].value.update({});
+    this.instancias[i].value.construido(document.querySelector("main").firstChild)*/
 
-            reemplazarElemento(
-                document.querySelector("main"),
-                render(instancias[i].value),
-                instancias[i].value
-            )
 
-        })
-    })
 }

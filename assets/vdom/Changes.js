@@ -102,7 +102,7 @@ function changes($parentNode, vOldNode, vNewNode) {
                 }
             } else {
 
-                if (cond1 && comparaTypes(chOld, chNew)) {
+                if (comparaTypes(chOld, chNew)) {
 
                     if (nn > on) {
                         const index = i + 1 === nn ? i + 1 : i;
@@ -144,8 +144,14 @@ function changes($parentNode, vOldNode, vNewNode) {
 }
 
 function comparaTypes(vOldNode, vNewNode) {
+
+    if (vNewNode === undefined || vOldNode === undefined) {
+        return false
+    }
+
     return (typeof vOldNode === 'string' || typeof vNewNode === 'string')
-        && (vOldNode !== vNewNode) || vOldNode.type !== vNewNode.type
+        && (vOldNode !== vNewNode)
+        || vOldNode.type !== vNewNode.type
 }
 
 function reff(vNewNode, $ref) {
@@ -182,18 +188,20 @@ function setAttributes($node, vOldNode, vNewNode) {
     for (let att in vOldNode.props) {
         if ((!vNewNode.props) || !(att in vNewNode.props)) {
 
-            $node.removeAttribute(att);
+            $node[att] = "";
+            $node.removeAttribute(att.replace(/([A-Z].*)/, ''));
 
-            if (att === "value" && $node.tagName === "INPUT" || $node.tagName === "SELECT") {
+            /*if (att === "value" && $node.tagName === "INPUT" || $node.tagName === "SELECT") {
                 $node.value = "";
-            }
+            }*/
 
         }
     }
 
     for (let prop in vNewNode.props) {
-        if (!vOldNode?.props || !(prop in vOldNode?.props) ||
-            vNewNode.props[prop] !== vOldNode.props[prop]) {
+        if (!vOldNode?.props
+            || !(prop in vOldNode?.props)
+            || vNewNode.props[prop] !== $node[prop]) {
 
             if (prop !== "$ref") {
                 $node[prop] = vNewNode.props[prop];
