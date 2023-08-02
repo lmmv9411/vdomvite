@@ -57,12 +57,12 @@ export class Proveedores extends Componente {
                             this.h1.textContent = this.state.nombre
                         }}>Test Referencia</button>
                 </form>
+
                 {props.data !== undefined ? <h1>{props.data}</h1> : null}
+
                 {props.crear ? <spam $ref="spam">{props.msj ?? "Hola"}</spam> : null}
-                {!props.quitarRef ?
-                    <h1 $ref="h1">Prueba</h1> :
-                    <h1>Prueba</h1>
-                }
+
+                {!props.quitarRef ? <h1 $ref="h1">Prueba</h1> : <h1>Prueba</h1>}
             </div>
         )
     }
