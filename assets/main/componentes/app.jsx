@@ -12,13 +12,13 @@ export class App extends Componente {
                 <nav >
                     <ul>
                         <li>
-                            <a onclick={AppControlador.bind(this)} href="#">Home</a>
+                            <a onclick={AppControlador} href="#">Home</a>
                         </li>
                         <li>
-                            <a onclick={AppControlador.bind(this)} href="/Clientes">Clientes</a>
+                            <a onclick={AppControlador} href="/Clientes">Clientes</a>
                         </li>
                         <li>
-                            <a onclick={AppControlador.bind(this)} href="/Proveedores">Proveedores</a>
+                            <a onclick={AppControlador} href="/Proveedores">Proveedores</a>
                         </li>
                     </ul>
                 </nav>
