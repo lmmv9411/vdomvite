@@ -16,13 +16,25 @@ function insertarElemento($parent, nodo) {
  * @param {HTMLElement} $newParent
  * @param {Object} nodo
  */
-function reemplazarElemento($parent, $newParent, nodo) {
-    if (!$parent.firstChild) {
-        $parent.appendChild($newParent)
-    } else {
-        $parent.firstChild?.replaceWith($newParent)
+function reemplazarElemento($parent, nodo) {
+
+    const tmp = nodo.$element;
+
+    let $ref = nodo.$element;
+
+    if (!tmp) {
+        $ref = render(nodo);
     }
-    nodo?.construido($newParent);
+
+    if (!$parent.firstChild) {
+        $parent.appendChild($ref);
+    } else {
+        $parent.firstChild?.replaceWith($ref)
+    }
+
+    if (!tmp) {
+        nodo.construido($ref);
+    }
 }
 
 /**

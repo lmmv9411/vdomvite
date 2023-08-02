@@ -1,10 +1,10 @@
-import { render } from "../../vdom/Render";
 import { reemplazarElemento } from "../../vdom/VDom";
 
 const instancias = [];
 
 export default async function AppControlador(e) {
 
+    const main = document.querySelector("main");
     e.preventDefault();
     e.stopPropagation();
 
@@ -18,20 +18,13 @@ export default async function AppControlador(e) {
 
         const instancia = new modulo[nombreClase]({});
 
-        instancias.push({ key: nombreClase, value: instancia, render: render(instancia) });
+        instancias.push({ key: nombreClase, instancia });
+
         i = instancias.length - 1;
     }
 
     reemplazarElemento(
-        document.querySelector("main"),
-        instancias[i].render,
-        instancias[i].value
+        main,
+        instancias[i].instancia
     )
-
-    /*this.update({ modulo: this.instancias[i].value })
-
-    this.instancias[i].value.update({});
-    this.instancias[i].value.construido(document.querySelector("main").firstChild)*/
-
-
 }
