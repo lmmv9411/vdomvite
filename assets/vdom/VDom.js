@@ -74,7 +74,7 @@ function h(type, props, ...children) {
     }
 
     //quitar null o undefine
-    const chl = children.filter(ch => ch !== undefined && ch !== null);
+    const chl = children.filter(ch => { if (ch) return ch });
 
     return { type, props, children: chl, key };
 }
