@@ -28,7 +28,7 @@ export class Proveedores extends Componente {
 
         return (
             <div>
-                <form>
+                <form className="d-flex gap-2" style={"max-width:50%"}>
                     <input
                         $ref="nombre"
                         name="nombre"
@@ -41,18 +41,14 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            this.update({
-                                crear: !this.state.crear
-                            })
+
                             this.lista.agregarItem(this.state.nombre);
+
+                            this.update({ nombre: "" })
+
+                            this.nombre.focus();
+
                         }}>Click Me!</button>
-                    <button
-                        className="btn btn-warning"
-                        onclick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation()
-                            this.spam.textContent = this.state.nombre
-                        }}>Spam</button>
 
                     <button
                         className="btn btn-secondary"
@@ -72,8 +68,6 @@ export class Proveedores extends Componente {
                 </form>
 
                 {this.lista}
-
-                {props.crear && <spam $ref="spam">{props.msj ?? "Hola"}</spam>}
 
                 {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
             </div>

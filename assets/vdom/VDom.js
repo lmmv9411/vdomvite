@@ -56,7 +56,7 @@ function h(type, props, ...children) {
         delete props.key;
     }
 
-    if (type instanceof Function && type.prototype && type.prototype.render) {
+    if (type instanceof Function && type.prototype?.render) {
         const componente = new type(props);
         componente.key = key;
         return componente;
