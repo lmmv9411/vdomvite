@@ -1,4 +1,5 @@
 import { Componente } from "../../vdom/Componente";
+import { Lista } from "./lista";
 
 export class Proveedores extends Componente {
 
@@ -15,7 +16,16 @@ export class Proveedores extends Componente {
         this.nombre.focus();
     }
 
+    preRender() {
+        if (!this.lista) {
+            this.lista = <Lista />
+        }
+    }
+
     render(props) {
+
+        this.preRender();
+
         return (
             <div>
                 <form>
@@ -30,8 +40,11 @@ export class Proveedores extends Componente {
                         className="btn btn-primary"
                         onclick={(e) => {
                             e.preventDefault();
-                            e.stopPropagation()
-                            this.update({ data: this.state.nombre, crear: !this.state.crear })
+                            e.stopPropagation();
+                            this.update({
+                                crear: !this.state.crear
+                            })
+                            this.lista.agregarItem(this.state.nombre);
                         }}>Click Me!</button>
                     <button
                         className="btn btn-warning"
@@ -58,7 +71,7 @@ export class Proveedores extends Componente {
                         }}>Test Referencia</button>
                 </form>
 
-                {props.data !== undefined && <h1>{props.data}</h1>}
+                {this.lista}
 
                 {props.crear && <spam $ref="spam">{props.msj ?? "Hola"}</spam>}
 

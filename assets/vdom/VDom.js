@@ -47,13 +47,6 @@ function crearElemento(nodo) {
     return render(nodo);
 }
 
-/**
- * 
- * @param {String} type 
- * @param {Object} props 
- * @param {Array<Object>} children 
- * @returns 
- */
 function h(type, props, ...children) {
 
     let key = null;
