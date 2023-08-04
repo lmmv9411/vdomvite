@@ -59,10 +59,13 @@ export class Componente {
         for (let [k, v] of Object.entries(newNode)) {
             this[k] = v;
         }
+
         this.state = newState
-	if(this.type === Fragment){
-	  this.fragmento = [...this.$fragment.children];
-	}
+
+        if (this.type === Fragment) {
+            this.fragmento = [...this.$fragment.children];
+        }
+
     }
 
     #copyState(newState) {
