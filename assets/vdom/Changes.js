@@ -74,7 +74,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         const index = i + 1 === nn ? i + 1 : i;
 
                         const $ref = render(chNew, parent);
-                        debugger
+
                         $parentNode.insertBefore($ref, $parentNode.children[index]);
 
                         reff(chNew, $ref);
