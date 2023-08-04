@@ -45,7 +45,7 @@ export class Clientes extends Componente {
 
         return (
             <>
-                <form $ref="formulario" action="post" className="d-flex flex-column w-50 mt-2">
+                <form $ref="formulario" action="post" className="d-flex flex-column p-2 mt-2">
 
                     {error?.nombre && <spam className="text-danger d-block">{
                         error.nombre.valueMissing ? "Nombre obligatorio" :
@@ -105,7 +105,7 @@ export class Clientes extends Componente {
 
                 </form>
 
-                <table className="table table-dark w-25" style="margin:auto">
+                <table className="table table-dark w-95">
                     <thead>
                         <tr>
                             <th>Nombre</th>

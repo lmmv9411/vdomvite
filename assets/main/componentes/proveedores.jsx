@@ -29,14 +29,14 @@ export class Proveedores extends Componente {
 
         return (
             <>
-                <form className="d-flex gap-2" style={"max-width:50%"}>
+                <form className="d-flex gap-2 p-3 flex-wrap">
                     <input
                         $ref="nombre"
                         name="nombre"
                         type="text"
                         value={props.nombre}
                         className="form-control"
-                        onchange={e => this.update({ nombre: e.target.value })} />
+                        onchange={e => this.update({ nombre: e.target.value.trim() })} />
                     <button
                         className="btn btn-primary"
                         onclick={(e) => {
