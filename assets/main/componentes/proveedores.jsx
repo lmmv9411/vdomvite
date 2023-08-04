@@ -1,5 +1,5 @@
 import { Componente } from "../../vdom/Componente";
-import { Fragment } from "../../vdom/VDom";
+import { Contexto, Fragment } from "../../vdom/VDom";
 import { Lista } from "./lista";
 
 export class Proveedores extends Componente {
@@ -28,7 +28,7 @@ export class Proveedores extends Componente {
         this.preRender();
 
         return (
-            <>
+            <Contexto name="amistad" contexto={{ saludo: "desde padre" }}>
                 <form className="d-flex gap-2 p-3 flex-wrap">
                     <input
                         $ref="nombre"
@@ -71,7 +71,7 @@ export class Proveedores extends Componente {
                 {this.lista}
 
                 {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
-            </>
+            </Contexto >
         )
     }
 

@@ -20,6 +20,12 @@ export class Lista extends Componente {
 
     agregarItem(item) {
 
+        const { amistad } = this.contexto;
+
+        console.log(amistad);
+
+        amistad.saludo = item;
+
         const i = Math.floor((Math.random() * this.items?.length));
 
         const color = this.items[i];

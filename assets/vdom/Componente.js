@@ -13,7 +13,7 @@ export class Componente {
 
         this.state = state;
 
-        this.contexto = state.contexto || {}
+        this.contexto = {}
 
         const nodo = this.render(this.state);
 
@@ -22,7 +22,7 @@ export class Componente {
         }
 
         Object.freeze(this.state);
-        Object.freeze(this.contexto);
+
     }
 
     /**

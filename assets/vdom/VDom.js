@@ -1,3 +1,4 @@
+import { Componente } from "./Componente.js";
 import { render } from "./Render.js"
 
 function insertarElemento($parent, nodo) {
@@ -70,10 +71,6 @@ function reemplazarElemento($parent, nodo) {
     }
 }
 
-function crearElemento(nodo) {
-    return render(nodo);
-}
-
 function h(type, props, ...children) {
 
     let key = null;
@@ -83,8 +80,16 @@ function h(type, props, ...children) {
         delete props.key;
     }
 
-    if (type instanceof Function && type.prototype?.render) {
-        const componente = new type(props);
+    if (type instanceof Function) {
+        const componente = new type(props, children);
+
+        if (typeof componente === "object" && Object.keys(componente).length === 0) {
+            if (children.length > 1) {
+                return h(Fragment, null, children);
+            }
+            return children[0];
+        }
+
         componente.key = key;
         return componente;
     }
@@ -99,55 +104,20 @@ function h(type, props, ...children) {
     return { type, props, children: chl, key };
 }
 
-function crearContexto(contexto) {
-    contexto.emitir = (value) => emitir(contexto, value);
-    contexto.emitirAsync = async (value) => await emitirAsync(contexto, value);
+function Contexto(props, children) {
+    children.forEach(ch => {
 
-    Object.values(contexto.oyentes).forEach(oy => {
-        oy.contexto = contexto;
-    });
-}
-
-async function emitirAsync(contexto, value) {
-
-    let r = null;
-
-    for (let ch of Object.values(contexto.oyentes)) {
-
-        if (ch.escuchar === undefined) {
-            continue
+        if (ch.type === Fragment) {
+            Contexto(props, ch.children);
+            return;
         }
-
-        r = await ch.escuchar(value);
-
-        if (r.manejado) {
-            break;
+        if (ch instanceof Componente) {
+            ch.contexto[props.name] = props.contexto;
+            Contexto(props, ch.children);
         }
-    }
-
-    return r.value;
-}
-
-function emitir(contexto, value) {
-
-    let r = null;
-
-    for (let ch of Object.values(contexto.oyentes)) {
-
-        if (ch.escuchar === undefined) {
-            continue
-        }
-
-        r = ch.escuchar(value);
-
-        if (r.manejado) {
-            break;
-        }
-    }
-
-    return r.value;
+    })
 }
 
 export const Fragment = Symbol("Fragment");
 
-export { reemplazarElemento, insertarElemento, crearElemento, h, crearContexto };
+export { reemplazarElemento, insertarElemento, h, Contexto };
