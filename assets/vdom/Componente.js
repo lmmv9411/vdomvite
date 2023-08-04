@@ -60,7 +60,9 @@ export class Componente {
             this[k] = v;
         }
         this.state = newState
-
+	if(this.type === Fragment){
+	  this.fragmento = [...this.$fragment.children];
+	}
     }
 
     #copyState(newState) {
