@@ -1,5 +1,6 @@
 import { Componente } from "../../vdom/Componente";
 import "../estilos/clientes.css"
+import { Fragment } from "../../vdom/VDom";
 
 export class Clientes extends Componente {
     constructor(props) {
@@ -43,7 +44,7 @@ export class Clientes extends Componente {
         const { nombre, edad, email, clientes, error } = props;
 
         return (
-            <div>
+            <>
                 <form $ref="formulario" action="post" className="d-flex flex-column w-50 mt-2">
 
                     {error?.nombre && <spam className="text-danger d-block">{
@@ -130,7 +131,7 @@ export class Clientes extends Componente {
                         }
                     </tbody>
                 </table>
-            </div>
+            </>
         )
     }
 

@@ -1,5 +1,5 @@
 import changes from "./Changes.js";
-import { h } from "./VDom.js"
+import { Fragment, h } from "./VDom.js"
 
 export class Componente {
 
@@ -53,8 +53,8 @@ export class Componente {
     update(newState) {
 
         const newNode = this.render(this.#copyState(newState));
-
-        changes(this.$element, this, newNode);
+        const $ref = this.type === Fragment ? this.$fragment : this.$element;
+        changes($ref, this, newNode);
 
         for (let [k, v] of Object.entries(newNode)) {
             this[k] = v;

@@ -1,4 +1,5 @@
 import { Componente } from "./Componente.js";
+import { Fragment } from "./VDom.js";
 
 let parent;
 
@@ -20,7 +21,13 @@ function _render(node) {
         return node.map(_render);
     }
 
-    const $element = document.createElement(node.type);
+    let $element;
+
+    if (node.type === Fragment) {
+        $element = document.createDocumentFragment();
+    } else {
+        $element = document.createElement(node.type);
+    }
 
     if (!!node.props && typeof node.props === 'object') {
 

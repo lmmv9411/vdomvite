@@ -28,14 +28,31 @@ function reemplazarElemento($parent, nodo) {
         $ref = tmp;
     }
 
-    if (!$parent.firstChild) {
-        $parent.appendChild($ref);
+    if (!$parent.hasChildNodes()) {
+        if (nodo.type === Fragment) {
+            const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento)
+            $parent.append(...hijos);
+            nodo.fragmento = [...$parent.children]
+        } else {
+            $parent.appendChild($ref);
+        }
+
     } else {
-        $parent.firstChild?.replaceWith($ref)
+        if (nodo.type === Fragment) {
+            const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento)
+            $parent.replaceChildren(...hijos);
+            nodo.fragmento = [...$parent.children]
+        } else {
+            $parent.replaceChildren($ref)
+        }
     }
 
     if (!tmp) {
         nodo.construido($ref);
+    }
+
+    if (nodo.type === Fragment) {
+        nodo.$fragment = $parent;
     }
 }
 
@@ -120,5 +137,7 @@ function emitir(contexto, value) {
 
     return r.value;
 }
+
+export const Fragment = Symbol("Fragment");
 
 export { reemplazarElemento, insertarElemento, crearElemento, h, crearContexto };

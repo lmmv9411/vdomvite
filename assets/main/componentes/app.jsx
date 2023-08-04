@@ -1,5 +1,6 @@
 import { Componente } from "../../vdom/Componente";
 import AppControlador from "../controladores/app";
+import { Fragment } from "../../vdom/VDom";
 
 export class App extends Componente {
     constructor(props) {
@@ -8,7 +9,7 @@ export class App extends Componente {
 
     render(props) {
         return (
-            <div>
+            <>
                 <nav >
                     <ul>
                         <li>
@@ -20,10 +21,13 @@ export class App extends Componente {
                         <li>
                             <a onclick={AppControlador} href="/Proveedores">Proveedores</a>
                         </li>
+                        <li>
+                            <a onclick={AppControlador} href="/Almacen">Almacén</a>
+                        </li>
                     </ul>
                 </nav>
                 <main>{props.modulo}</main>
-            </div>
+            </>
         )
     }
 }

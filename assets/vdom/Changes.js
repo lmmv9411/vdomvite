@@ -67,14 +67,14 @@ function _changes($parentNode, vOldNode, vNewNode) {
             let cond4 = cond1 && cond2;
 
             if (cond4 || comparaTypes(chOld, chNew)) {
-  
+
                 if (!cond4 + cond3) {
 
                     if (nn > on) {
                         const index = i + 1 === nn ? i + 1 : i;
 
                         const $ref = render(chNew, parent);
-
+                        debugger
                         $parentNode.insertBefore($ref, $parentNode.children[index]);
 
                         reff(chNew, $ref);

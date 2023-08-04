@@ -1,4 +1,5 @@
 import { Componente } from "../../vdom/Componente";
+import { Fragment } from "../../vdom/VDom";
 import { Lista } from "./lista";
 
 export class Proveedores extends Componente {
@@ -27,7 +28,7 @@ export class Proveedores extends Componente {
         this.preRender();
 
         return (
-            <div>
+            <>
                 <form className="d-flex gap-2" style={"max-width:50%"}>
                     <input
                         $ref="nombre"
@@ -70,7 +71,7 @@ export class Proveedores extends Componente {
                 {this.lista}
 
                 {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
-            </div>
+            </>
         )
     }
 
