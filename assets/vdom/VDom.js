@@ -1,21 +1,35 @@
 import { render } from "./Render.js"
-/**
- * Append un nodo virtual en el $elemento dom real y set su $ref 
- * @param {HTMLElement} $parent 
- * @param {Object} nodo 
- */
+
 function insertarElemento($parent, nodo) {
-    const $element = crearElemento(nodo);
-    $parent.appendChild($element);
-    if (nodo.construido) nodo.construido($element);
+
+    const tmp = nodo.$element;
+
+    let $ref;
+
+    if (!tmp) {
+        $ref = render(nodo);
+    } else {
+        $ref = tmp;
+    }
+
+    if (nodo.type === Fragment) {
+        const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento)
+        $parent.append(...hijos);
+        nodo.fragmento = [...$parent.children]
+    } else {
+        $parent.appendChild($ref);
+    }
+
+    if (!tmp) {
+        nodo.construido($ref);
+    }
+
+    if (nodo.type === Fragment) {
+        nodo.$fragment = $parent;
+    }
+
 }
 
-/**
- * 
- * @param {HTMLElement} $parent 
- * @param {HTMLElement} $newParent
- * @param {Object} nodo
- */
 function reemplazarElemento($parent, nodo) {
 
     const tmp = nodo.$element;
@@ -56,10 +70,6 @@ function reemplazarElemento($parent, nodo) {
     }
 }
 
-/**
- * @param {Object} nodo 
- * @returns {HTMLElement}
- */
 function crearElemento(nodo) {
     return render(nodo);
 }
