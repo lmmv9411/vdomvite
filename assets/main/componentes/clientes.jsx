@@ -150,7 +150,6 @@ function submit(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    //  const form = a.$element.querySelector("form");
     const form = this.formulario;
 
     if (!form.checkValidity()) {
@@ -167,7 +166,8 @@ function submit(e) {
 
     } else {
         const { nombre, edad, email, clientes } = this.state
-        clientes.push({ nombre, edad, email })
-        this.update({})
+        clientes.unshift({ nombre, edad, email })
+        this.update({ nombre: "", edad: "", email: "" });
+        this.nombre.focus();
     }
 }
