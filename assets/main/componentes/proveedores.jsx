@@ -1,5 +1,6 @@
 import { Componente } from "../../vdom/Componente";
-import { Contexto, Fragment } from "../../vdom/VDom";
+import { Contexto, Contextos } from "../../vdom/Contexto";
+import { Fragment } from "../../vdom/VDom";
 import { Lista } from "./lista";
 
 export class Proveedores extends Componente {
@@ -15,6 +16,19 @@ export class Proveedores extends Componente {
 
     montado() {
         this.nombre.focus();
+        Contextos.actions.agregar = this.agregar.bind(this)
+    }
+
+    agregar(e) {
+
+        e?.preventDefault();
+        e?.stopPropagation();
+
+        this.lista.agregarItem(this.state.nombre);
+
+        this.update({ nombre: "" })
+
+        this.nombre.focus();
     }
 
     preRender() {
@@ -28,7 +42,7 @@ export class Proveedores extends Componente {
         this.preRender();
 
         return (
-            <Contexto name="amistad" contexto={{ saludo: "desde padre" }}>
+            <Contexto name="actions">
                 <form className="d-flex gap-2 p-3 flex-wrap">
                     <input
                         $ref="nombre"
@@ -39,17 +53,7 @@ export class Proveedores extends Componente {
                         onchange={e => this.update({ nombre: e.target.value.trim() })} />
                     <button
                         className="btn btn-primary"
-                        onclick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-
-                            this.lista.agregarItem(this.state.nombre);
-
-                            this.update({ nombre: "" })
-
-                            this.nombre.focus();
-
-                        }}>Click Me!</button>
+                        onclick={this.agregar.bind(this)}>Click Me!</button>
 
                     <button
                         className="btn btn-secondary"
@@ -64,7 +68,9 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            this.h1.textContent = this.state.nombre
+                            if (this.h1) {
+                                this.h1.textContent = this.state.nombre
+                            }
                         }}>Test Referencia</button>
                 </form>
 

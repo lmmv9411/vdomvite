@@ -1,5 +1,4 @@
-import { Componente } from "./Componente.js";
-import { render } from "./Render.js"
+import { render } from "./Render.js";
 
 function insertarElemento($parent, nodo) {
 
@@ -104,20 +103,6 @@ function h(type, props, ...children) {
     return { type, props, children: chl, key };
 }
 
-function Contexto(props, children) {
-    children.forEach(ch => {
-
-        if (ch.type === Fragment) {
-            Contexto(props, ch.children);
-            return;
-        }
-        if (ch instanceof Componente) {
-            ch.contexto[props.name] = props.contexto;
-            Contexto(props, ch.children);
-        }
-    })
-}
-
 export const Fragment = Symbol("Fragment");
 
-export { reemplazarElemento, insertarElemento, h, Contexto };
+export { reemplazarElemento, insertarElemento, h };

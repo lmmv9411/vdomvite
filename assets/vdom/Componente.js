@@ -66,6 +66,11 @@ export class Componente {
             this.fragmento = [...this.$fragment.children];
         }
 
+        this.postRender();
+    }
+
+    postRender() {
+
     }
 
     #copyState(newState) {

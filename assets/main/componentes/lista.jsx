@@ -1,4 +1,5 @@
 import { Componente } from "../../vdom/Componente";
+import { Contextos } from "../../vdom/Contexto";
 
 export class Lista extends Componente {
     constructor(props) {
@@ -20,12 +21,6 @@ export class Lista extends Componente {
 
     agregarItem(item) {
 
-        const { amistad } = this.contexto;
-
-        console.log(amistad);
-
-        amistad.saludo = item;
-
         const i = Math.floor((Math.random() * this.items?.length));
 
         const color = this.items[i];
@@ -40,8 +35,17 @@ export class Lista extends Componente {
     render(props) {
 
         return (
-            <ul className="list-group list-group-flush">
-                {props.items?.map(item => <li key={item.v} className={item.c}>{item.v}</li>)}
+            <ul className="list-group list-group-flush p-3">
+                {props.items?.map(item => {
+                    return (
+                        <li key={item.v} className={item.c}>
+                            <spam>{item.v}</spam>
+                            <button className="btn btn-warning" onclick={() => {
+                                Contextos.actions.agregar()
+                            }}>Saludar</button>
+                        </li>
+                    )
+                })}
             </ul>
         )
     }
