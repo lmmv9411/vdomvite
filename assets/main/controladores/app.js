@@ -9,10 +9,6 @@ export default function AppControlador(e) {
     e.preventDefault();
 
     const url = e.target.href;
-    router(url);
-}
-
-function router(url) {
     history.pushState(null, null, url);
     navitateTo();
 }
