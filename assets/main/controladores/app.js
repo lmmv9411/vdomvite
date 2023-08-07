@@ -2,13 +2,25 @@ import { reemplazarElemento } from "../../vdom/VDom";
 
 const instancias = [];
 
-export default async function AppControlador(e) {
+window.addEventListener('popstate', navitateTo);
+
+export default function AppControlador(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const url = e.target.href;
+    router(url);
+}
+
+function router(url) {
+    history.pushState(null, null, url);
+    navitateTo();
+}
+
+async function navitateTo() {
 
     const main = document.querySelector("main");
-    e.preventDefault();
-    e.stopPropagation();
-
-    const nombreClase = e.target.getAttribute("href").substring(1);
+    const nombreClase = location.pathname.substring(1)
 
     let i = instancias.findIndex(i => i.key === nombreClase);
 
