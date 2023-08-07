@@ -31,6 +31,8 @@ async function navitateTo() {
         i = instancias.length - 1;
     }
 
+    document.title = nombreClase;
+
     reemplazarElemento(
         main,
         instancias[i].instancia
