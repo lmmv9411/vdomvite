@@ -12,8 +12,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
     if (($parentNode === undefined || $parentNode === null) ||
         !($parentNode instanceof Node) ||
         (vOldNode === undefined && vNewNode === undefined) ||
-        (vOldNode === null && vNewNode === null) ||
-        compararNodos(vOldNode, vNewNode)) {
+        (vOldNode === null && vNewNode === null)) {
         return;
     }
 
@@ -35,8 +34,9 @@ function _changes($parentNode, vOldNode, vNewNode) {
             reff(vNewNode, $ref);
         }
 
-    } else if ((typeof vOldNode === 'string' || typeof vNewNode === 'string') &&
-        (vOldNode !== vNewNode) || vOldNode.type !== vNewNode.type) {
+    } else if (vOldNode.type !== vNewNode.type
+        || (typeof vNewNode === "number" && vOldNode !== vNewNode)
+        || (typeof vNewNode === "string" && vOldNode !== vNewNode)) {
 
         const $ref = render(vNewNode, parent);
 
@@ -99,10 +99,8 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         vOldNode.children.splice(i, 1);
                         vOldNode.children.splice(i, 0, chNew);
                     }
-                } else if (!compararNodos(chOld, chNew)) {
-                    equalKeys($n, chNew);
-                    vOldNode.children.splice(i, 1);
-                    vOldNode.children.splice(i, 0, chNew);
+                } else {
+                    _changes($n, chOld, chNew);
                 }
 
             } else {
@@ -177,7 +175,7 @@ function setAttributes($node, vOldNode, vNewNode) {
     for (let prop in vNewNode.props) {
         if (!vOldNode?.props
             || !(prop in vOldNode?.props)
-            || vNewNode.props[prop] !== $node[prop]) {
+            || vNewNode.props[prop] !== vOldNode.props[prop]) {
 
             if (prop !== "$ref") {
                 $node[prop] = vNewNode.props[prop];
@@ -185,65 +183,7 @@ function setAttributes($node, vOldNode, vNewNode) {
                 parent[vNewNode.props[prop]] = $node;
             }
 
-            if ($node.type === 'checkbox') {
-                $node.checked = vNewNode.props[prop];
-            }
-
         }
     }
 
-}
-
-function compararNodos(vOldNode, vNewNode) {
-
-    if (vOldNode === undefined || vNewNode === undefined) {
-        return false;
-    }
-
-    if (vOldNode.type !== vNewNode.type) {
-        return false;
-    }
-
-    if ((typeof vOldNode === 'string' || typeof vNewNode === 'string') && (vNewNode !== vOldNode)) {
-        return false;
-    } else if ((typeof vOldNode === 'string' || typeof vNewNode === 'string') && (vNewNode === vOldNode)) {
-        return true;
-    }
-
-    const oldProps = vOldNode.props ?? {};
-    const newProps = vNewNode.props ?? {};
-
-    if (Object.keys(oldProps).length !== Object.keys(newProps).length) {
-        return false;
-    }
-
-    if (Object.keys(vNewNode?.props ?? {}).length > 0) {
-        for (const prop in newProps) {
-
-            if (prop.startsWith("on") && newProps[prop]?.toString() !== oldProps[prop]?.toString()) {
-                return false;
-            } else if (prop.startsWith("on")) {
-                continue;
-            }
-
-            if (newProps[prop] !== oldProps[prop]) {
-                return false;
-            }
-        }
-    }
-
-    const oldChildren = vOldNode.children ?? [];
-    const newChildren = vNewNode.children ?? [];
-
-    if (oldChildren.length !== newChildren.length) {
-        return false;
-    }
-
-    for (let i = 0; i < Math.max(oldChildren.length, newChildren.length); i++) {
-        if (!compararNodos(oldChildren[i], newChildren[i])) {
-            return false;
-        }
-    }
-
-    return true;
 }

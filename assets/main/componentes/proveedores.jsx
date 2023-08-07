@@ -1,6 +1,5 @@
 import { Componente } from "../../vdom/Componente";
 import { Contexto, Contextos } from "../../vdom/Contexto";
-import { Fragment } from "../../vdom/VDom";
 import { Lista } from "./lista";
 
 export class Proveedores extends Componente {
@@ -43,7 +42,9 @@ export class Proveedores extends Componente {
 
         return (
             <Contexto name="actions">
+
                 <form className="d-flex gap-2 p-3 flex-wrap">
+
                     <input
                         $ref="nombre"
                         name="nombre"
@@ -51,6 +52,7 @@ export class Proveedores extends Componente {
                         value={props.nombre}
                         className="form-control"
                         onchange={e => this.update({ nombre: e.target.value.trim() })} />
+
                     <button
                         className="btn btn-primary"
                         onclick={this.agregar.bind(this)}>Click Me!</button>
@@ -77,6 +79,7 @@ export class Proveedores extends Componente {
                 {this.lista}
 
                 {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
+
             </Contexto >
         )
     }

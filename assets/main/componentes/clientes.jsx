@@ -167,7 +167,8 @@ function submit(e) {
     } else {
         const { nombre, edad, email, clientes } = this.state
         clientes.unshift({ nombre, edad, email })
-        this.update({ nombre: "", edad: "", email: "" });
+        this.update({})
+        form.reset();
         this.nombre.focus();
     }
 }
