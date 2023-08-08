@@ -14,9 +14,9 @@ export class Clientes extends Componente {
         })
     }
 
-    async montado() {
+    montado() {
         this.nombre.focus();
-        
+
         fetch("https://jsonplaceholder.typicode.com/users")
             .then(data => data.json())
             .then(users => users.map(user => { return { edad: user.id, nombre: user.name, email: user.email } }))
