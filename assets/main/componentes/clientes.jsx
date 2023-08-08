@@ -14,8 +14,13 @@ export class Clientes extends Componente {
         })
     }
 
-    montado() {
+    async montado() {
         this.nombre.focus();
+        
+        fetch("https://jsonplaceholder.typicode.com/users")
+            .then(data => data.json())
+            .then(users => users.map(user => { return { edad: user.id, nombre: user.name, email: user.email } }))
+            .then(data => this.update({ clientes: data }))
     }
 
     cambio(e) {
@@ -45,9 +50,9 @@ export class Clientes extends Componente {
 
         return (
             <>
-                <form $ref="formulario" action="post" className="d-flex flex-column p-2 mt-2">
+                <form $ref="formulario" action="post" class="d-flex flex-column p-2 mt-2" autoComplete="off">
 
-                    {error?.nombre && <spam className="text-danger d-block">{
+                    {error?.nombre && <spam class="text-danger d-block">{
                         error.nombre.valueMissing ? "Nombre obligatorio" :
                             error.nombre.patternMismatch ? "Mínimo 3 caracteres" : "Error"
                     }</spam>}
@@ -57,13 +62,13 @@ export class Clientes extends Componente {
                         type="text"
                         required
                         pattern=".{3,}"
-                        className="form-control"
+                        class="form-control bg-dark text-light"
                         placeholder="nombre"
                         name="nombre"
                         value={nombre.trim()}
                         onchange={this.cambio.bind(this)} />
 
-                    {error?.edad && <spam className="text-danger d-block">{
+                    {error?.edad && <spam class="text-danger d-block">{
                         error.edad.valueMissing ? "Edad obligatoria" :
                             error.edad.rangeUnderflow ? "Mínimo 18" :
                                 error.edad.rangeOverflow ? "Máximo 50" : "Error"
@@ -73,13 +78,13 @@ export class Clientes extends Componente {
                         $ref="edad"
                         type="number"
                         required min={18} max={50}
-                        className="form-control"
+                        class="form-control bg-dark text-light"
                         placeholder="edad"
                         value={edad}
                         name="edad"
                         onchange={this.cambio.bind(this)} />
 
-                    {error?.email && <spam className="text-danger d-block">{
+                    {error?.email && <spam class="text-danger d-block">{
                         error.email.valueMissing ? "Email obligatorio" :
                             error.email.patternMismatch ? "Email inválido" : "Error"}
                     </spam>}
@@ -88,16 +93,16 @@ export class Clientes extends Componente {
                         $ref="email"
                         pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
                         required
-                        className="form-control"
+                        class="form-control bg-dark text-light"
                         type="email"
                         placeholder="email"
                         value={email.trim()}
                         name="email"
                         onchange={this.cambio.bind(this)} />
 
-                    <div className="d-flex gap-2">
+                    <div class="d-flex gap-2">
                         <button
-                            className="btn btn-primary"
+                            class="btn btn-primary"
                             onclick={submit.bind(this)}
                         >Click Me!
                         </button>
@@ -105,7 +110,15 @@ export class Clientes extends Componente {
 
                 </form>
 
-                <table className="table table-dark w-95">
+                {
+                    clientes.length == 0
+                    &&
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                }
+
+                <table class="table table-dark w-95">
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -122,7 +135,7 @@ export class Clientes extends Componente {
                                     <td>{cliente.edad}</td>
                                     <td>{cliente.email}</td>
                                     <td>
-                                        <a className="btn btn-danger"
+                                        <a class="btn btn-danger"
                                             href="#"
                                             onclick={e => eliminar(e, cliente, this)}
                                         >Eliminar</a>

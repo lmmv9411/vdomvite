@@ -148,6 +148,13 @@ function equalKeys($n, vNewNode) {
     reff(vNewNode, $ref);
 }
 
+/**
+ * 
+ * @param {HTMLElement} $node 
+ * @param {*} vOldNode 
+ * @param {*} vNewNode 
+ * @returns 
+ */
 function setAttributes($node, vOldNode, vNewNode) {
 
 
@@ -158,29 +165,34 @@ function setAttributes($node, vOldNode, vNewNode) {
     for (let att in vOldNode.props) {
         if ((!vNewNode.props) || !(att in vNewNode.props)) {
 
-            switch (att) {
-                case "className":
-                    $node.removeAttribute("class");
-                    break;
-                case "$ref":
-                    parent[vOldNode.props[att]] = null;
-                    break;
-                default:
+            if (att.startsWith("on")) {
+                continue
+            } else if (att === "$ref") {
+                parent[vOldNode.props[att]] = null;
+            } else {
+                $node.removeAttribute(att);
+                if ($node.tagName === "INPUT") {
                     $node[att] = "";
+                }
             }
 
         }
     }
 
-    for (let prop in vNewNode.props) {
+    for (let att in vNewNode.props) {
         if (!vOldNode?.props
-            || !(prop in vOldNode?.props)
-            || vNewNode.props[prop] !== vOldNode.props[prop]) {
+            || !(att in vOldNode?.props)
+            || vNewNode.props[att] !== vOldNode.props[att]) {
 
-            if (prop !== "$ref") {
-                $node[prop] = vNewNode.props[prop];
+            if (att.startsWith("on")) {
+                continue
+            } else if (att !== "$ref") {
+                $node.setAttribute(att, vNewNode.props[att]);
+                if ($node.tagName === "INPUT") {
+                    $node[att] = vNewNode.props[att];
+                }
             } else {
-                parent[vNewNode.props[prop]] = $node;
+                parent[vNewNode.props[att]] = $node;
             }
 
         }

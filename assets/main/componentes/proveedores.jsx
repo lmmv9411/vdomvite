@@ -43,22 +43,22 @@ export class Proveedores extends Componente {
         return (
             <Contexto name="actions">
 
-                <form className="d-flex gap-2 p-3 flex-wrap">
+                <form class="d-flex gap-2 p-3 flex-wrap" autocomplete="off">
 
                     <input
                         $ref="nombre"
                         name="nombre"
                         type="text"
                         value={props.nombre}
-                        className="form-control"
+                        class="form-control bg-dark text-light"
                         onchange={e => this.update({ nombre: e.target.value.trim() })} />
 
                     <button
-                        className="btn btn-primary"
+                        class="btn btn-primary"
                         onclick={this.agregar.bind(this)}>Click Me!</button>
 
                     <button
-                        className="btn btn-secondary"
+                        class="btn btn-secondary"
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
@@ -66,7 +66,7 @@ export class Proveedores extends Componente {
                         }}>{!props.quitarRef ? "Quitar Referencia" : "Agregar Referencia"}</button>
 
                     <button
-                        className="btn btn-secondary"
+                        class="btn btn-secondary"
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()

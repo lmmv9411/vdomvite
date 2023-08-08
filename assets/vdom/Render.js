@@ -33,12 +33,16 @@ function _render(node) {
 
         for (let [k, v] of Object.entries(node.props)) {
 
-            if ($element.type === 'checkbox') {
-                $element.checked = v;
-            } else if (k === "$ref") {
+            if (k === "$ref") {
                 parent[v] = $element
+            } else if (k.startsWith("on")) {
+                k = k.substring(2)
+                $element.addEventListener(k, v);
             } else {
-                $element[k] = v
+                $element.setAttribute(k, v)
+                if (node.type === "input") {
+                    $element[k] = v;
+                }
             }
         }
 

@@ -35,12 +35,12 @@ export class Lista extends Componente {
     render(props) {
 
         return (
-            <ul className="list-group list-group-flush p-3">
+            <ul class="list-group list-group-flush p-3">
                 {props.items?.map(item => {
                     return (
-                        <li key={item.v} className={item.c}>
+                        <li key={item.v} class={item.c}>
                             <spam>{item.v}</spam>
-                            <button className="btn btn-warning" onclick={() => {
+                            <button class="btn btn-warning" onclick={() => {
                                 Contextos.actions.agregar()
                             }}>Saludar</button>
                         </li>
