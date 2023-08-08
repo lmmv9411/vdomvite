@@ -20,12 +20,12 @@ function insertarElemento($parent, nodo) {
         $parent.appendChild($ref);
     }
 
-    if (!tmp) {
-        nodo.construido($ref);
-    }
-
     if (nodo.type === Fragment) {
         nodo.$fragment = $parent;
+    }
+
+    if (!tmp) {
+        nodo.construido($ref);
     }
 
 }
@@ -61,13 +61,14 @@ function reemplazarElemento($parent, nodo) {
         }
     }
 
+    if (nodo.type === Fragment) {
+        nodo.$fragment = $parent;
+    }
+
     if (!tmp) {
         nodo.construido($ref);
     }
 
-    if (nodo.type === Fragment) {
-        nodo.$fragment = $parent;
-    }
 }
 
 function h(type, props, ...children) {

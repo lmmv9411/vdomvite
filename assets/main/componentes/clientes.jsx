@@ -15,6 +15,7 @@ export class Clientes extends Componente {
     }
 
     montado() {
+
         this.nombre.focus();
 
         fetch("https://jsonplaceholder.typicode.com/users")
@@ -62,7 +63,7 @@ export class Clientes extends Componente {
                         type="text"
                         required
                         pattern=".{3,}"
-                        class="form-control bg-dark text-light"
+                        class="form-control text-light bg-dark"
                         placeholder="nombre"
                         name="nombre"
                         value={nombre.trim()}
@@ -78,7 +79,7 @@ export class Clientes extends Componente {
                         $ref="edad"
                         type="number"
                         required min={18} max={50}
-                        class="form-control bg-dark text-light"
+                        class="form-control text-light bg-dark"
                         placeholder="edad"
                         value={edad}
                         name="edad"
@@ -93,7 +94,7 @@ export class Clientes extends Componente {
                         $ref="email"
                         pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
                         required
-                        class="form-control bg-dark text-light"
+                        class="form-control text-light bg-dark"
                         type="email"
                         placeholder="email"
                         value={email.trim()}
