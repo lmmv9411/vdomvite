@@ -118,32 +118,34 @@ export class Clientes extends Componente {
                     </div>
                 }
 
-                <table class="table table-dark w-95">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Edad</th>
-                            <th>Email</th>
-                            <th>Accion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            clientes.map(cliente =>
-                                <tr key={cliente.edad}>
-                                    <td>{cliente.nombre}</td>
-                                    <td>{cliente.edad}</td>
-                                    <td>{cliente.email}</td>
-                                    <td>
-                                        <a class="btn btn-danger"
-                                            href="#"
-                                            onclick={e => eliminar(e, cliente, this)}
-                                        >Eliminar</a>
-                                    </td>
-                                </tr>)
-                        }
-                    </tbody>
-                </table>
+                <div class="overflow-auto">
+                    <table class="table table-dark w-95">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Edad</th>
+                                <th>Email</th>
+                                <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                clientes.map(cliente =>
+                                    <tr key={cliente.edad}>
+                                        <td>{cliente.nombre}</td>
+                                        <td>{cliente.edad}</td>
+                                        <td>{cliente.email}</td>
+                                        <td>
+                                            <a class="btn btn-danger"
+                                                href="#"
+                                                onclick={e => eliminar(e, cliente, this)}
+                                            >Eliminar</a>
+                                        </td>
+                                    </tr>)
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </>
         )
     }
