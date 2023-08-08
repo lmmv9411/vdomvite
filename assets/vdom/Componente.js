@@ -9,8 +9,6 @@ export class Componente {
 
         this.state = state;
 
-        this.contexto = {}
-
         const nodo = this.render(this.state);
 
         for (let [k, v] of Object.entries(nodo)) {
