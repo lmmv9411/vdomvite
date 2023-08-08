@@ -1,5 +1,5 @@
 import { Componente } from "../../vdom/Componente";
-import "../estilos/clientes.css"
+import cls from "../estilos/clientes.module.css"
 import { Fragment } from "../../vdom/VDom";
 
 export class Clientes extends Componente {
@@ -51,7 +51,7 @@ export class Clientes extends Componente {
 
         return (
             <>
-                <form $ref="formulario" action="post" class="d-flex flex-column p-2 mt-2" autoComplete="off">
+                <form $ref="formulario" action="post" class={`d-flex flex-column p-2 mt-2 ${cls.form}`} autoComplete="off">
 
                     {error?.nombre && <spam class="text-danger d-block">{
                         error.nombre.valueMissing ? "Nombre obligatorio" :
