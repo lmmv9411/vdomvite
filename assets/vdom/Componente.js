@@ -1,11 +1,9 @@
 import changes from "./Changes.js";
-import { Fragment, h } from "./VDom.js"
+import { Fragment } from "./VDom.js"
 
 export class Componente {
 
     constructor(state) {
-
-        this.h = h;
 
         this.state = state;
 
