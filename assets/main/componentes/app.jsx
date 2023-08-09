@@ -17,13 +17,16 @@ export class App extends Componente {
                             <a onclick={AppControlador} href="#">Home</a>
                         </li>
                         <li>
-                            <a onclick={AppControlador} href="/Clientes">Clientes</a>
+                            <a onclick={AppControlador} data-title="Clientes" href="/Clientes">Clientes</a>
                         </li>
                         <li>
-                            <a onclick={AppControlador} href="/Proveedores">Proveedores</a>
+                            <a onclick={AppControlador} data-title="Preveedores 🏭" href="/Proveedores">Proveedores</a>
                         </li>
                         <li>
-                            <a onclick={AppControlador} href="/Almacen">Almacén</a>
+                            <a onclick={AppControlador} data-title="Almacén 🏬" href="/Almacen">Almacén</a>
+                        </li>
+                        <li>
+                            <a onclick={AppControlador} data-title="Lista Enlazada" href="/ListaEnlazada">Lista Enlazada</a>
                         </li>
                     </ul>
                 </nav>

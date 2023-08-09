@@ -10,11 +10,12 @@ export default function AppControlador(e) {
 
     const url = e.target.href;
     history.pushState(null, null, url);
-    navitateTo();
+    navitateTo(e);
 }
 
-async function navitateTo() {
+async function navitateTo(e) {
 
+    const titulo = e.target.getAttribute("data-title");
     const main = document.querySelector("main");
     const nombreClase = location.pathname.substring(1)
 
@@ -31,7 +32,7 @@ async function navitateTo() {
         i = instancias.length - 1;
     }
 
-    document.title = nombreClase;
+    document.title = titulo;
 
     reemplazarElemento(
         main,
