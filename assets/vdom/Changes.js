@@ -170,14 +170,17 @@ function setAttributes($node, vOldNode, vNewNode) {
             } else if (att === "$ref") {
                 parent[vOldNode.props[att]] = null;
             } else {
-                $node.removeAttribute(att);
-                if ($node.tagName === "INPUT") {
+                if (!att in $node) {
+                    $node.removeAttribute(att);
+                } else {
                     $node[att] = "";
                 }
-            }
 
+            }
         }
+
     }
+
 
     for (let att in vNewNode.props) {
         if (!vOldNode?.props
@@ -187,15 +190,17 @@ function setAttributes($node, vOldNode, vNewNode) {
             if (att.startsWith("on")) {
                 continue
             } else if (att !== "$ref") {
-                $node.setAttribute(att, vNewNode.props[att]);
-                if ($node.tagName === "INPUT") {
+
+                if (att in $node) {
                     $node[att] = vNewNode.props[att];
+                } else {
+                    $node.setAttribute(att, vNewNode.props[att]);
                 }
+
             } else {
                 parent[vNewNode.props[att]] = $node;
             }
 
         }
     }
-
 }

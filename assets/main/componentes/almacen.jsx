@@ -12,7 +12,7 @@ export class Almacen extends Componente {
                 <section>
                     <h1 $ref="alm">Soy Almacén</h1>
                     <p>hola Soy una prueba para el Almacen</p>
-                    <button class="btn btn-primary" onclick={(e) => {
+                    <button className="btn btn-primary" onclick={(e) => {
                         this.alm.textContent = this.state.frase ? "Andrés" : "Soy Almacén";
                         this.update({ frase: !this.state.frase })
                     }}>{props.frase ? "Cambiar Ref" : "Restablecer Ref"}</button>

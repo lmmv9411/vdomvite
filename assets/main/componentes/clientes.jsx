@@ -10,6 +10,7 @@ export class Clientes extends Componente {
             email: "",
             clientes: [],
             error: {},
+            chk: true,
             ...props,
         })
     }
@@ -47,13 +48,13 @@ export class Clientes extends Componente {
 
     render(props) {
 
-        const { nombre, edad, email, clientes, error } = props;
+        const { nombre, edad, email, clientes, error, chk } = props;
 
         return (
             <>
-                <form $ref="formulario" action="post" class={`d-flex flex-column p-2 mt-2 ${cls.form}`} autoComplete="off">
+                <form $ref="formulario" action="post" className={`d-flex flex-column p-2 mt-2 ${cls.form}`} autocomplete="off">
 
-                    {error?.nombre && <spam class="text-danger d-block">{
+                    {error?.nombre && <spam className="text-danger d-block">{
                         error.nombre.valueMissing ? "Nombre obligatorio" :
                             error.nombre.patternMismatch ? "Mínimo 3 caracteres" : "Error"
                     }</spam>}
@@ -63,13 +64,13 @@ export class Clientes extends Componente {
                         type="text"
                         required
                         pattern=".{3,}"
-                        class="form-control text-light bg-dark"
+                        className="form-control text-light bg-dark"
                         placeholder="nombre"
                         name="nombre"
                         value={nombre.trim()}
                         onchange={this.cambio.bind(this)} />
 
-                    {error?.edad && <spam class="text-danger d-block">{
+                    {error?.edad && <spam className="text-danger d-block">{
                         error.edad.valueMissing ? "Edad obligatoria" :
                             error.edad.rangeUnderflow ? "Mínimo 18" :
                                 error.edad.rangeOverflow ? "Máximo 50" : "Error"
@@ -79,31 +80,38 @@ export class Clientes extends Componente {
                         $ref="edad"
                         type="number"
                         required min={18} max={50}
-                        class="form-control text-light bg-dark"
+                        className="form-control text-light bg-dark"
                         placeholder="edad"
                         value={edad}
                         name="edad"
                         onchange={this.cambio.bind(this)} />
 
-                    {error?.email && <spam class="text-danger d-block">{
+                    {error?.email && <spam className="text-danger d-block">{
                         error.email.valueMissing ? "Email obligatorio" :
                             error.email.patternMismatch ? "Email inválido" : "Error"}
                     </spam>}
 
-                    <input
-                        $ref="email"
-                        pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
-                        required
-                        class="form-control text-light bg-dark"
-                        type="email"
-                        placeholder="email"
-                        value={email.trim()}
-                        name="email"
-                        onchange={this.cambio.bind(this)} />
+                    <div className="d-flex gap-3">
+                        <input
+                            $ref="email"
+                            pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
+                            required
+                            className="form-control text-light bg-dark"
+                            type="email"
+                            placeholder="email"
+                            value={email.trim()}
+                            name="email"
+                            onchange={this.cambio.bind(this)} />
+                        <div className="d-flex align-items-center justify-content-center gap-1">
+                            <label htmlFor="miCheck">Seleccion</label>
+                            <input type="checkbox" id="miCheck" checked={chk}
+                                onclick={() => this.update({ chk: !this.state.chk })} />
+                        </div>
+                    </div>
 
-                    <div class="d-flex gap-2">
+                    <div className="d-flex gap-2">
                         <button
-                            class="btn btn-primary"
+                            className="btn btn-primary"
                             onclick={submit.bind(this)}
                         >Click Me!
                         </button>
@@ -111,16 +119,16 @@ export class Clientes extends Componente {
 
                 </form>
 
-                <div class={`overflow-x-auto overflow-y-hidden mt-3 
+                <div className={`overflow-x-auto overflow-y-hidden mt-3 
                     ${clientes.length == 0 ? "d-flex justify-content-center" : ""}`.trim()}>
                     {
                         clientes.length == 0
                             ?
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="sr-only"></span>
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="sr-only"></span>
                             </div>
                             :
-                            <table class="table table-dark w-95">
+                            <table className="table table-dark w-95">
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
@@ -137,7 +145,7 @@ export class Clientes extends Componente {
                                                 <td>{cliente.edad}</td>
                                                 <td>{cliente.email}</td>
                                                 <td>
-                                                    <a class="btn btn-danger"
+                                                    <a className="btn btn-danger"
                                                         href="#"
                                                         onclick={e => eliminar(e, cliente, this)}
                                                     >Eliminar</a>
@@ -183,6 +191,7 @@ function submit(e) {
 
     } else {
         const { nombre, edad, email, clientes } = this.state
+        console.log(this.state);
         clientes.unshift({ nombre, edad, email })
         this.update({ nombre: "", edad: "", email: "" })
         //form.reset();

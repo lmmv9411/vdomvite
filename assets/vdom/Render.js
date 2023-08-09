@@ -39,9 +39,10 @@ function _render(node) {
                 k = k.substring(2)
                 $element.addEventListener(k, v);
             } else {
-                $element.setAttribute(k, v)
-                if (node.type === "input") {
+                if (k in $element) {
                     $element[k] = v;
+                } else {
+                    $element.setAttribute(k, v)
                 }
             }
         }
