@@ -119,7 +119,7 @@ export class Clientes extends Componente {
 
                 </form>
 
-                <div className={`overflow-x-auto overflow-y-hidden mt-3 p-2 
+                <div className={`overflow-x-auto overflow-y-hidden m-2
                     ${clientes.length == 0 ? "d-flex justify-content-center" : ""}`.trim()}>
                     {
                         clientes.length == 0
@@ -128,7 +128,7 @@ export class Clientes extends Componente {
                                 <span className="sr-only"></span>
                             </div>
                             :
-                            <table className="table table-dark w-95">
+                            <table className="table table-dark">
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>

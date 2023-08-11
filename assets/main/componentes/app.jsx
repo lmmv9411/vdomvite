@@ -16,7 +16,7 @@ export class App extends Componente {
 
         return (
             <Router>
-                <Links className="d-flex">
+                <Links className="d-flex flex-wrap">
                     <Link className={menu.link} link="/" titulo="Virtual Dom">Home</Link>
 
                     <Link className={menu.link} link="/Clientes" titulo="Clientes">Clientes</Link>
