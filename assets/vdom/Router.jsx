@@ -57,7 +57,7 @@ export const navigateTo = async (e) => {
     )
 }
 
-export function Router(props, children) {
+export const Router = (props, children) => {
 
     const AppControlador = (e) => {
         e.stopPropagation();

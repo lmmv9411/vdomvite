@@ -96,8 +96,16 @@ function h(type, props, ...children) {
             return children[0];
         }
 
-        componente.key = key;
-        return componente;
+        if (componente) {
+            componente.key = key
+            return componente;
+        } else {
+            if (children.length > 1) {
+                return h(Fragment, null, children);
+            }
+            return children[0];
+        }
+
     }
 
     if (Array.isArray(children) && children.length === 1 && Array.isArray(children[0])) {

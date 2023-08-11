@@ -16,21 +16,19 @@ export class App extends Componente {
 
         return (
             <Router>
-                <>
-                    <Links className="d-flex">
-                        <Link className={menu.link} link="/" titulo="Virtual Dom">Home</Link>
+                <Links className="d-flex">
+                    <Link className={menu.link} link="/" titulo="Virtual Dom">Home</Link>
 
-                        <Link className={menu.link} link="/Clientes" titulo="Clientes">Clientes</Link>
+                    <Link className={menu.link} link="/Clientes" titulo="Clientes">Clientes</Link>
 
-                        <Link className={menu.link} link="/Proveedores" titulo="Preveedores 🏭">Proveedores</Link>
+                    <Link className={menu.link} link="/Proveedores" titulo="Preveedores 🏭">Proveedores</Link>
 
-                        <Link className={menu.link} link="/Almacen" titulo="Almacen 🏭">Almacen</Link>
+                    <Link className={menu.link} link="/Almacen" titulo="Almacen 🏭">Almacen</Link>
 
-                        <Link className={menu.link} link="/ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
-                    </Links>
+                    <Link className={menu.link} link="/ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
+                </Links>
 
-                    <main>{props.modulo}</main>
-                </>
+                <main>{props.modulo}</main>
             </Router >
         )
     }
