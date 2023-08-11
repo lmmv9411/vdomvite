@@ -31,15 +31,13 @@ export function AppControlador(e) {
 
 export async function navigateTo(e) {
 
-    let titulo = "Virtual Dom";
-
-    const nombreClase = location.pathname.slice(1)
+    const paths = location.pathname.slice(1).split("/")
+    const nombreClase = paths[0];
 
     if (e !== undefined && "getAttribute" in e.target) {
-        titulo = e.target.getAttribute("data-title");
+        let titulo = e.target.getAttribute("data-title");
+        document.title = titulo;
     }
-
-    document.title = titulo;
 
     const main = document.querySelector("main");
 

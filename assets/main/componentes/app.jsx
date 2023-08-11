@@ -1,6 +1,7 @@
 import { Componente } from "../../vdom/Componente";
-import { AppControlador, navigateTo } from "../controladores/app";
 import { Fragment } from "../../vdom/VDom";
+import { Link, Links, Router, navigateTo } from "../../vdom/Router";
+import menu from "../estilos/menu.module.css"
 
 export class App extends Componente {
     constructor(props) {
@@ -14,28 +15,23 @@ export class App extends Componente {
     render(props) {
 
         return (
-            <>
-                <nav >
-                    <ul>
-                        <li>
-                            <a onclick={AppControlador} href="/">Home</a>
-                        </li>
-                        <li>
-                            <a onclick={AppControlador} data-title="Clientes" href="/Clientes">Clientes</a>
-                        </li>
-                        <li>
-                            <a onclick={AppControlador} data-title="Preveedores 🏭" href="/Proveedores">Proveedores</a>
-                        </li>
-                        <li>
-                            <a onclick={AppControlador} data-title="Almacén 🏬" href="/Almacen">Almacén</a>
-                        </li>
-                        <li>
-                            <a onclick={AppControlador} data-title="Lista Enlazada" href="/ListaEnlazada">Lista Enlazada</a>
-                        </li>
-                    </ul>
-                </nav>
-                <main>{props.modulo}</main>
-            </>
+            <Router>
+                <>
+                    <Links className="d-flex">
+                        <Link className={menu.link} link="/" titulo="Virtual Dom">Home</Link>
+
+                        <Link className={menu.link} link="/Clientes" titulo="Clientes">Clientes</Link>
+
+                        <Link className={menu.link} link="/Proveedores" titulo="Preveedores 🏭">Proveedores</Link>
+
+                        <Link className={menu.link} link="/Almacen" titulo="Almacen 🏭">Almacen</Link>
+
+                        <Link className={menu.link} link="/ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
+                    </Links>
+
+                    <main>{props.modulo}</main>
+                </>
+            </Router >
         )
     }
 }

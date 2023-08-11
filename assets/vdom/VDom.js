@@ -81,7 +81,13 @@ function h(type, props, ...children) {
     }
 
     if (type instanceof Function) {
-        const componente = new type(props, children);
+        let componente
+
+        if (!(type.prototype instanceof Object)) {
+            componente = type(props, children);
+        } else {
+            componente = new type(props, children);
+        }
 
         if (typeof componente === "object" && Object.keys(componente).length === 0) {
             if (children.length > 1) {
