@@ -1,10 +1,14 @@
 import { Componente } from "../../vdom/Componente";
-import AppControlador from "../controladores/app";
+import { AppControlador, navigateTo } from "../controladores/app";
 import { Fragment } from "../../vdom/VDom";
 
 export class App extends Componente {
     constructor(props) {
         super({ ...props })
+    }
+
+    montado() {
+        navigateTo()
     }
 
     render(props) {
@@ -14,7 +18,7 @@ export class App extends Componente {
                 <nav >
                     <ul>
                         <li>
-                            <a onclick={AppControlador} href="#">Home</a>
+                            <a onclick={AppControlador} href="/">Home</a>
                         </li>
                         <li>
                             <a onclick={AppControlador} data-title="Clientes" href="/Clientes">Clientes</a>

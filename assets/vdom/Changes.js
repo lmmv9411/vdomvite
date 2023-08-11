@@ -165,15 +165,25 @@ function setAttributes($node, vOldNode, vNewNode) {
     for (let att in vOldNode.props) {
         if ((!vNewNode.props) || !(att in vNewNode.props)) {
 
+            const v = vOldNode.props[att];
+
             if (att.startsWith("on")) {
                 continue
             } else if (att === "$ref") {
-                parent[vOldNode.props[att]] = null;
+                parent[v] = null;
             } else {
                 if (!att in $node) {
                     $node.removeAttribute(att);
                 } else {
-                    $node[att] = "";
+
+                    if (typeof v === "object") {
+                        Object.keys(v).forEach((key) => {
+                            $node[att][key] = "";
+                        })
+                    } else {
+                        $node[att] = "";
+                    }
+
                 }
 
             }
@@ -187,18 +197,27 @@ function setAttributes($node, vOldNode, vNewNode) {
             || !(att in vOldNode?.props)
             || vNewNode.props[att] !== vOldNode.props[att]) {
 
+            const v = vNewNode.props[att];
+
             if (att.startsWith("on")) {
                 continue
             } else if (att !== "$ref") {
 
                 if (att in $node) {
-                    $node[att] = vNewNode.props[att];
+                    if (typeof v === "object") {
+                        Object.entries(v).forEach(([key, value]) => {
+                            $node[att][key] = value;
+                        })
+                    } else {
+                        $node[att] = v;
+                    }
+
                 } else {
-                    $node.setAttribute(att, vNewNode.props[att]);
+                    $node.setAttribute(att, v);
                 }
 
             } else {
-                parent[vNewNode.props[att]] = $node;
+                parent[v] = $node;
             }
 
         }

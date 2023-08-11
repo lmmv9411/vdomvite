@@ -1,0 +1,94 @@
+export function cListaEnlazada(view) {
+
+    const agregarCola = () => {
+
+        view.size++;
+
+        let { cabeza, cola, valor } = view.state;
+
+        if (cola === null) {
+            cola = nodo(valor)
+            cabeza = cola;
+            view.update({ cabeza, cola, valor: "" })
+        } else {
+            const tmp = nodo(valor)
+            tmp.anterior = cola
+            cola.siguiente = tmp;
+            view.update({ cola: tmp, valor: "" })
+        }
+
+        view.txtValor.focus()
+    }
+
+    const agregarEn = () => {
+
+        let tmp = view.state.cabeza;
+        let idx = 0;
+        const pos = view.state.pos === 0 ? 0 : view.state.pos - 1;
+
+        while (tmp) {
+            if (idx === pos) {
+                const tmpNodo = nodo(view.state.valor);
+                //cola
+                if (tmp.siguiente === undefined && tmp.anterior !== undefined) {
+                    const c = view.state.cola;
+                    c.siguiente = tmpNodo
+                    tmpNodo.anterior = c;
+                    view.size++;
+                    view.update({ cola: tmpNodo })
+                } else if (tmp.anterior === undefined && tmp.siguiente !== undefined) {
+                    //cabeza
+                    const c = view.state.cabeza;
+                    c.anterior = tmpNodo
+                    tmpNodo.siguiente = c;
+                    view.size++;
+                    view.update({ cabeza: tmpNodo })
+                } else {
+                    tmpNodo.siguiente = tmp;
+                    tmpNodo.anterior = tmp.anterior;
+                    tmp.anterior.siguiente = tmpNodo
+                    tmp.anterior = tmpNodo;
+                    view.size++;
+                    view.update({})
+                }
+                view.update({ valor: "" })
+                view.txtValor.focus()
+                break;
+            } else {
+                tmp = tmp.siguiente;
+            }
+            idx++;
+        }
+
+
+    }
+
+    const agregarCabeza = () => {
+
+        view.size++;
+
+        let { cabeza, valor, cola } = view.state;
+
+        if (cabeza === null) {
+            cabeza = nodo(valor)
+            cola = cabeza
+            view.update({ cabeza, cola, valor: "" })
+        } else {
+            let tmp = nodo(valor);
+            tmp.siguiente = cabeza;
+            cabeza.anterior = tmp;
+            view.update({ cabeza: tmp, valor: "" })
+        }
+        view.txtValor.focus()
+    }
+
+    const nodo = (valor, siguiente, anterior) => {
+        return {
+            anterior,
+            siguiente,
+            valor
+        }
+    }
+
+    return { agregarCabeza, agregarCola, agregarEn, nodo }
+}

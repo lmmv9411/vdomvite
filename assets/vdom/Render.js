@@ -40,7 +40,13 @@ function _render(node) {
                 $element.addEventListener(k, v);
             } else {
                 if (k in $element) {
-                    $element[k] = v;
+                    if (typeof v === "object") {
+                        Object.entries(v).forEach(([key, value]) => {
+                            $element[k][key] = value;
+                        })
+                    } else {
+                        $element[k] = v;
+                    }
                 } else {
                     $element.setAttribute(k, v)
                 }
