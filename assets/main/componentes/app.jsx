@@ -9,7 +9,7 @@ export class App extends Componente {
     }
 
     montado() {
-        navigateTo()
+        navigateTo(null, "main", "")
     }
 
     render() {

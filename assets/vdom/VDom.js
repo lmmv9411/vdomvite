@@ -65,7 +65,7 @@ function reemplazarElemento($parent, nodo) {
         nodo.$fragment = $parent;
     }
 
-    if (!tmp) {
+    if (!tmp && nodo.construido) {
         nodo.construido($ref);
     }
 

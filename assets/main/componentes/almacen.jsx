@@ -1,10 +1,14 @@
 import { Componente } from "../../vdom/Componente";
-import { Link, Links, Router } from "../../vdom/Router";
+import { Link, Links, Router, navigateTo } from "../../vdom/Router";
 import { Fragment } from "../../vdom/VDom";
 
 export class Almacen extends Componente {
     constructor(props) {
         super({ ...props, frase: true })
+    }
+
+    montado() {
+        navigateTo(null, "test", "Almacen");
     }
 
     render(props) {
