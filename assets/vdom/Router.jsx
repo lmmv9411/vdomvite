@@ -22,8 +22,7 @@ const load = render(
 
 export const navigateTo = async (e) => {
 
-    const paths = window.location.pathname.slice(1).split("/")
-    const nombreClase = paths[0];
+    const nombreClase = window.location.pathname.slice(1)
 
     if (e !== undefined && "getAttribute" in e.target) {
         let titulo = e.target.getAttribute("data-title");
@@ -44,7 +43,16 @@ export const navigateTo = async (e) => {
 
     if (i === -1) {
 
-        const modulo = await import(`${pathFiles}${nombreClase.toLowerCase()}.jsx`)
+        let modulo;
+
+        try {
+            modulo = await import(`../main/componentes/${nombreClase.toLowerCase()}.jsx`)
+        } catch (error) {
+            console.error(error);
+            main.innerHTML = "";
+            main.appendChild(render(<p class="alert alert-danger" role="alert">Ruta No Encontrada</p>))
+            return;
+        }
 
         const instancia = new modulo[nombreClase]({});
 
@@ -61,6 +69,7 @@ export const navigateTo = async (e) => {
 
 export const Router = (props, children) => {
 
+    idContenedor = props.idContenedor;
     pathFiles = props.pathFiles;
 
     const AppControlador = (e) => {
@@ -84,7 +93,6 @@ export const Router = (props, children) => {
     }
 
     children.forEach(setEvent)
-
 }
 
 export const Link = ({ to, titulo, ...props }, children) => (
@@ -94,7 +102,3 @@ export const Link = ({ to, titulo, ...props }, children) => (
 )
 
 export const Links = (props, children) => (<ul {...props}>{children}</ul>)
-
-export const Contenedor = (props, children) => {
-    idContenedor = props.id;
-}

@@ -1,4 +1,5 @@
 import { Componente } from "../../vdom/Componente";
+import { Link, Links, Router } from "../../vdom/Router";
 import { Fragment } from "../../vdom/VDom";
 
 export class Almacen extends Componente {
@@ -8,21 +9,17 @@ export class Almacen extends Componente {
 
     render(props) {
         return (
-            <>
-                <section>
-                    <h1 $ref="alm">Soy Almacén</h1>
-                    <p>hola Soy una prueba para el Almacen</p>
-                    <button className="btn btn-primary" onclick={(e) => {
-                        this.alm.textContent = this.state.frase ? "Andrés" : "Soy Almacén";
-                        this.update({ frase: !this.state.frase })
-                    }}>{props.frase ? "Cambiar Ref" : "Restablecer Ref"}</button>
-                </section>
+            <Router idContenedor="test">
 
-                <section>
-                    <h1>Soy Almacén II</h1>
-                    <p>hola Soy una prueba para el Almacen II</p>
-                </section>
-            </>
+                <Links>
+                    <Link to="/home" titulo="Almacén">Home</Link>
+                    <Link to="test/tetas" titulo="Tetas">Tetas</Link>
+                </Links>
+
+                <div id="test">
+                    <span>Hola perros</span>
+                </div>
+            </Router>
         )
     }
 }

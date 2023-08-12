@@ -1,6 +1,6 @@
 import { Componente } from "../../vdom/Componente";
 import { Fragment } from "../../vdom/VDom";
-import { Contenedor, Link, Links, Router, navigateTo } from "../../vdom/Router";
+import { Link, Links, Router, navigateTo } from "../../vdom/Router";
 import menu from "../estilos/menu.module.css"
 
 export class App extends Componente {
@@ -12,10 +12,10 @@ export class App extends Componente {
         navigateTo()
     }
 
-    render(props) {
+    render() {
 
         return (
-            <Router pathFiles="../main/componentes/">
+            <Router pathFiles="../main/componentes/" idContenedor="main">
                 <Links className="d-flex flex-wrap" style={{ listStyle: "none" }}>
                     <Link className={menu.link} to="/" titulo="Virtual Dom">Home</Link>
 
@@ -28,9 +28,7 @@ export class App extends Componente {
                     <Link className={menu.link} to="/ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
                 </Links>
 
-                <Contenedor id="main">
-                    <main id="main">{props.modulo}</main>
-                </Contenedor>
+                <main id="main"></main>
 
             </Router >
         )
