@@ -1,6 +1,6 @@
 import { Componente } from "../../vdom/Componente";
 import { Fragment } from "../../vdom/VDom";
-import { Link, Links, Router, navigateTo } from "../../vdom/Router";
+import { Contenedor, Link, Links, Router, navigateTo } from "../../vdom/Router";
 import menu from "../estilos/menu.module.css"
 
 export class App extends Componente {
@@ -15,20 +15,23 @@ export class App extends Componente {
     render(props) {
 
         return (
-            <Router>
-                <Links className="d-flex flex-wrap">
-                    <Link className={menu.link} link="/" titulo="Virtual Dom">Home</Link>
+            <Router pathFiles="../main/componentes/">
+                <Links className="d-flex flex-wrap" style={{ listStyle: "none" }}>
+                    <Link className={menu.link} to="/" titulo="Virtual Dom">Home</Link>
 
-                    <Link className={menu.link} link="/Clientes" titulo="Clientes">Clientes</Link>
+                    <Link className={menu.link} to="/Clientes" titulo="Clientes">Clientes</Link>
 
-                    <Link className={menu.link} link="/Proveedores" titulo="Preveedores 🏭">Proveedores</Link>
+                    <Link className={menu.link} to="/Proveedores" titulo="Preveedores 🏭">Proveedores</Link>
 
-                    <Link className={menu.link} link="/Almacen" titulo="Almacen 🏭">Almacen</Link>
+                    <Link className={menu.link} to="/Almacen" titulo="Almacen 🏭">Almacen</Link>
 
-                    <Link className={menu.link} link="/ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
+                    <Link className={menu.link} to="/ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
                 </Links>
 
-                <main>{props.modulo}</main>
+                <Contenedor id="main">
+                    <main id="main">{props.modulo}</main>
+                </Contenedor>
+
             </Router >
         )
     }

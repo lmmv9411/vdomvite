@@ -10,6 +10,8 @@ const estilos = {
     position: "absolute"
 }
 
+let pathFiles = "", idContenedor = null;
+
 const load = render(
     <div style={estilos}>
         <div className="spinner-border text-primary" role="status">
@@ -28,7 +30,7 @@ export const navigateTo = async (e) => {
         document.title = titulo;
     }
 
-    const main = document.querySelector("main");
+    const main = document.getElementById(idContenedor);
 
     main.innerHTML = "";
 
@@ -42,7 +44,7 @@ export const navigateTo = async (e) => {
 
     if (i === -1) {
 
-        const modulo = await import(`../main/componentes/${nombreClase.toLowerCase()}.jsx`)
+        const modulo = await import(`${pathFiles}${nombreClase.toLowerCase()}.jsx`)
 
         const instancia = new modulo[nombreClase]({});
 
@@ -58,6 +60,8 @@ export const navigateTo = async (e) => {
 }
 
 export const Router = (props, children) => {
+
+    pathFiles = props.pathFiles;
 
     const AppControlador = (e) => {
         e.stopPropagation();
@@ -83,6 +87,14 @@ export const Router = (props, children) => {
 
 }
 
-export const Link = ({ link, titulo, ...props }, children) => (<a {...props} href={link} data-title={titulo}>{children}</a>)
+export const Link = ({ to, titulo, ...props }, children) => (
+    <li>
+        <a {...props} href={to} data-title={titulo} style={{ display: "block" }}>{children}</a>
+    </li>
+)
 
 export const Links = (props, children) => (<ul {...props}>{children}</ul>)
+
+export const Contenedor = (props, children) => {
+    idContenedor = props.id;
+}

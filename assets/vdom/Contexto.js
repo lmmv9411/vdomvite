@@ -1,6 +1,6 @@
 export const Contextos = {};
 
-export function Contexto(props) {
+export const Contexto = (props) => {
     if (Contextos.hasOwnProperty(props.name)) {
         return;
     }
