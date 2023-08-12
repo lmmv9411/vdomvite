@@ -9,11 +9,11 @@ export class Almacen extends Componente {
 
     render(props) {
         return (
-            <Router idContenedor="test">
+            <Router idContenedor="test" pathBase="Almacen">
 
                 <Links>
-                    <Link to="/home" titulo="Almacén">Home</Link>
-                    <Link to="test/tetas" titulo="Tetas">Tetas</Link>
+                    <Link to="" titulo="Almacén">Home</Link>
+                    <Link to="tetas" titulo="Tetas">Tetas</Link>
                 </Links>
 
                 <div id="test">

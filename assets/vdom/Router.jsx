@@ -10,7 +10,7 @@ const estilos = {
     position: "absolute"
 }
 
-let pathFiles = "", idContenedor = null;
+let idContenedor = "", pathBase = "";
 
 const load = render(
     <div style={estilos}>
@@ -20,57 +20,81 @@ const load = render(
     </div>
 )
 
-export const navigateTo = async (e) => {
+export const navigateTo = function (e, ic) {
 
-    const nombreClase = window.location.pathname.slice(1)
+    const nt = async () => {
+        const paths = window.location.pathname.slice(1).split("/");
+        let nombreClase = ""
 
-    if (e !== undefined && "getAttribute" in e.target) {
-        let titulo = e.target.getAttribute("data-title");
-        document.title = titulo;
-    }
+        if (paths.length === 1) {
+            nombreClase = paths[0];
+        } else {
+            paths.forEach((path, i) => {
+                if (path === pathBase) {
+                    nombreClase = paths[i + 1]
+                    return;
+                }
+            });
+        }
 
-    const main = document.getElementById(idContenedor);
+        if (e !== undefined && "getAttribute" in e.target) {
+            let titulo = e.target.getAttribute("data-title");
+            document.title = titulo;
+        }
 
-    main.innerHTML = "";
+        const main = document.getElementById(ic);
 
-    if (nombreClase === "") {
-        return;
-    }
+        main.innerHTML = "";
 
-    main.appendChild(load);
-
-    let i = instancias.findIndex(i => i.key === nombreClase);
-
-    if (i === -1) {
-
-        let modulo;
-
-        try {
-            modulo = await import(`../main/componentes/${nombreClase.toLowerCase()}.jsx`)
-        } catch (error) {
-            console.error(error);
-            main.innerHTML = "";
-            main.appendChild(render(<p class="alert alert-danger" role="alert">Ruta No Encontrada</p>))
+        if (nombreClase === "") {
             return;
         }
 
-        const instancia = new modulo[nombreClase]({});
+        main.appendChild(load);
 
-        instancias.push({ key: nombreClase, instancia });
+        let i = instancias.findIndex(i => i.key === nombreClase);
 
-        i = instancias.length - 1;
-    }
+        if (i === -1) {
 
-    reemplazarElemento(
-        main,
-        instancias[i].instancia
-    )
+            let modulo;
+
+            try {
+                modulo = await import(`../main/componentes/${nombreClase.toLowerCase()}.jsx`)
+            } catch (error) {
+                console.error(error);
+                main.innerHTML = "";
+                main.appendChild(render(<p class="alert alert-danger" role="alert">Ruta No Encontrada</p>))
+                return;
+            }
+
+            let instancia;
+
+            let clase = await modulo[nombreClase];
+
+            if (!(clase.prototype instanceof Object)) {
+                instancia = clase({});
+            } else {
+                instancia = new clase({});
+            }
+
+            instancias.push({ key: nombreClase, instancia });
+
+            i = instancias.length - 1;
+        }
+
+        reemplazarElemento(
+            main,
+            instancias[i].instancia
+        )
+    };
+
+    return nt;
 }
 
 export const Router = (props, children) => {
 
-    idContenedor = props.idContenedor;
-    pathFiles = props.pathFiles;
+    idContenedor = props.idContenedor
+    pathBase = props.pathBase;
 
     const AppControlador = (e) => {
         e.stopPropagation();
@@ -78,7 +102,7 @@ export const Router = (props, children) => {
 
         const url = e.target.href;
         history.pushState(null, null, url);
-        navigateTo(e);
+        navigateTo(e, idContenedor)();
     }
 
     window.addEventListener('popstate', navigateTo);
@@ -86,6 +110,7 @@ export const Router = (props, children) => {
     const setEvent = (ch) => {
         if (ch.type === "a") {
             ch.props.onclick = AppControlador;
+            ch.props.href = pathBase + "/" + ch.props.href;
         }
         if (ch.children?.length > 0) {
             ch.children.forEach(setEvent)
@@ -98,7 +123,7 @@ export const Router = (props, children) => {
 export const Link = ({ to, titulo, ...props }, children) => (
     <li>
         <a {...props} href={to} data-title={titulo} style={{ display: "block" }}>{children}</a>
-    </li>
+    </li >
 )
 
 export const Links = (props, children) => (<ul {...props}>{children}</ul>)
