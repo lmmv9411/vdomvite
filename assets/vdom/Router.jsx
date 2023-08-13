@@ -18,7 +18,7 @@ const load = render(
     </div>
 )
 
-export const navigateTo = async (e, idContenedor, pathRoute) => {
+export const navigateTo = async (e, idContenedor, pathRoute, name) => {
 
     const paths = window.location.pathname.slice(1).split("/");
     let nombreClase = ""
@@ -38,8 +38,26 @@ export const navigateTo = async (e, idContenedor, pathRoute) => {
         }
     }
 
+    let main;
+
     if (pathRoute === window.location.pathname.slice(1)) {
-        return;
+        const inst = instancias.find(ins => ins.key === nombreClase);
+        if (inst !== undefined) {
+            if (name) {
+
+                main = inst.instancia.$fragment;
+                main.querySelector(`#${idContenedor}`).innerHTML = "";
+                const modulo = await import(`../main/componentes/${name}.jsx`)
+                main.querySelector(`#${idContenedor}`).appendChild(render(modulo[name]()));
+                return
+            }
+            main = inst.instancia.$fragment;
+            main.querySelector(`#${idContenedor}`).innerHTML = "";
+        } else {
+            main = document.getElementById(idContenedor);
+        }
+    } else {
+        main = document.getElementById(idContenedor);
     }
 
     if (e !== null && e !== undefined && "getAttribute" in e.target) {
@@ -47,12 +65,11 @@ export const navigateTo = async (e, idContenedor, pathRoute) => {
         document.title = titulo;
     }
 
-    const main = document.getElementById(idContenedor);
-
     main.innerHTML = "";
 
     if (nombreClase === "") {
-        return;
+        //     return;
+        nombreClase = name;
     }
 
     main.appendChild(load);
@@ -109,13 +126,13 @@ export class Router {
         this.type = Fragment;
     }
 
-    AppControlador(e) {
+    redirect(name, e) {
         e.stopPropagation();
         e.preventDefault();
 
         const url = e.target.href;
         history.pushState(null, null, url);
-        navigateTo(e, this.idContenedor, this.pathBase);
+        navigateTo(e, this.idContenedor, this.pathBase, name);
     }
 
     setEvent(ch) {
@@ -123,7 +140,9 @@ export class Router {
         let tmpPath = this.pathBase;
 
         if (ch.type === "a") {
-            ch.props.onclick = this.AppControlador.bind(this);
+            const name = ch.props.name;
+            delete ch.props.name;
+            ch.props.onclick = this.redirect.bind(this, name);
 
             if (tmpPath === "") {
                 tmpPath = "/"
@@ -133,7 +152,7 @@ export class Router {
 
             ch.props.href = ch.props.href === "" ? `${tmpPath}` : `${tmpPath}${ch.props.href}`;
 
-            if (ch.props.href.endsWith("/")) {
+            if (ch.props.href !== "/" && ch.props.href.endsWith("/")) {
                 ch.props.href = ch.props.href.slice(0, -1);
             }
         }

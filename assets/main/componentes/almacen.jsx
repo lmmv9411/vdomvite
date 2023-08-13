@@ -8,16 +8,17 @@ export class Almacen extends Componente {
     }
 
     montado() {
-        navigateTo(null, "test", "Almacen");
+        navigateTo(null, "test", "Almacen", "home");
     }
 
-    render(props) {
+    render() {
+
         return (
             <Router idContenedor="test" pathBase="Almacen">
 
                 <Links>
-                    <Link to="" titulo="Almacén">Home</Link>
-                    <Link to="tetas" titulo="Tetas">Tetas</Link>
+                    <Link to="" name="home" titulo="Almacén">Home</Link>
+                    <Link to="tetas" name="tetas" titulo="Tetas">Tetas</Link>
                 </Links>
 
                 <div id="test">
