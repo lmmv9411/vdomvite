@@ -9,7 +9,7 @@ export class App extends Componente {
     }
 
     montado() {
-        navigateTo(null, "main", "", "home")
+        navigateTo(null, "main", "", "homeinit")
     }
 
     render() {
@@ -17,7 +17,7 @@ export class App extends Componente {
         return (
             <Router idContenedor="main" pathBase="">
                 <Links className="d-flex flex-wrap" style={{ listStyle: "none" }}>
-                    <Link className={menu.link} to="" name="home" titulo="Virtual Dom">Home</Link>
+                    <Link className={menu.link} to="" name="homeinit" titulo="Virtual Dom">Home</Link>
 
                     <Link className={menu.link} to="Clientes" titulo="Clientes">Clientes</Link>
 
@@ -28,7 +28,7 @@ export class App extends Componente {
                     <Link className={menu.link} to="ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
                 </Links>
 
-                <main id="main"></main>
+                <main id="main" className="p-3"></main>
 
             </Router >
         )

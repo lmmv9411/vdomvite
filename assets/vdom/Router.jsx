@@ -18,7 +18,7 @@ const load = render(
     </div>
 )
 
-export const navigateTo = async (e, idContenedor, pathRoute, name) => {
+export const navigateTo = async (e, idContenedor, pathRoute, name, path) => {
 
     const paths = window.location.pathname.slice(1).split("/");
     let nombreClase = ""
@@ -68,7 +68,6 @@ export const navigateTo = async (e, idContenedor, pathRoute, name) => {
     main.innerHTML = "";
 
     if (nombreClase === "") {
-        //     return;
         nombreClase = name;
     }
 
