@@ -1,6 +1,7 @@
 import { Componente } from "../../vdom/Componente";
 import { Link, Links, Router, navigateTo } from "../../vdom/Router";
 import { Fragment } from "../../vdom/VDom";
+import menu from "../estilos/menu.module.css"
 
 export class Almacen extends Componente {
     constructor(props) {
@@ -16,13 +17,12 @@ export class Almacen extends Componente {
         return (
             <Router idContenedor="test" pathBase="Almacen">
 
-                <Links>
-                    <Link to="" name="home" titulo="Almacén">Home</Link>
-                    <Link to="tetas" name="tetas" titulo="Tetas">Tetas</Link>
+                <Links className="d-flex flex-wrap" style={{ listStyle: "none" }}>
+                    <Link className={menu.link} to="" name="home" titulo="Almacén">Home</Link>
+                    <Link className={menu.link} to="tetas" name="tetas" titulo="Tetas">Tetas</Link>
                 </Links>
 
-                <div id="test">
-                    <span>Hola perros</span>
+                <div id="test" className="p-3">
                 </div>
             </Router>
         )
