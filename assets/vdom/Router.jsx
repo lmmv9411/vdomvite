@@ -18,7 +18,7 @@ const load = render(
     </div>
 )
 
-export const navigateTo = async (e, idContenedor, pathRoute, name, path) => {
+const navigateTo = async (e, idContenedor, pathRoute, home) => {
 
     const paths = window.location.pathname.slice(1).split("/");
     let nombreClase = ""
@@ -41,14 +41,15 @@ export const navigateTo = async (e, idContenedor, pathRoute, name, path) => {
     let main;
 
     if (pathRoute === window.location.pathname.slice(1)) {
-        const inst = instancias.find(ins => ins.key === nombreClase);
-        if (inst !== undefined) {
-            if (name) {
 
+        const inst = instancias.find(ins => ins.key === nombreClase);
+
+        if (inst !== undefined) {
+            if (home) {
                 main = inst.instancia.$fragment;
                 main.querySelector(`#${idContenedor}`).innerHTML = "";
-                const modulo = await import(`../main/componentes/${name}.jsx`)
-                main.querySelector(`#${idContenedor}`).appendChild(render(modulo[name]()));
+                const modulo = await import(`../main/componentes/${home}.jsx`)
+                main.querySelector(`#${idContenedor}`).appendChild(render(modulo[home]()));
                 return
             }
             main = inst.instancia.$fragment;
@@ -68,7 +69,7 @@ export const navigateTo = async (e, idContenedor, pathRoute, name, path) => {
     main.innerHTML = "";
 
     if (nombreClase === "") {
-        nombreClase = name;
+        nombreClase = home;
     }
 
     main.appendChild(load);
@@ -116,13 +117,17 @@ export class Router {
         this.idContenedor = props.idContenedor
         this.pathBase = props.pathBase;
 
-        window.addEventListener('popstate', (e) => navigateTo(e, this.idContenedor, this.pathBase));
-
         children.forEach(ch => this.setEvent(ch))
+
+        window.addEventListener('popstate', (e) => navigateTo(e, this.idContenedor, this.pathBase, this.name));
 
         this.props = {};
         this.children = children;
         this.type = Fragment;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            navigateTo(null, this.idContenedor, this.pathBase, this.name)
+        })
     }
 
     redirect(name, e) {
@@ -130,7 +135,8 @@ export class Router {
         e.preventDefault();
 
         const url = e.target.href;
-        history.pushState(null, null, url);
+        window.history.pushState(null, null, url);
+
         navigateTo(e, this.idContenedor, this.pathBase, name);
     }
 
@@ -140,7 +146,12 @@ export class Router {
 
         if (ch.type === "a") {
             const name = ch.props.name;
+
+            if (name) {
+                this.name = name;
+            }
             delete ch.props.name;
+
             ch.props.onclick = this.redirect.bind(this, name);
 
             if (tmpPath === "") {

@@ -1,11 +1,11 @@
-export const home = () => {
+export const Home = (props) => {
     return (
         <section>
             <header>
-                <h3>Página Home</h3>
+                <h4>{props.titulo}</h4>
             </header>
             <article>
-                <p>Soy La página de inicio</p>
+                <p>{props.parrafo}</p>
             </article>
         </section>
     )

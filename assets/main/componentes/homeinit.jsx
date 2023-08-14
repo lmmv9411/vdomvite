@@ -1,6 +1,6 @@
 import { Fragment } from "../../vdom/VDom"
 
-export const homeinit = () => {
+export const HomeInit = () => {
     return (
         <>
             <header>
