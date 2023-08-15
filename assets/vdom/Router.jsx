@@ -40,25 +40,17 @@ const navigateTo = async (e, idContenedor, pathRoute, home) => {
 
     let main;
 
-    if (pathRoute === window.location.pathname.slice(1)) {
+    main = document.getElementById(idContenedor);
+    if (!main) {
+        return
+    }
+    let i = instancias.findIndex(ins => ins.key === nombreClase);
 
-        const inst = instancias.find(ins => ins.key === nombreClase);
-
-        if (inst !== undefined) {
-            if (home) {
-                main = inst.instancia.$fragment;
-                main.querySelector(`#${idContenedor}`).innerHTML = "";
-                const modulo = await import(`../main/componentes/${home}.jsx`)
-                main.querySelector(`#${idContenedor}`).appendChild(render(modulo[home]()));
-                return
-            }
-            main = inst.instancia.$fragment;
-            main.querySelector(`#${idContenedor}`).innerHTML = "";
-        } else {
-            main = document.getElementById(idContenedor);
-        }
-    } else {
-        main = document.getElementById(idContenedor);
+    if (pathRoute === window.location.pathname.slice(1) &&
+        i !== -1 &&
+        home) {
+        buscarRutaDinamica(main, home);
+        return;
     }
 
     if (e !== null && e !== undefined && "getAttribute" in e.target) {
@@ -66,12 +58,17 @@ const navigateTo = async (e, idContenedor, pathRoute, home) => {
         document.title = titulo;
     }
 
-    main.innerHTML = "";
-
     if (nombreClase === "") {
         nombreClase = home;
     }
 
+    await buscarRutaDinamica(main, nombreClase);
+
+}
+
+const buscarRutaDinamica = async (main, nombreClase) => {
+
+    main.innerHTML = "";
     main.appendChild(load);
 
     let i = instancias.findIndex(i => i.key === nombreClase);
@@ -119,25 +116,48 @@ export class Router {
 
         children.forEach(ch => this.setEvent(ch))
 
-        window.addEventListener('popstate', (e) => navigateTo(e, this.idContenedor, this.pathBase, this.name));
+        window.addEventListener('popstate', (e) => navigateTo(e, this.idContenedor, this.pathBase, this.home));
 
         this.props = {};
         this.children = children;
         this.type = Fragment;
 
         document.addEventListener("DOMContentLoaded", () => {
-            navigateTo(null, this.idContenedor, this.pathBase, this.name)
-        })
+            navigateTo(null, this.idContenedor, this.pathBase, this.home)
+        });
+
+        if (document.readyState === "complete") {
+            const body = document.body;
+            const opcionesObservador = {
+                childList: true,
+                subtree: true
+            };
+
+            const observador = new MutationObserver((mutationsList, observer) => {
+                for (let mutation of mutationsList) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.id === this.idContenedor) {
+                                navigateTo(null, this.idContenedor, this.pathBase, this.home);
+                            }
+                        })
+                    }
+                }
+            });
+
+            observador.observe(body, opcionesObservador);
+        }
+
     }
 
-    redirect(name, e) {
+    redirect(e) {
         e.stopPropagation();
         e.preventDefault();
 
         const url = e.target.href;
         window.history.pushState(null, null, url);
 
-        navigateTo(e, this.idContenedor, this.pathBase, name);
+        navigateTo(e, this.idContenedor, this.pathBase, this.home);
     }
 
     setEvent(ch) {
@@ -145,14 +165,14 @@ export class Router {
         let tmpPath = this.pathBase;
 
         if (ch.type === "a") {
-            const name = ch.props.name;
+            const home = ch.props.home;
 
-            if (name) {
-                this.name = name;
+            if (home) {
+                this.home = home;
+                delete ch.props.home;
             }
-            delete ch.props.name;
 
-            ch.props.onclick = this.redirect.bind(this, name);
+            ch.props.onclick = this.redirect.bind(this);
 
             if (tmpPath === "") {
                 tmpPath = "/"
