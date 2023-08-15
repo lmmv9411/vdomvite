@@ -116,7 +116,11 @@ export class Router {
 
         children.forEach(ch => this.setEvent(ch))
 
-        window.addEventListener('popstate', (e) => navigateTo(e, this.idContenedor, this.pathBase, this.home));
+        window.addEventListener('popstate', (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            navigateTo(e, this.idContenedor, this.pathBase, this.home)
+        });
 
         this.props = {};
         this.children = children;
