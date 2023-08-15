@@ -5,7 +5,7 @@ import menu from "../estilos/menu.module.css"
 
 export class Almacen extends Componente {
     constructor(props) {
-        super(props)
+        super({ saludo: "", ...props })
     }
 
     preRender() {
@@ -15,7 +15,7 @@ export class Almacen extends Componente {
         }
     }
 
-    render() {
+    render(props) {
 
         return (
             <>
@@ -29,6 +29,21 @@ export class Almacen extends Componente {
                     </Router>
                 </header >
                 <article id="articulo">
+                </article>
+                <article>
+                    <section>
+                        <button
+                            className="btn btn-primary"
+                            onclick={() => {
+                                if (this.state.saludo === "hola") {
+                                    this.update({ saludo: "Luis" })
+                                } else {
+                                    this.update({ saludo: "hola" })
+                                }
+                            }}
+                        >Saludar</button>
+                        <p>{props.saludo}</p>
+                    </section>
                 </article>
             </>
         )

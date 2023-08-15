@@ -163,7 +163,7 @@ function setAttributes($node, vOldNode, vNewNode) {
     }
 
     for (let att in vOldNode.props) {
-        if ((!vNewNode.props) || !(att in vNewNode.props)) {
+        if ((!vNewNode.props) && !(att in vNewNode.props)) {
 
             const v = vOldNode.props[att];
 
@@ -193,11 +193,19 @@ function setAttributes($node, vOldNode, vNewNode) {
 
 
     for (let att in vNewNode.props) {
-        if (!vOldNode?.props
-            || !(att in vOldNode?.props)
+        if (!vOldNode.props
+            || !(att in vOldNode.props)
             || vNewNode.props[att] !== vOldNode.props[att]) {
 
             const v = vNewNode.props[att];
+
+            if (typeof v === "object") {
+                const tmpNewNode = JSON.stringify(v);
+                const tmpOldNode = JSON.stringify(vOldNode.props[att]);
+                if (tmpNewNode === tmpOldNode) {
+                    continue;
+                }
+            }
 
             if (att.startsWith("on")) {
                 continue
