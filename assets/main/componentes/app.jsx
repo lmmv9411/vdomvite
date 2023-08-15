@@ -13,8 +13,8 @@ export class App extends Componente {
 
         return (
             <Router idContenedor="main" pathBase="">
-                <Links className="d-flex flex-wrap" style={{ listStyle: "none" }}>
-                    <Link className={menu.link} url="" to="HomeInit" titulo="Virtual Dom">Home</Link>
+                <Links className="d-flex flex-wrap" style={{ listStyle: "none", padding: "0" }}>
+                    <Link className={menu.link} url="" to="HomeInit" titulo="Inicio De Virtual Dom">Home</Link>
 
                     <Link className={menu.link} to="Clientes" titulo="Clientes">Clientes</Link>
 

@@ -18,7 +18,7 @@ const load = render(
     </div>
 )
 
-export const navigateTo = async (e, idContenedor, pathRoute, componentes) => {
+const navigateTo = async (idContenedor, pathRoute, componentes) => {
 
     const paths = window.location.pathname.slice(1).split("/");
 
@@ -32,21 +32,21 @@ export const navigateTo = async (e, idContenedor, pathRoute, componentes) => {
 
         nombreClase = componentes[paths[i + 1]]
 
-        if (nombreClase === "") {
-            nombreClase = componentes[paths[0]];
-        }
     }
 
-    let main = document.getElementById(idContenedor);
+    const main = document.getElementById(idContenedor);
 
     if (!main) {
         return
     }
 
-    if (e !== null && e !== undefined && "getAttribute" in e.target) {
-        let titulo = e.target.getAttribute("data-title");
-        document.title = titulo;
+    if (!nombreClase) {
+        main.innerHTML = "";
+        main.appendChild(render(<p class="alert alert-danger" role="alert">Ruta No Encontrada</p>))
+        return;
     }
+
+    document.title = nombreClase?.titulo;
 
     await buscarRutaDinamica(main, nombreClase);
 
@@ -68,7 +68,7 @@ const buscarRutaDinamica = async (main, nombreClase) => {
         } catch (error) {
             console.error(error);
             main.innerHTML = "";
-            main.appendChild(render(<p class="alert alert-danger" role="alert">Ruta No Encontrada</p>))
+            main.appendChild(render(<p class="alert alert-danger" role="alert">{error.message}</p>))
             return;
         }
 
@@ -106,10 +106,7 @@ export class Router {
         window.addEventListener('popstate', (e) => {
             e.preventDefault()
             e.stopPropagation()
-            if (document.getElementById(this.idContenedor) === null) {
-                return;
-            }
-            navigateTo(e, this.idContenedor, this.pathBase, this.componentes)
+            navigateTo(this.idContenedor, this.pathBase, this.componentes)
         });
 
         this.props = {};
@@ -120,7 +117,7 @@ export class Router {
             mutations.forEach(mutation => {
                 mutation.addedNodes.forEach(node => {
                     if (node.id === this.idContenedor) {
-                        navigateTo(null, this.idContenedor, this.pathBase, this.componentes);
+                        navigateTo(this.idContenedor, this.pathBase, this.componentes);
                         observer.disconnect();
                     }
                 })
@@ -138,7 +135,7 @@ export class Router {
         const url = e.target.href;
         window.history.pushState(null, null, url);
 
-        navigateTo(e, this.idContenedor, this.pathBase, this.componentes);
+        navigateTo(this.idContenedor, this.pathBase, this.componentes);
     }
 
     setEvent(ch) {
@@ -147,15 +144,17 @@ export class Router {
 
         if (ch.type === "a") {
             const componente = ch.props.componente;
-            const props = ch.props.props ?? {};
+            const props = ch.props.data ?? {};
+            const titulo = ch.props.titulo;
 
             const url = ch.props.href === "" ? tmpPath : ch.props.href;
 
-            this.componentes[url] = { componente, props }
+            this.componentes[url] = { componente, props, titulo }
 
             if (componente) {
                 delete ch.props.componente;
-                delete ch.props.props;
+                delete ch.props.data;
+                delete ch.props.titulo;
             }
 
             ch.props.onclick = this.redirect.bind(this);
@@ -187,7 +186,7 @@ export const Link = ({ to, titulo, url, ...props }, children) => {
 
     return (
         <li>
-            <a {...props} componente={to} href={url} data-title={titulo} style={{ display: "block" }}>{children}</a>
+            <a {...props} titulo={titulo} componente={to} href={url} style={{ display: "block" }}>{children}</a>
         </li>
     )
 }
