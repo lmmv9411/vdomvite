@@ -1,6 +1,6 @@
 import { Fragment } from "../../vdom/VDom";
 
-export const tetas = () => (
+export const Tetas = () => (
     <>
         <header>
             <h1>Información sobre los senos</h1>

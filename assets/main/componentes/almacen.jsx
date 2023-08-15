@@ -1,5 +1,5 @@
 import { Componente } from "../../vdom/Componente";
-import { Link, Links, Router } from "../../vdom/Router";
+import { Link, Links, Router, navigateTo } from "../../vdom/Router";
 import { Fragment } from "../../vdom/VDom";
 import { Home } from "./home";
 
@@ -8,15 +8,20 @@ export class Almacen extends Componente {
         super(props)
     }
 
+    montado() {
+        navigateTo(null, "articulo", "almacen", { "almacen": "HomeInit", "tetas": "Tetas" });
+    }
+
     render() {
+
         return (
             <>
                 <header>
                     <h3>Soy el Almacen</h3>
-                    <Router idContenedor="articulo" pathBase="Almacen">
+                    <Router idContenedor="articulo" pathBase="almacen">
                         <Links>
-                            <Link to="" home="HomeInit">Inicio</Link>
-                            <Link to="tetas" titulo="Tetas" >Tetas</Link>
+                            <Link url="" to="HomeInit" titulo="Titulo Almacén">Inicio</Link>
+                            <Link to="Tetas" titulo="Tetas" >Tetas</Link>
                         </Links>
                     </Router>
                 </header >

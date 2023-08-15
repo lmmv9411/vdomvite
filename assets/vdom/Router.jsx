@@ -18,48 +18,34 @@ const load = render(
     </div>
 )
 
-const navigateTo = async (e, idContenedor, pathRoute, home) => {
+export const navigateTo = async (e, idContenedor, pathRoute, componentes) => {
 
     const paths = window.location.pathname.slice(1).split("/");
+
     let nombreClase = ""
 
     if (paths.length === 1) {
-        nombreClase = paths[0];
+        nombreClase = componentes[paths[0]];
     } else {
-        paths.forEach((path, i) => {
-            if (path === pathRoute) {
-                nombreClase = paths[i + 1]
-                return;
-            }
-        });
+
+        const i = paths.findIndex(path => path === pathRoute);
+
+        nombreClase = componentes[paths[i + 1]]
 
         if (nombreClase === "") {
-            nombreClase = paths[0];
+            nombreClase = componentes[paths[0]];
         }
     }
 
-    let main;
+    let main = document.getElementById(idContenedor);
 
-    main = document.getElementById(idContenedor);
     if (!main) {
         return
-    }
-    let i = instancias.findIndex(ins => ins.key === nombreClase);
-
-    if (pathRoute === window.location.pathname.slice(1) &&
-        i !== -1 &&
-        home) {
-        buscarRutaDinamica(main, home);
-        return;
     }
 
     if (e !== null && e !== undefined && "getAttribute" in e.target) {
         let titulo = e.target.getAttribute("data-title");
         document.title = titulo;
-    }
-
-    if (nombreClase === "") {
-        nombreClase = home;
     }
 
     await buscarRutaDinamica(main, nombreClase);
@@ -113,13 +99,17 @@ export class Router {
 
         this.idContenedor = props.idContenedor
         this.pathBase = props.pathBase;
+        this.componentes = {};
 
         children.forEach(ch => this.setEvent(ch))
 
         window.addEventListener('popstate', (e) => {
             e.preventDefault()
             e.stopPropagation()
-            navigateTo(e, this.idContenedor, this.pathBase, this.home)
+            if (document.getElementById(this.idContenedor) === null) {
+                return;
+            }
+            navigateTo(e, this.idContenedor, this.pathBase, this.componentes)
         });
 
         this.props = {};
@@ -127,30 +117,8 @@ export class Router {
         this.type = Fragment;
 
         document.addEventListener("DOMContentLoaded", () => {
-            navigateTo(null, this.idContenedor, this.pathBase, this.home)
+            navigateTo(null, this.idContenedor, this.pathBase, this.componentes)
         });
-
-        if (document.readyState === "complete") {
-            const body = document.body;
-            const opcionesObservador = {
-                childList: true,
-                subtree: true
-            };
-
-            const observador = new MutationObserver((mutationsList, observer) => {
-                for (let mutation of mutationsList) {
-                    if (mutation.type === 'childList') {
-                        mutation.addedNodes.forEach(node => {
-                            if (node.id === this.idContenedor) {
-                                navigateTo(null, this.idContenedor, this.pathBase, this.home);
-                            }
-                        })
-                    }
-                }
-            });
-
-            observador.observe(body, opcionesObservador);
-        }
 
     }
 
@@ -161,7 +129,7 @@ export class Router {
         const url = e.target.href;
         window.history.pushState(null, null, url);
 
-        navigateTo(e, this.idContenedor, this.pathBase, this.home);
+        navigateTo(e, this.idContenedor, this.pathBase, this.componentes);
     }
 
     setEvent(ch) {
@@ -169,11 +137,14 @@ export class Router {
         let tmpPath = this.pathBase;
 
         if (ch.type === "a") {
-            const home = ch.props.home;
+            const componente = ch.props.componente;
 
-            if (home) {
-                this.home = home;
-                delete ch.props.home;
+            const url = ch.props.href === "" ? tmpPath : ch.props.href;
+
+            this.componentes[url] = componente
+
+            if (componente) {
+                delete ch.props.componente;
             }
 
             ch.props.onclick = this.redirect.bind(this);
@@ -197,10 +168,17 @@ export class Router {
 
 }
 
-export const Link = ({ to, titulo, ...props }, children) => (
-    <li>
-        <a {...props} href={to} data-title={titulo} style={{ display: "block" }}>{children}</a>
-    </li >
-)
+export const Link = ({ to, titulo, url, ...props }, children) => {
+
+    if (url === undefined || url === null) {
+        url = to.toLowerCase();
+    }
+
+    return (
+        <li>
+            <a {...props} componente={to} href={url} data-title={titulo} style={{ display: "block" }}>{children}</a>
+        </li>
+    )
+}
 
 export const Links = (props, children) => (<ul {...props}>{children}</ul>)
