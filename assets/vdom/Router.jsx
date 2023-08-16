@@ -37,7 +37,7 @@ const navigateTo = async (idContenedor, pathRoute, componentes) => {
     const main = document.getElementById(idContenedor);
 
     if (!main) {
-        return
+        return;
     }
 
     if (!nombreClase) {
