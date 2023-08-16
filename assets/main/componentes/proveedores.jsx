@@ -85,6 +85,14 @@ export class Proveedores extends Componente {
                                 this.h1.textContent = this.state.nombre
                             }
                         }}>Test Referencia</button>
+
+                    <button
+                        className="btn btn-secondary"
+                        onclick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation()
+                            Contextos.actions.cambiaColor();
+                        }}>Cambia Color</button>
                 </form>
 
                 {this.lista}

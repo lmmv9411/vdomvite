@@ -17,15 +17,34 @@ export class Lista extends Componente {
             "list-group-item list-group-item-light",
             "list-group-item list-group-item-dark"
         ]
+
+        Contextos.actions.cambiaColor = this.cambiaColor.bind(this);
     }
 
-    agregarItem(item) {
+    cambiaColor() {
+        let { items } = this.state;
 
+        items = items.map(this.color.bind(this));
+
+        this.update({})
+    }
+
+    color(item) {
         const i = Math.floor((Math.random() * this.items?.length));
 
         const color = this.items[i];
 
-        item = { v: item, c: color }
+        if (typeof item === "object") {
+            item.c = color;
+            return item;
+        }
+
+        return { v: item, c: color }
+    }
+
+    agregarItem(item) {
+
+        item = this.color(item);
 
         const { items } = this.state;
 
