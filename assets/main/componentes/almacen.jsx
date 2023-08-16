@@ -34,22 +34,25 @@ export class Almacen extends Componente {
                         </nav>
                     </Router>
                 </header >
-                <article id="articulo">
-                </article>
+
+                <article id="articulo"></article>
+
                 <article>
-                    <section>
-                        <button
-                            className="btn btn-primary"
-                            onclick={() => {
-                                if (this.state.saludo === "hola") {
-                                    this.update({ saludo: "Luis" })
-                                } else {
-                                    this.update({ saludo: "hola" })
-                                }
-                            }}
-                        >Saludar</button>
-                        <p>{props.saludo}</p>
-                    </section>
+
+                    <button
+                        className="btn btn-primary"
+                        onclick={() => {
+                            if (this.state.saludo === "hola") {
+                                this.update({ saludo: "Luis" })
+                            } else {
+                                this.update({ saludo: "hola" })
+                            }
+                        }}
+                    >Saludar
+                    </button>
+
+                    <p>{props.saludo}</p>
+
                 </article>
             </>
         )
