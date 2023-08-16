@@ -185,10 +185,11 @@ export const Link = ({ to, titulo, url, ...props }, children) => {
     }
 
     return (
-        <li>
-            <a {...props} titulo={titulo} componente={to} href={url} style={{ display: "block" }}>{children}</a>
-        </li>
+        <a {...props}
+            titulo={titulo}
+            componente={to}
+            href={url}>
+            {children}
+        </a>
     )
 }
-
-export const Links = (props, children) => (<ul {...props}>{children}</ul>)

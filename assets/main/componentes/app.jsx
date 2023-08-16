@@ -1,6 +1,6 @@
 import { Componente } from "../../vdom/Componente";
 import { Fragment } from "../../vdom/VDom";
-import { Link, Links, Router } from "../../vdom/Router";
+import { Link, Router } from "../../vdom/Router";
 import menu from "../estilos/menu.module.css"
 
 export class App extends Componente {
@@ -13,18 +13,26 @@ export class App extends Componente {
 
         return (
             <Router idContenedor="main" pathBase="">
-                <Links className="d-flex flex-wrap" style={{ listStyle: "none", padding: "0" }}>
-                    <Link className={menu.link} url="" to="HomeInit" titulo="Inicio De Virtual Dom">Home</Link>
+                <nav>
+                    <ul className="d-flex flex-wrap" style={{ listStyle: "none", padding: "0" }}>
+                        <li>
+                            <Link className={menu.link} url="" to="HomeInit" titulo="Inicio De Virtual Dom">Home</Link>
+                        </li>
 
-                    <Link className={menu.link} to="Clientes" titulo="Clientes">Clientes</Link>
-
-                    <Link className={menu.link} to="Proveedores" titulo="Preveedores 🏭">Proveedores</Link>
-
-                    <Link className={menu.link} to="Almacen" titulo="Almacen 🏭">Almacen</Link>
-
-                    <Link className={menu.link} to="ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
-                </Links>
-
+                        <li>
+                            <Link className={menu.link} to="Clientes" titulo="Clientes">Clientes</Link>
+                        </li>
+                        <li>
+                            <Link className={menu.link} to="Proveedores" titulo="Preveedores 🏭">Proveedores</Link>
+                        </li>
+                        <li>
+                            <Link className={menu.link} to="Almacen" titulo="Almacen 🏭">Almacen</Link>
+                        </li>
+                        <li>
+                            <Link className={menu.link} to="ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
+                        </li>
+                    </ul>
+                </nav>
                 <main id="main" className="p-3"></main>
 
             </Router >

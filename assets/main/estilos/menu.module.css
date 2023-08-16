@@ -2,7 +2,8 @@
     text-decoration: none;
     padding: 0.4rem;
     background-color: #333;
-    color: white
+    color: white;
+    display: block;
 }
 
 .link:hover {

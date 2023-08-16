@@ -1,5 +1,5 @@
 import { Componente } from "../../vdom/Componente";
-import { Link, Links, Router } from "../../vdom/Router";
+import { Link, Router } from "../../vdom/Router";
 import { Fragment } from "../../vdom/VDom";
 import menu from "../estilos/menu.module.css"
 
@@ -22,10 +22,16 @@ export class Almacen extends Componente {
                 <header>
                     <h3>Soy el Almacen</h3>
                     <Router idContenedor="articulo" pathBase="almacen">
-                        <Links className="d-flex flex-wrap" style={{ listStyle: "none", padding: "0" }}>
-                            <Link className={menu.link} url="" to="Home" data={this.preRender()} titulo="Titulo Almacén">Inicio</Link>
-                            <Link className={menu.link} to="Tetas" titulo="Tetas" >Tetas</Link>
-                        </Links>
+                        <nav>
+                            <ul className="d-flex flex-wrap" style={{ listStyle: "none", padding: "0" }}>
+                                <li>
+                                    <Link className={menu.link} url="" to="Home" data={this.preRender()} titulo="Titulo Almacén">Inicio</Link>
+                                </li>
+                                <li>
+                                    <Link className={menu.link} to="Tetas" titulo="Tetas" >Tetas</Link>
+                                </li>
+                            </ul>
+                        </nav>
                     </Router>
                 </header >
                 <article id="articulo">
