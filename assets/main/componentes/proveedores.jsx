@@ -15,7 +15,6 @@ export class Proveedores extends Componente {
 
     montado() {
         this.nombre.focus();
-        Contextos.actions.agregar = this.agregar.bind(this)
     }
 
     agregar(e) {
@@ -23,9 +22,14 @@ export class Proveedores extends Componente {
         e?.preventDefault();
         e?.stopPropagation();
 
+        if (!this.state.nombre) {
+            this.update({ error: true })
+            return;
+        }
+
         this.lista.agregarItem(this.state.nombre);
 
-        this.update({ nombre: "" })
+        this.update({ nombre: "", error: false })
 
         this.nombre.focus();
     }
@@ -34,16 +38,23 @@ export class Proveedores extends Componente {
         if (!this.lista) {
             this.lista = <Lista />
         }
+        if (!Contexto.actions) {
+            return { agregar: this.agregar.bind(this) }
+        }
     }
 
     render(props) {
 
-        this.preRender();
+        const mapa = this.preRender();
 
         return (
-            <Contexto name="actions">
+            <Contexto name="actions" mapa={mapa}>
 
                 <form className="d-flex gap-2 p-3 flex-wrap" autocomplete="off">
+
+                    {
+                        props.error && <span className="text-danger d-block">Nombre Vacío</span>
+                    }
 
                     <input
                         $ref="nombre"
