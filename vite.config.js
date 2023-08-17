@@ -5,5 +5,9 @@ export default defineConfig({
         jsxFactory: 'h',
         jsxFragment: 'Fragment',
         jsxInject: `import {h} from "/assets/vdom/VDom"`,
+        
+        
+          keepNames: true
+        
     }
 })
