@@ -16,6 +16,7 @@ export class Proveedores extends Componente {
     montado() {
         this.nombre.focus();
         ContextoProveedor.children.Proveedores = this;
+        this.ctx = ContextoProveedor.children;
     }
 
     agregar(e) {
@@ -90,7 +91,7 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            ContextoProveedor.children.Lista.cambiarColor();
+                            this.ctx.Lista.cambiarColor();
                         }}>Cambia Color</button>
                 </form>
 

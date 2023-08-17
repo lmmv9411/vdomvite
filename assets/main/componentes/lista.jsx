@@ -17,6 +17,8 @@ export class Lista extends Componente {
             "list-group-item list-group-item-light",
             "list-group-item list-group-item-dark"
         ]
+
+        this.ctx = ContextoProveedor.children;
     }
 
     cambiarColor() {
@@ -58,7 +60,7 @@ export class Lista extends Componente {
                         <li key={item.v} class={item.c}>
                             <spam>{item.v}</spam>
                             <button class="btn btn-warning" onclick={() => {
-                                ContextoProveedor.children.Proveedores.agregar();
+                                this.ctx.Proveedores.agregar();
                             }}>Saludar</button>
                         </li>
                     )
