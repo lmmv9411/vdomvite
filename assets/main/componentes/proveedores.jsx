@@ -39,16 +39,7 @@ export class Proveedores extends Componente {
         this.nombre.focus();
     }
 
-    preRender() {
-        if (!this.lista) {
-            this.lista = <Lista />
-        }
-    }
-
-
     render(props) {
-
-        //this.preRender();
 
         return (
             <ContextoProveedor.Provider>
