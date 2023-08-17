@@ -75,6 +75,13 @@ function h(type, props, ...children) {
 
     let key = null;
 
+    if (Array.isArray(children) && children.length === 1 && Array.isArray(children[0])) {
+        children = children[0];
+    }
+
+    //quitar null o undefine
+    children = children.filter(ch => ch !== undefined && ch !== null && !(typeof ch === "boolean"));
+
     if (props?.key !== undefined) {
         key = props.key;
         delete props.key;
@@ -108,14 +115,7 @@ function h(type, props, ...children) {
 
     }
 
-    if (Array.isArray(children) && children.length === 1 && Array.isArray(children[0])) {
-        children = children[0];
-    }
-
-    //quitar null o undefine
-    const chl = children.filter(ch => ch !== undefined && ch !== null && !(typeof ch === "boolean"));
-
-    return { type, props, children: chl, key };
+    return { type, props, children, key };
 }
 
 export const Fragment = Symbol("Fragment");

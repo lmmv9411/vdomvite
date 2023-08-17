@@ -1,5 +1,5 @@
 import { Componente } from "../../vdom/Componente";
-import { Contexto, Contextos } from "../../vdom/Contexto";
+import { ContextoProveedor } from "../contextos/proveedores";
 import { Lista } from "./lista";
 
 export class Proveedores extends Componente {
@@ -15,6 +15,7 @@ export class Proveedores extends Componente {
 
     montado() {
         this.nombre.focus();
+        ContextoProveedor.children.Proveedores = this;
     }
 
     agregar(e) {
@@ -38,17 +39,15 @@ export class Proveedores extends Componente {
         if (!this.lista) {
             this.lista = <Lista />
         }
-        if (!Contexto.actions) {
-            return { agregar: this.agregar.bind(this) }
-        }
     }
+
 
     render(props) {
 
-        const mapa = this.preRender();
+        this.preRender();
 
         return (
-            <Contexto name="actions" mapa={mapa}>
+            <ContextoProveedor.Provider>
 
                 <form className="d-flex gap-2 p-3 flex-wrap" autocomplete="off">
 
@@ -91,7 +90,7 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            Contextos.actions.cambiaColor();
+                            ContextoProveedor.children.Lista.cambiarColor();
                         }}>Cambia Color</button>
                 </form>
 
@@ -99,7 +98,7 @@ export class Proveedores extends Componente {
 
                 {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
 
-            </Contexto >
+            </ContextoProveedor.Provider >
         )
     }
 

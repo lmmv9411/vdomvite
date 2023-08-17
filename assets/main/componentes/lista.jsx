@@ -1,5 +1,5 @@
 import { Componente } from "../../vdom/Componente";
-import { Contextos } from "../../vdom/Contexto";
+import { ContextoProveedor } from "../contextos/proveedores";
 
 export class Lista extends Componente {
     constructor(props) {
@@ -17,11 +17,9 @@ export class Lista extends Componente {
             "list-group-item list-group-item-light",
             "list-group-item list-group-item-dark"
         ]
-
-        Contextos.actions.cambiaColor = this.cambiaColor.bind(this);
     }
 
-    cambiaColor() {
+    cambiarColor() {
         let { items } = this.state;
 
         items = items.map(this.color.bind(this));
@@ -60,7 +58,7 @@ export class Lista extends Componente {
                         <li key={item.v} class={item.c}>
                             <spam>{item.v}</spam>
                             <button class="btn btn-warning" onclick={() => {
-                                Contextos.actions.agregar()
+                                ContextoProveedor.children.Proveedores.agregar();
                             }}>Saludar</button>
                         </li>
                     )
