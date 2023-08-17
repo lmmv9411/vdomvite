@@ -1,5 +1,5 @@
 import { Componente } from "../../vdom/Componente";
-import { ContextoProveedor } from "../contextos/proveedores";
+import { ContextoProveedor as CP } from "../contextos/proveedores";
 
 export class Lista extends Componente {
     constructor(props) {
@@ -18,7 +18,7 @@ export class Lista extends Componente {
             "list-group-item list-group-item-dark"
         ]
 
-        this.ctx = ContextoProveedor.children;
+        this.ctx = CP.children;
     }
 
     cambiarColor() {
