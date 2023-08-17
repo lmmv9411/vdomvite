@@ -24,12 +24,15 @@ export class Proveedores extends Componente {
         e?.preventDefault();
         e?.stopPropagation();
 
-        if (!this.state.nombre) {
+        const { Lista } = ContextoProveedor.children;
+        const { nombre } = this.state;
+
+        if (!nombre) {
             this.update({ error: true })
             return;
         }
 
-        this.lista.agregarItem(this.state.nombre);
+        Lista.agregarItem(nombre);
 
         this.update({ nombre: "", error: false })
 
@@ -45,7 +48,7 @@ export class Proveedores extends Componente {
 
     render(props) {
 
-        this.preRender();
+        //this.preRender();
 
         return (
             <ContextoProveedor.Provider>
@@ -94,8 +97,6 @@ export class Proveedores extends Componente {
                             this.ctx.Lista.cambiarColor();
                         }}>Cambia Color</button>
                 </form>
-
-                {this.lista}
 
                 <Lista />
 

@@ -100,7 +100,10 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         vOldNode.children.splice(i, 0, chNew);
                     }
                 } else {
-                    _changes($n, chOld, chNew);
+                    // si no tienen keys y es un nodo comun
+                    if (!cond2) {
+                        _changes($n, chOld, chNew);
+                    }
                 }
 
             } else {
