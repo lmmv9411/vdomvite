@@ -97,6 +97,8 @@ export class Proveedores extends Componente {
 
                 {this.lista}
 
+                <Lista />
+
                 {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
 
             </ContextoProveedor.Provider >
