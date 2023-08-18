@@ -103,19 +103,18 @@ function _changes($parentNode, vOldNode, vNewNode) {
                 } else {
 
                     cond2 = false;
-                    cond3 = false;
 
                     if (typeof chNew === "object" && typeof chOld === "object") {
                         cond2 = chNew.key !== null && chOld.key !== null;
-                        cond3 = chNew.key !== chOld.key
                     }
 
                     if (cond5) {
                         _changes($n, chOld, chNew);
                     }
 
-                    if (cond2 && cond3) {
+                    if (cond2) {
                         equalKeys($n, chNew);
+                        vOldNode.children.splice(i, 1);
                         vOldNode.children.splice(i, 0, chNew);
                     }
                 }
