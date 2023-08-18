@@ -80,7 +80,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
             if (conKeys || diferentesNodos) {
 
-                if (chNew?.key !== chOld?.key + diferentesNodos) {
+                if (chNew?.key !== chOld?.key || diferentesNodos) {
 
                     if (nn > on) {
                         const index = i + 1 === nn ? i + 1 : i;
