@@ -65,8 +65,9 @@ function _changes($parentNode, vOldNode, vNewNode) {
             let cond2 = chNew?.key !== null || chOld?.key !== null;
             let cond3 = chNew?.key !== chOld?.key;
             let cond4 = cond1 && cond2;
+            let cond5 = comparaTypes(chOld, chNew);
 
-            if (cond4 || comparaTypes(chOld, chNew)) {
+            if (cond4 || cond5) {
 
                 if (!cond4 + cond3) {
 
@@ -100,15 +101,27 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         vOldNode.children.splice(i, 0, chNew);
                     }
                 } else {
-                    // si no tienen keys y es un nodo comun
-                    if (!cond2) {
+
+                    cond2 = false;
+                    cond3 = false;
+
+                    if (typeof chNew === "object" && typeof chOld === "object") {
+                        cond2 = chNew.key !== null && chOld.key !== null;
+                        cond3 = chNew.key !== chOld.key
+                    }
+
+                    if (cond5) {
                         _changes($n, chOld, chNew);
+                    }
+
+                    if (cond2 && cond3) {
+                        equalKeys($n, chNew);
+                        vOldNode.children.splice(i, 0, chNew);
                     }
                 }
 
             } else {
                 _changes($n, chOld, chNew);
-
             }
 
         }
@@ -122,9 +135,9 @@ function comparaTypes(vOldNode, vNewNode) {
         return false
     }
 
-    return (typeof vOldNode === 'string' || typeof vNewNode === 'string')
-        && (vOldNode !== vNewNode)
-        || vOldNode.type !== vNewNode.type
+    return vOldNode.type !== vNewNode.type
+        || (typeof vNewNode === "number" && vOldNode !== vNewNode)
+        || (typeof vNewNode === "string" && vOldNode !== vNewNode)
 }
 
 function reff(vNewNode, $ref) {
