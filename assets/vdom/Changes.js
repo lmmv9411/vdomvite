@@ -111,7 +111,6 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         continue
                     }
 
-                    debugger
                     _changes($n, chOld, chNew);
 
                 }
