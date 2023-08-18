@@ -36,9 +36,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
             setReff(vNewNode, $ref);
         }
 
-    } else if (vOldNode.type !== vNewNode.type
-        || (typeof vNewNode === "number" && vOldNode !== vNewNode)
-        || (typeof vNewNode === "string" && vOldNode !== vNewNode)) {
+    } else if (sonDiferentes(vOldNode, vNewNode)) {
 
         reemplazarNodo($parentNode, vNewNode);
 
