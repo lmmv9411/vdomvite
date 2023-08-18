@@ -10,6 +10,7 @@ export default function changes($parentNode, vOldNode, vNewNode) {
 
 function _changes($parentNode, vOldNode, vNewNode) {
 
+
     if (($parentNode === undefined || $parentNode === null) ||
         !($parentNode instanceof Node) ||
         (vOldNode === undefined && vNewNode === undefined) ||

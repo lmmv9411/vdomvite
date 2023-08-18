@@ -48,7 +48,21 @@ export class Lista extends Componente {
 
         const { items } = this.state;
 
-        this.update({ items: [item, ...items] })
+        const unique = new Set();
+        const uniqueItems = [];
+
+        for (const item of items) {
+            if (!unique.has(item.v)) {
+                unique.add(item.v)
+                uniqueItems.push(item);
+            }
+        }
+
+        if (!unique.has(item.v)) {
+            uniqueItems.unshift(item);
+        }
+
+        this.update({ items: uniqueItems })
     }
 
     render(props) {

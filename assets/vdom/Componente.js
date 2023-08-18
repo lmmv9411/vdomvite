@@ -33,7 +33,12 @@ export class Componente {
 
         const newNode = this.render(this.#copyState(newState));
         const $ref = this.type === Fragment ? this.$fragment : this.$element;
+
+        const init = performance.now()
         changes($ref, this, newNode);
+        const end = performance.now();
+
+        console.log(end - init, Object.getPrototypeOf(this).constructor.name);
 
         for (let [k, v] of Object.entries(newNode)) {
             this[k] = v;
