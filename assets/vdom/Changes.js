@@ -174,7 +174,7 @@ function setAttributes($node, vOldNode, vNewNode) {
     }
 
     for (let att in vOldNode.props) {
-        if ((!vNewNode.props) && !(att in vNewNode.props)) {
+        if ((!vNewNode.props) || !(att in vNewNode.props)) {
 
             const v = vOldNode.props[att];
 
