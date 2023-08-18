@@ -97,8 +97,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         i--;
                     } else {
                         equalKeys($n, chNew);
-                        vOldNode.children.splice(i, 1);
-                        vOldNode.children.splice(i, 0, chNew);
+                        vOldNode.children[i] = chNew;
                     }
                 } else {
 
@@ -108,15 +107,13 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         cond2 = chNew.key !== null && chOld.key !== null;
                     }
 
-                    if (cond5) {
-                        _changes($n, chOld, chNew);
+                    if (!cond5 && !cond2) {
+                        continue
                     }
 
-                    if (cond2) {
-                        equalKeys($n, chNew);
-                        vOldNode.children.splice(i, 1);
-                        vOldNode.children.splice(i, 0, chNew);
-                    }
+                    debugger
+                    _changes($n, chOld, chNew);
+
                 }
 
             } else {
