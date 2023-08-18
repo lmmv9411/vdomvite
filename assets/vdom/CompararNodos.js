@@ -15,19 +15,16 @@ export function compararNodos(oldNode, newNode) {
         return false
     }
 
-    if (oldNode.type !== newNode.type
-        || (typeof newNode === "number" && oldNode !== newNode)
-        || (typeof newNode === "string" && oldNode !== newNode)) {
+    if (oldNode.type !== newNode.type) {
         return false;
     }
-
+    if (typeof newNode === "number" ||
+        typeof newNode === "string") {
+        return oldNode === newNode;
+    }
 
     const oldProps = oldNode.props ?? {};
     const newProps = newNode.props ?? {};
-
-    if (Object.keys(oldProps).length !== Object.keys(newProps).length) {
-        return false;
-    }
 
     for (let att in oldProps) {
         if ((!newNode.props) || !(att in newNode.props)) {
@@ -38,6 +35,10 @@ export function compararNodos(oldNode, newNode) {
     for (let att in newProps) {
         if ((!oldNode.props) || !(att in oldNode.props)
             || newNode.props[att] !== oldNode.props[att]) {
+
+            if (att.startsWith("on")) {
+                continue
+            }
 
             return false;
         }

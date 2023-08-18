@@ -1,3 +1,4 @@
+import { compararNodos } from "./CompararNodos";
 import { render } from "./Render";
 
 let parent;
@@ -12,7 +13,8 @@ function _changes($parentNode, vOldNode, vNewNode) {
     if (($parentNode === undefined || $parentNode === null) ||
         !($parentNode instanceof Node) ||
         (vOldNode === undefined && vNewNode === undefined) ||
-        (vOldNode === null && vNewNode === null)) {
+        (vOldNode === null && vNewNode === null) ||
+        compararNodos(vOldNode, vNewNode)) {
         return;
     }
 
@@ -61,15 +63,26 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
             $n = $parentNode.childNodes[i] ?? $parentNode;
 
-            let cond1 = chNew !== undefined || chOld !== undefined;
-            let cond2 = chNew?.key !== null || chOld?.key !== null;
-            let cond3 = chNew?.key !== chOld?.key;
-            let cond4 = cond1 && cond2;
-            let cond5 = comparaTypes(chOld, chNew);
+            let cond1 = false;
 
-            if (cond4 || cond5) {
+            if (typeof chNew === "object" || typeof chOld === "object") {
 
-                if (!cond4 + cond3) {
+                let a = false, b = false;
+
+                if (chNew && chNew.key) {
+                    a = !a;
+                }
+                if (chOld && chOld.key) {
+                    b = !b;
+                }
+
+                cond1 = (a || b);
+
+            }
+
+            if (cond1 || comparaTypes(chOld, chNew)) {
+
+                if (chNew?.key !== chOld?.key) {
 
                     if (nn > on) {
                         const index = i + 1 === nn ? i + 1 : i;
@@ -100,19 +113,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         vOldNode.children[i] = chNew;
                     }
                 } else {
-
-                    cond2 = false;
-
-                    if (typeof chNew === "object" && typeof chOld === "object") {
-                        cond2 = chNew.key !== null && chOld.key !== null;
-                    }
-
-                    if (!cond5 && !cond2) {
-                        continue
-                    }
-
                     _changes($n, chOld, chNew);
-
                 }
 
             } else {
