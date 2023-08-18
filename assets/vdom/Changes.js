@@ -29,26 +29,22 @@ function _changes($parentNode, vOldNode, vNewNode) {
         if (Array.isArray($ref)) {
             for (let i = 0; i < $ref.length; i++) {
                 $parentNode.appendChild($ref[i]);
-                reff(vNewNode[i], $ref[i]);
+                setReff(vNewNode[i], $ref[i]);
             }
         } else {
             $parentNode.appendChild($ref);
-            reff(vNewNode, $ref);
+            setReff(vNewNode, $ref);
         }
 
     } else if (vOldNode.type !== vNewNode.type
         || (typeof vNewNode === "number" && vOldNode !== vNewNode)
         || (typeof vNewNode === "string" && vOldNode !== vNewNode)) {
 
-        const $ref = render(vNewNode, parent);
-
-        $parentNode.replaceWith($ref);
-
-        reff(vNewNode, $ref);
+        reemplazarNodo($parentNode, vNewNode);
 
     } else {
 
-        setAttributes($parentNode, vOldNode, vNewNode);
+        compararAtributos($parentNode, vOldNode, vNewNode);
 
         let on = vOldNode.children?.length ?? 0;
         let nn = vNewNode.children?.length ?? 0;
@@ -63,7 +59,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
             $n = $parentNode.childNodes[i] ?? $parentNode;
 
-            let cond1 = false;
+            let conKeys = false;
 
             if (typeof chNew === "object" || typeof chOld === "object") {
 
@@ -76,13 +72,15 @@ function _changes($parentNode, vOldNode, vNewNode) {
                     b = !b;
                 }
 
-                cond1 = (a || b);
+                conKeys = (a || b);
 
             }
 
-            if (cond1 || comparaTypes(chOld, chNew)) {
+            const diferentesNodos = sonDiferentes(chOld, chNew);
 
-                if (chNew?.key !== chOld?.key) {
+            if (conKeys || diferentesNodos) {
+
+                if (chNew?.key !== chOld?.key + diferentesNodos) {
 
                     if (nn > on) {
                         const index = i + 1 === nn ? i + 1 : i;
@@ -91,7 +89,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
                         $parentNode.insertBefore($ref, $parentNode.children[index]);
 
-                        reff(chNew, $ref);
+                        setReff(chNew, $ref);
 
                         vOldNode.children.splice(i, 0, chNew);
 
@@ -109,7 +107,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         max = Math.max(on, nn);
                         i--;
                     } else {
-                        equalKeys($n, chNew);
+                        reemplazarNodo($n, chNew);
                         vOldNode.children[i] = chNew;
                     }
                 } else {
@@ -125,7 +123,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
 }
 
-function comparaTypes(vOldNode, vNewNode) {
+function sonDiferentes(vOldNode, vNewNode) {
 
     if (vNewNode === undefined || vOldNode === undefined) {
         return false
@@ -136,7 +134,7 @@ function comparaTypes(vOldNode, vNewNode) {
         || (typeof vNewNode === "string" && vOldNode !== vNewNode)
 }
 
-function reff(vNewNode, $ref) {
+function setReff(vNewNode, $ref) {
 
     if (vNewNode === undefined || vNewNode === null) {
         return;
@@ -151,13 +149,13 @@ function reff(vNewNode, $ref) {
 
 }
 
-function equalKeys($n, vNewNode) {
+function reemplazarNodo($n, vNewNode) {
     if (vNewNode === undefined || vNewNode === null) {
         return;
     }
     const $ref = render(vNewNode, parent);
     $n.replaceWith($ref);
-    reff(vNewNode, $ref);
+    setReff(vNewNode, $ref);
 }
 
 /**
@@ -165,10 +163,9 @@ function equalKeys($n, vNewNode) {
  * @param {HTMLElement} $node 
  * @param {*} vOldNode 
  * @param {*} vNewNode 
- * @returns 
+ * @returns {void}
  */
-function setAttributes($node, vOldNode, vNewNode) {
-
+function compararAtributos($node, vOldNode, vNewNode) {
 
     if (!vOldNode || !vNewNode) {
         return;
