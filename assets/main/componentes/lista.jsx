@@ -3,7 +3,7 @@ import { ContextoProveedor as CP } from "../contextos/proveedores";
 
 export class Lista extends Componente {
     constructor(props) {
-        super({ ...props, items: [] })
+        super({ ...props, values: [] });
     }
 
     montado() {
@@ -19,14 +19,16 @@ export class Lista extends Componente {
         ]
 
         this.ctx = CP.children;
+        this.map = new Map();
     }
 
     cambiarColor() {
-        let { items } = this.state;
 
-        items = items.map(this.color.bind(this));
+        this.map.forEach((v, k) => {
+            this.map.set(k, this.color.call(this, v));
+        });
 
-        this.update({})
+        this.update({ values: Array.from(this.map.values()) })
     }
 
     color(item) {
@@ -45,31 +47,23 @@ export class Lista extends Componente {
     agregarItem(item) {
 
         item = this.color(item);
+        const { Proveedores } = this.ctx;
 
-        const { items } = this.state;
-
-        const unique = new Set();
-        const uniqueItems = [];
-
-        for (const item of items) {
-            if (!unique.has(item.v)) {
-                unique.add(item.v)
-                uniqueItems.push(item);
-            }
+        if (!this.map.has(item.v.toLowerCase())) {
+            this.map.set(item.v.toLowerCase(), item);
+            this.update({ values: Array.from(this.map.values()) })
+            Proveedores.update({ error: null });
+        } else {
+            Proveedores.update({ error: `¡Ya existe el item "${item.v}"!` })
         }
 
-        if (!unique.has(item.v)) {
-            uniqueItems.unshift(item);
-        }
-
-        this.update({ items: uniqueItems })
     }
 
     render(props) {
 
         return (
             <ul class="list-group list-group-flush p-3">
-                {props.items?.map(item => {
+                {props.values.map(item => {
                     return (
                         <li key={item.v} class={item.c}>
                             <spam>{item.v}</spam>

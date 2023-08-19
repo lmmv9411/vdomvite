@@ -28,13 +28,13 @@ export class Proveedores extends Componente {
         const { nombre } = this.state;
 
         if (!nombre) {
-            this.update({ error: true })
+            this.update({ error: "¡Item vacío!" })
             return;
         }
 
         Lista.agregarItem(nombre);
 
-        this.update({ nombre: "", error: false })
+        this.update({ nombre: "" })
 
         this.nombre.focus();
     }
@@ -47,7 +47,7 @@ export class Proveedores extends Componente {
                 <form className="d-flex gap-2 p-3 flex-wrap" autocomplete="off">
 
                     {
-                        props.error && <span className="text-danger d-block">Nombre Vacío</span>
+                        props.error && <span className="text-danger d-block">{props.error}</span>
                     }
 
                     <input
