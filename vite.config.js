@@ -4,7 +4,6 @@ export default defineConfig({
     esbuild: {
         jsxFactory: 'h',
         jsxFragment: 'Fragment',
-        jsxInject: `import {h} from "/assets/vdom/VDom"`,
-        keepNames: true
+        jsxInject: `import {h} from "/assets/vdom/VDom"`
     }
 })

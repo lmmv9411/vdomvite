@@ -13,8 +13,8 @@ export class CrearContexto {
                 return;
             }
             children.forEach(ch => {
-                const name = ch.constructor.name;
-                if (name !== "Object") {
+                const name = ch.state?.contextoNombre;
+                if (name !== undefined) {
                     this.children[name] = ch;
                 }
             });

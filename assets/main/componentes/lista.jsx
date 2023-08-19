@@ -47,14 +47,14 @@ export class Lista extends Componente {
     agregarItem(item) {
 
         item = this.color(item);
-        const { Proveedores } = this.ctx;
+        const { proveedores } = this.ctx;
 
         if (!this.map.has(item.v.toLowerCase())) {
             this.map.set(item.v.toLowerCase(), item);
             this.update({ values: Array.from(this.map.values()) })
-            Proveedores.update({ error: null });
+            proveedores.update({ error: null });
         } else {
-            Proveedores.update({ error: `¡Ya existe el item "${item.v}"!` })
+            proveedores.update({ error: `¡Ya existe el item "${item.v}"!` })
         }
 
     }
@@ -68,7 +68,7 @@ export class Lista extends Componente {
                         <li key={item.v} class={item.c}>
                             <spam>{item.v}</spam>
                             <button class="btn btn-warning" onclick={() => {
-                                this.ctx.Proveedores.agregar();
+                                this.ctx.proveedores.agregar();
                             }}>Saludar</button>
                         </li>
                     )

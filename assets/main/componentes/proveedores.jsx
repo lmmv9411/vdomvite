@@ -15,7 +15,7 @@ export class Proveedores extends Componente {
 
     montado() {
         this.nombre.focus();
-        ContextoProveedor.children.Proveedores = this;
+        ContextoProveedor.children.proveedores = this;
         this.ctx = ContextoProveedor.children;
     }
 
@@ -24,7 +24,7 @@ export class Proveedores extends Componente {
         e?.preventDefault();
         e?.stopPropagation();
 
-        const { Lista } = ContextoProveedor.children;
+        const { lista } = ContextoProveedor.children;
         const { nombre } = this.state;
 
         if (!nombre) {
@@ -32,7 +32,7 @@ export class Proveedores extends Componente {
             return;
         }
 
-        Lista.agregarItem(nombre);
+        lista.agregarItem(nombre);
 
         this.update({ nombre: "" })
 
@@ -85,11 +85,11 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            this.ctx.Lista.cambiarColor();
+                            this.ctx.lista.cambiarColor();
                         }}>Cambia Color</button>
                 </form>
 
-                <Lista />
+                <Lista contextoNombre="lista" />
 
                 {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
 
