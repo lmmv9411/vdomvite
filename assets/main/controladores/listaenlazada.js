@@ -1,5 +1,34 @@
 export function cListaEnlazada(view) {
 
+    const eliminar = (nodo) => {
+
+        let tmp = view.state.cabeza;
+
+        while (tmp) {
+            if (tmp.valor === nodo) {
+                view.size--;
+
+                //cola
+                if (tmp.siguiente === undefined && tmp.anterior !== undefined) {
+                    tmp.anterior.siguiente = undefined;
+                    view.update({ cola: tmp.anterior })
+                } else if (tmp.siguiente !== undefined && tmp.anterior === undefined) {
+                    //cabeza
+                    tmp.siguiente.anterior = undefined;
+                    view.update({ cabeza: tmp.siguiente })
+                } else {
+                    tmp.anterior.siguiente = tmp.siguiente;
+                    tmp.siguiente.anterior = tmp.anterior;
+                    view.update({})
+                }
+
+                break;
+            }
+
+            tmp = tmp.siguiente;
+        }
+    }
+
     const agregarCola = () => {
 
         view.size++;
@@ -90,5 +119,5 @@ export function cListaEnlazada(view) {
         }
     }
 
-    return { agregarCabeza, agregarCola, agregarEn, nodo }
+    return { agregarCabeza, agregarCola, agregarEn, nodo, eliminar }
 }

@@ -80,7 +80,7 @@ function h(type, props, ...children) {
     }
 
     //quitar null o undefine
-    children = children.filter(ch => ch !== undefined && ch !== null && !(typeof ch === "boolean"));
+    children = children.filter(ch => ch !== undefined && ch !== null && typeof ch !== "boolean");
 
     if (props?.key !== undefined) {
         key = props.key;

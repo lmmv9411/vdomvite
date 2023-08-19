@@ -9,15 +9,9 @@ export class ListaEnlazada extends Componente {
         this.size = 0;
     }
 
-    preRender() {
-        if (!this.ctrl) {
-            this.ctrl = cListaEnlazada(this);
-        }
-    }
-
     render(props) {
 
-        this.preRender();
+        !this.ctrl && (this.ctrl = cListaEnlazada(this));
 
         return (
             <>
@@ -86,7 +80,21 @@ export class ListaEnlazada extends Componente {
         let tmpNodo = nodo;
 
         while (tmpNodo) {
-            tmp.push(<li className="list-group-item bg-dark text-light" key={tmpNodo.valor}>{tmpNodo.valor}</li>)
+            const nodo = tmpNodo;
+            const li =
+                <li
+                    className="list-group-item bg-dark text-light"
+                    key={tmpNodo.valor}>
+                    <span className="me-2">{tmpNodo.valor}</span>
+                    <button
+                        className="btn btn-danger"
+                        type="button"
+                        onclick={() => this.ctrl.eliminar(nodo.valor)}
+                    >Eliminar
+                    </button>
+                </li>;
+
+            tmp.push(li);
             tmpNodo = tmpNodo.siguiente
         }
 

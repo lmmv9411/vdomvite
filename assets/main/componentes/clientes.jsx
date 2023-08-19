@@ -21,7 +21,9 @@ export class Clientes extends Componente {
 
         fetch("https://jsonplaceholder.typicode.com/users")
             .then(data => data.json())
-            .then(users => users.map(user => { return { edad: user.id, nombre: user.name, email: user.email } }))
+            .then(users => users.map(user => {
+                return { edad: user.id, nombre: user.name, email: user.email }
+            }))
             .then(data => this.update({ clientes: data }))
     }
 
@@ -191,10 +193,10 @@ function submit(e) {
 
     } else {
         const { nombre, edad, email, clientes } = this.state
-        console.log(this.state);
         clientes.unshift({ nombre, edad, email })
-        this.update({ nombre: "", edad: "", email: "" })
-        //form.reset();
+        //this.update({ nombre: "", edad: "", email: "" })
+        form.reset();
+        this.update({});
         this.nombre.focus();
     }
 }
