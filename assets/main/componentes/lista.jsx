@@ -16,9 +16,8 @@ export class Lista extends Componente {
             "list-group-item list-group-item-info",
             "list-group-item list-group-item-light",
             "list-group-item list-group-item-dark"
-        ]
+        ];
 
-        this.ctx = CP.children;
         this.map = new Map();
     }
 
@@ -47,7 +46,7 @@ export class Lista extends Componente {
     agregarItem(item) {
 
         item = this.color(item);
-        const { proveedores } = this.ctx;
+        const { proveedores } = CP.children;
 
         if (!this.map.has(item.v.toLowerCase())) {
             this.map.set(item.v.toLowerCase(), item);
@@ -68,7 +67,7 @@ export class Lista extends Componente {
                         <li key={item.v} class={item.c}>
                             <spam>{item.v}</spam>
                             <button class="btn btn-warning" onclick={() => {
-                                this.ctx.proveedores.agregar();
+                                CP.children.proveedores.agregar();
                             }}>Saludar</button>
                         </li>
                     )
