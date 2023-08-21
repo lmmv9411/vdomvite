@@ -1,6 +1,6 @@
 import { compararNodos } from "./CompararNodos";
 import { render } from "./Render";
-import { Portal } from "./VDom";
+import { Fragment, Portal } from "./VDom";
 
 let parent;
 
@@ -59,7 +59,11 @@ function _changes($parentNode, vOldNode, vNewNode) {
             chNew = vNewNode.children[i];
             chOld = vOldNode.children[i];
 
-            $n = $parentNode.childNodes[i] ?? $parentNode;
+            if (chNew.type === Fragment) {
+                $n = $parentNode;
+            } else {
+                $n = $parentNode.childNodes[i] ?? $parentNode;
+            }
 
             let conKeys = false;
 

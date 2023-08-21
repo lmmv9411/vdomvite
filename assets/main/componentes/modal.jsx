@@ -1,6 +1,5 @@
 import { Componente } from "../../vdom/Componente";
 import { crearPortal } from "../../vdom/Portal";
-import { Fragment } from "../../vdom/VDom";
 import modal from "../estilos/modal.module.css"
 
 export class Modal extends Componente {
@@ -18,30 +17,26 @@ export class Modal extends Componente {
 
     render(props) {
 
-        return (
-            crearPortal(
-                <>
-                    {
-                        props.mostrar &&
+        this.portal ?? (this.portal = document.getElementById("portal"));
 
-                        <article className={modal.modal}>
-                            <header className={modal.centrar}>
-                                <h1>Modal</h1>
-                            </header>
-                            <section className={modal.centrar}>
-                                Soy un modal
-                            </section>
-                            <footer className={modal.centrar}>
-                                <button className="btn btn-primary"
-                                    type="button"
-                                    onclick={this.cerrarModal.bind(this)}>
-                                    Cerrar
-                                </button>
-                            </footer>
-                        </article>
-                    }
-                </>
-                , document.getElementById("portal"))
+        return crearPortal(
+            <article className={`${modal.modal} ${props.mostrar ? modal["modal-show"] : ""}`}>
+                <header className={modal.centrar}>
+                    <h1>Modal</h1>
+                </header>
+                <section className={modal.centrar}>
+                    Soy un modal
+                </section>
+                <footer className={modal.centrar}>
+                    <button
+                        className="btn btn-primary"
+                        type="button"
+                        onclick={this.cerrarModal.bind(this)}
+                    >Cerrar</button>
+                </footer>
+            </article>
+            , this.portal
         );
     }
+
 }

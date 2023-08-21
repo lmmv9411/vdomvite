@@ -23,12 +23,11 @@ function _render(node) {
 
     let $element;
 
-    if (node.type === Portal) {
-        return;
-    }
-
     if (node.type === Fragment) {
         $element = document.createDocumentFragment();
+    } else if (node.type === Portal) {
+        recursividadHijos(node, node.$element);
+        return;
     } else {
         $element = document.createElement(node.type);
     }
@@ -59,6 +58,14 @@ function _render(node) {
 
     }
 
+    recursividadHijos(node, $element);
+
+    return $element;
+
+}
+
+function recursividadHijos(node, $element) {
+
     if (Array.isArray(node.children) && node.children.length > 0) {
 
         node.children.map(_render).forEach(($children, i) => {
@@ -79,7 +86,4 @@ function _render(node) {
             $element.textContent = node.children;
         }
     }
-
-    return $element;
-
 }
