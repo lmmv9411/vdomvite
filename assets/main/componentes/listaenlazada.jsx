@@ -1,12 +1,25 @@
 import { Componente } from "../../vdom/Componente";
+import { CrearContexto } from "../../vdom/Contexto";
 import { Fragment } from "../../vdom/VDom";
 import { cListaEnlazada } from "../controladores/listaenlazada";
+import { Modal } from "./modal";
+
+export const ctx = new CrearContexto();
 
 export class ListaEnlazada extends Componente {
 
     constructor() {
-        super({ cabeza: null, valor: "", cola: null, pos: 0 })
+        super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false })
         this.size = 0;
+        ctx.children.lista = this;
+    }
+
+    abrirModal() {
+        this.update({ mostrar: true });
+    }
+
+    cerrarModal() {
+        this.update({ mostrar: false });
     }
 
     render(props) {
@@ -14,7 +27,7 @@ export class ListaEnlazada extends Componente {
         !this.ctrl && (this.ctrl = cListaEnlazada(this));
 
         return (
-            <>
+            <ctx.Provider>
                 <header className="p-3">
                     <h1>{`Cabeza: ${props.cabeza?.valor ?? ""}`}</h1>
                     <h1>{`Cola: ${props.cola?.valor ?? ""}`}</h1>
@@ -64,6 +77,13 @@ export class ListaEnlazada extends Componente {
                         Agregar en
                     </button>
 
+                    <button
+                        className="btn btn-primary"
+                        type="button"
+                        onclick={this.abrirModal.bind(this)}>
+                        Mostrar
+                    </button>
+
                 </section>
 
                 <article className="p-3">
@@ -71,7 +91,9 @@ export class ListaEnlazada extends Componente {
                         {this.leerCabeza(props.cabeza)}
                     </ol>
                 </article>
-            </>
+
+                <Modal mostrar={props.mostrar ?? false} contextoNombre="modal" />
+            </ctx.Provider>
         )
     }
 

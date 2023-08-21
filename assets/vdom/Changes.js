@@ -1,5 +1,6 @@
 import { compararNodos } from "./CompararNodos";
 import { render } from "./Render";
+import { Portal } from "./VDom";
 
 let parent;
 
@@ -10,9 +11,11 @@ export default function changes($parentNode, vOldNode, vNewNode) {
 
 function _changes($parentNode, vOldNode, vNewNode) {
 
+    if (vNewNode && vNewNode.type === Portal) {
+        $parentNode = vNewNode.$element;
+    }
 
     if (($parentNode === undefined || $parentNode === null) ||
-        !($parentNode instanceof Node) ||
         (vOldNode === undefined && vNewNode === undefined) ||
         (vOldNode === null && vNewNode === null) ||
         compararNodos(vOldNode, vNewNode)) {

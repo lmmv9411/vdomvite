@@ -1,5 +1,5 @@
 import { Componente } from "./Componente.js";
-import { Fragment } from "./VDom.js";
+import { Fragment, Portal } from "./VDom.js";
 
 let parent;
 
@@ -22,6 +22,10 @@ function _render(node) {
     }
 
     let $element;
+
+    if (node.type === Portal) {
+        return;
+    }
 
     if (node.type === Fragment) {
         $element = document.createDocumentFragment();

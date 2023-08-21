@@ -13,7 +13,7 @@ function insertarElemento($parent, nodo) {
     }
 
     if (nodo.type === Fragment) {
-        const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento)
+        const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento ?? [])
         $parent.append(...hijos);
         nodo.fragmento = [...$parent.children]
     } else {
@@ -44,7 +44,7 @@ function reemplazarElemento($parent, nodo) {
 
     if (!$parent.hasChildNodes()) {
         if (nodo.type === Fragment) {
-            const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento)
+            const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento ?? [])
             $parent.append(...hijos);
             nodo.fragmento = [...$parent.children]
         } else {
@@ -117,6 +117,8 @@ function h(type, props, ...children) {
 
     return { type, props, children, key };
 }
+
+export const Portal = Symbol("Portal");
 
 export const Fragment = Symbol("Fragment");
 
