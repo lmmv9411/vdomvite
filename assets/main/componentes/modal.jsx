@@ -2,11 +2,18 @@ import { Componente } from "../../vdom/Componente";
 import { crearPortal } from "../../vdom/Portal";
 import { Fragment } from "../../vdom/VDom";
 import modal from "../estilos/modal.module.css"
-import { ctx } from "./listaenlazada";
 
 export class Modal extends Componente {
     constructor(props) {
         super({ mostrar: false, ...props });
+    }
+
+    abrirModal() {
+        this.update({ mostrar: true });
+    }
+
+    cerrarModal() {
+        this.update({ mostrar: false });
     }
 
     render(props) {
@@ -27,9 +34,7 @@ export class Modal extends Componente {
                             <footer className={modal.centrar}>
                                 <button className="btn btn-primary"
                                     type="button"
-                                    onclick={() => {
-                                        ctx.children.lista.cerrarModal();
-                                    }}>
+                                    onclick={this.cerrarModal.bind(this)}>
                                     Cerrar
                                 </button>
                             </footer>

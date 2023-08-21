@@ -11,15 +11,7 @@ export class ListaEnlazada extends Componente {
     constructor() {
         super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false })
         this.size = 0;
-        ctx.children.lista = this;
-    }
-
-    abrirModal() {
-        this.update({ mostrar: true });
-    }
-
-    cerrarModal() {
-        this.update({ mostrar: false });
+        this.c = ctx.children;
     }
 
     render(props) {
@@ -80,7 +72,7 @@ export class ListaEnlazada extends Componente {
                     <button
                         className="btn btn-primary"
                         type="button"
-                        onclick={this.abrirModal.bind(this)}>
+                        onclick={() => this.c.modal.abrirModal()}>
                         Mostrar
                     </button>
 
@@ -92,7 +84,7 @@ export class ListaEnlazada extends Componente {
                     </ol>
                 </article>
 
-                <Modal mostrar={props.mostrar ?? false} contextoNombre="modal" />
+                <Modal contextoNombre="modal" />
             </ctx.Provider>
         )
     }
