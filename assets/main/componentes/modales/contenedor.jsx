@@ -7,13 +7,13 @@ export class Contenedor extends Componente {
         super({ mostrar: false, ...props });
     }
 
-    mostrarContenedor() {
+    mostrarContenedor(cll) {
         this.update({ mostrar: true });
-        this.state.modal.abrir();
+        cll();
     }
 
-    cerrarContenedor() {
-        this.state.modal.cerrar();
+    cerrarContenedor(cll) {
+        cll();
         setTimeout(() => {
             this.update({ mostrar: false });
         }, 600);

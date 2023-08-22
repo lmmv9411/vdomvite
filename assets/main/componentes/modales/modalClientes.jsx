@@ -9,11 +9,15 @@ export class ModalClientes extends Componente {
     }
 
     abrir() {
-        this.update({ mostrar: true })
+        this.c.contenedor.mostrarContenedor(() => {
+            this.update({ mostrar: true });
+        })
     }
 
     cerrar() {
-        this.update({ mostrar: false })
+        this.c.contenedor.cerrarContenedor(() => {
+            this.update({ mostrar: false });
+        })
     }
 
     render(props) {
@@ -24,9 +28,7 @@ export class ModalClientes extends Componente {
                     <h1 className="card-title">Clientes</h1>
                     <button
                         className="btn text-light bg-danger p-1 d-block rounded"
-                        onclick={() => {
-                            this.c.contenedor.cerrarContenedor()
-                        }}>X
+                        onclick={this.cerrar.bind(this)}>X
                     </button>
                 </header>
 

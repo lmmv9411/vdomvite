@@ -12,12 +12,20 @@ export class CrearContexto {
             if (Object.keys(this.children).length > 0) {
                 return;
             }
-            children.forEach(ch => {
-                const name = ch.state?.contextoNombre;
-                if (name !== undefined) {
-                    this.children[name] = ch;
-                }
-            });
+            buscarNodo.call(this, children);
         };
     }
+}
+
+function buscarNodo(children) {
+    for (let ch of children) {
+        const name = ch.state?.contextoNombre;
+        if (name !== undefined) {
+            this.children[name] = ch;
+        }
+        if (Array.isArray(ch.children) && ch.children.length > 0) {
+            buscarNodo.call(this, ch.children);
+        }
+    }
+
 }

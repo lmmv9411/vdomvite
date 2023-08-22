@@ -73,7 +73,7 @@ export class ListaEnlazada extends Componente {
                     <button
                         className="btn btn-primary"
                         type="button"
-                        onclick={() => this.c.contenedor.mostrarContenedor()}>
+                        onclick={() => this.c.modalClientes.abrir()}>
                         Mostrar
                     </button>
 
@@ -85,9 +85,13 @@ export class ListaEnlazada extends Componente {
                     </ol>
                 </article>
 
-                <Contenedor contextoNombre="contenedor"  >
-                    <ModalClientes />
-                </Contenedor>
+                {
+                    this.c?.contenedor
+                    ??
+                    <Contenedor contextoNombre="contenedor">
+                        <ModalClientes contextoNombre="modalClientes" />
+                    </Contenedor>
+                }
             </ctx.Provider>
         )
     }
