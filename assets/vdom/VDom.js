@@ -91,9 +91,9 @@ function h(type, props, ...children) {
         let componente
 
         if (!(type.prototype instanceof Object)) {
-            componente = type(props, children);
+            componente = type({ ...props, children });
         } else {
-            componente = new type(props, children);
+            componente = new type({ ...props, children });
         }
 
         if (typeof componente === "object" && Object.keys(componente).length === 0) {

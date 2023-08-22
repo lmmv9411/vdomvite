@@ -4,7 +4,7 @@ import modal from "../../estilos/modal.module.css"
 
 export class ModalClientes extends Componente {
     constructor(props) {
-        super(props)
+        super({ ...props, mostrar: false })
         this.c = ctx.children;
     }
 
@@ -22,9 +22,12 @@ export class ModalClientes extends Componente {
 
                 <header className="d-flex justify-content-between">
                     <h1 className="card-title">Clientes</h1>
-                    <button className="btn text-light bg-danger p-1 d-block rounded" onclick={() => {
-                        this.c.contenedor.cerrarContenedor()
-                    }}>X</button>
+                    <button
+                        className="btn text-light bg-danger p-1 d-block rounded"
+                        onclick={() => {
+                            this.c.contenedor.cerrarContenedor()
+                        }}>X
+                    </button>
                 </header>
 
                 <form

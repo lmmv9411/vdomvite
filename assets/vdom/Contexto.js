@@ -8,7 +8,7 @@ export class CrearContexto {
          * @param {Object} props
          * @param {Array.<{type:string, children:Array.<Object>, props:Object}>} children
          */
-        this.Provider = (props, children) => {
+        this.Provider = ({ children }) => {
             if (Object.keys(this.children).length > 0) {
                 return;
             }

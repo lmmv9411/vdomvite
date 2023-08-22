@@ -85,7 +85,9 @@ export class ListaEnlazada extends Componente {
                     </ol>
                 </article>
 
-                <Contenedor contextoNombre="contenedor" modal={<ModalClientes contextoNombre="modal" />} />
+                <Contenedor contextoNombre="contenedor"  >
+                    <ModalClientes />
+                </Contenedor>
             </ctx.Provider>
         )
     }

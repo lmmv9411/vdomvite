@@ -25,7 +25,7 @@ export class Contenedor extends Componente {
 
         return crearPortal(
             <article className={`${modal.contenedor} ${props.mostrar ? modal["contenedor-show"] : ""}`}>
-                {props.modal}
+                {props.children}
             </article>
             , this.portal
         );

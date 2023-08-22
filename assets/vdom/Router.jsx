@@ -95,10 +95,10 @@ const buscarRutaDinamica = async (main, nombreClase) => {
 
 export class Router {
 
-    constructor(props, children) {
+    constructor({ idContenedor, pathBase, children }) {
 
-        this.idContenedor = props.idContenedor
-        this.pathBase = props.pathBase;
+        this.idContenedor = idContenedor
+        this.pathBase = pathBase;
         this.componentes = {};
 
         children.forEach(ch => this.setEvent(ch))
@@ -178,14 +178,16 @@ export class Router {
 
 }
 
-export const Link = ({ to, titulo, url, ...props }, children) => {
+export const Link = (props) => {
+
+    let { to, titulo, url, children, ...p } = props;
 
     if (url === undefined || url === null) {
         url = to.toLowerCase();
     }
 
     return (
-        <a {...props}
+        <a {...p}
             titulo={titulo}
             componente={to}
             href={url}>
