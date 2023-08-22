@@ -2,7 +2,8 @@ import { Componente } from "../../vdom/Componente";
 import { CrearContexto } from "../../vdom/Contexto";
 import { Fragment } from "../../vdom/VDom";
 import { cListaEnlazada } from "../controladores/listaenlazada";
-import { Modal } from "./modal";
+import { Contenedor } from "./modales/contenedor";
+import { ModalClientes } from "./modales/modalClientes";
 
 export const ctx = new CrearContexto();
 
@@ -72,7 +73,7 @@ export class ListaEnlazada extends Componente {
                     <button
                         className="btn btn-primary"
                         type="button"
-                        onclick={() => this.c.modal.abrirModal()}>
+                        onclick={() => this.c.contenedor.mostrarContenedor()}>
                         Mostrar
                     </button>
 
@@ -84,7 +85,7 @@ export class ListaEnlazada extends Componente {
                     </ol>
                 </article>
 
-                <Modal contextoNombre="modal" />
+                <Contenedor contextoNombre="contenedor" modal={<ModalClientes contextoNombre="modal" />} />
             </ctx.Provider>
         )
     }

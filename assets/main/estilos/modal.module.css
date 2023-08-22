@@ -1,4 +1,4 @@
-.modal {
+.contenedor {
     position: fixed;
     left: 0;
     right: 0;
@@ -10,7 +10,7 @@
     transition: opacity .5s linear;
 }
 
-.modal-show {
+.contenedor-show {
     visibility: visible;
     opacity: 1;
 }
@@ -18,4 +18,17 @@
 .centrar {
     display: flex;
     justify-content: center;
+}
+
+.modal {
+    margin-top: 1rem;
+    margin-right: auto;
+    margin-left: auto;
+    position: relative;
+    top: -100%;
+    transition: top .6s ease-in-out;
+}
+
+.modal-show {
+    top: 0;
 }
