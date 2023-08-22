@@ -11,6 +11,7 @@ export class ModalClientes extends Componente {
     abrir() {
         this.c.contenedor.mostrarContenedor(() => {
             this.update({ mostrar: true });
+            this.nombre.focus();
         })
     }
 
@@ -49,7 +50,10 @@ export class ModalClientes extends Componente {
 
                     <div>
                         <label htmlFor="name">Name:</label>
-                        <input className="form-control bg-dark text-light" type="text" id="name" />
+                        <input
+                            className="form-control bg-dark text-light"
+                            type="text"
+                            id="name" $ref="nombre" />
                     </div>
                     <div>
                         <label htmlFor="phone">Phone</label>

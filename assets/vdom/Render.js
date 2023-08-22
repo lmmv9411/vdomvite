@@ -66,6 +66,13 @@ function _render(node) {
 
 function recursividadHijos(node, $element) {
 
+    let tmpParent;
+
+    if (node instanceof Componente) {
+        tmpParent = parent;
+        parent = node;
+    }
+
     if (Array.isArray(node.children) && node.children.length > 0) {
 
         node.children.map(_render).forEach(($children, i) => {
@@ -85,5 +92,9 @@ function recursividadHijos(node, $element) {
         if (node.children.length > 0) {
             $element.textContent = node.children;
         }
+    }
+
+    if (tmpParent) {
+        parent = tmpParent;
     }
 }

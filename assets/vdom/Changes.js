@@ -1,4 +1,5 @@
 import { compararNodos } from "./CompararNodos";
+import { Componente } from "./Componente";
 import { render } from "./Render";
 import { Fragment, Portal } from "./VDom";
 
@@ -56,6 +57,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
         for (let i = 0; i < max; i++) {
 
+            let tmpParent;
             chNew = vNewNode.children[i];
             chOld = vOldNode.children[i];
 
@@ -63,6 +65,11 @@ function _changes($parentNode, vOldNode, vNewNode) {
                 $n = $parentNode;
             } else {
                 $n = $parentNode.childNodes[i] ?? $parentNode;
+            }
+
+            if (chNew instanceof Componente) {
+                tmpParent = parent;
+                parent = chNew;
             }
 
             let conKeys = false;
@@ -122,6 +129,10 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
             } else {
                 _changes($n, chOld, chNew);
+            }
+
+            if (tmpParent) {
+                parent = tmpParent;
             }
 
         }
