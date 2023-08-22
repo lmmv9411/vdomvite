@@ -28,8 +28,8 @@ export class ModalClientes extends Componente {
                     <h1 className="card-title">Clientes</h1>
                     <button
                         className="btn text-light bg-danger p-1 d-block rounded"
-                        onclick={this.cerrar.bind(this)}>X
-                    </button>
+                        onclick={this.cerrar.bind(this)}
+                    >X</button>
                 </header>
 
                 <form
