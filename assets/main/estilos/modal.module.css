@@ -8,6 +8,7 @@
     visibility: hidden;
     opacity: 0;
     transition: opacity .5s linear;
+    backdrop-filter: blur(2px);
 }
 
 .contenedor-show {
@@ -27,7 +28,7 @@
     position: relative;
     top: -100%;
     box-shadow: 8px 8px 20px 0px #14141485;
-    transition: top .6s ease-in-out;
+    transition: top .5s ease-in-out;
 }
 
 .modal-show {

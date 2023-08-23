@@ -3,6 +3,7 @@ import { ctx } from "../listaenlazada";
 import modal from "../../estilos/modal.module.css"
 
 export class ModalClientes extends Componente {
+
     constructor(props) {
         super({ ...props, mostrar: false, error: {} })
         this.c = ctx.children;
@@ -12,13 +13,13 @@ export class ModalClientes extends Componente {
         this.c.contenedor.mostrarContenedor(() => {
             this.update({ mostrar: true });
             this.nombre.focus();
-        })
+        });
     }
 
     cerrar() {
         this.c.contenedor.cerrarContenedor(() => {
             this.update({ mostrar: false });
-        })
+        });
     }
 
     cambio(e) {
@@ -52,7 +53,8 @@ export class ModalClientes extends Componente {
                 <header className="d-flex justify-content-between">
                     <h1 className="card-title">Clientes</h1>
                     <button
-                        className="btn text-light bg-danger p-1 d-block rounded"
+                        className="btn text-light bg-danger p-1 d-flex justify-content-center align-items-center rounded"
+                        style={{ width: "20px", height: "25px" }}
                         onclick={this.cerrar.bind(this)}
                     >X</button>
                 </header>

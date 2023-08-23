@@ -14,9 +14,21 @@ export class Contenedor extends Componente {
 
     cerrarContenedor(cll) {
         cll();
-        setTimeout(() => {
-            this.update({ mostrar: false });
-        }, 600);
+
+        if (this.state.mostrar) {
+            setTimeout(() => {
+                this.update({ mostrar: false });
+            }, 600);
+        }
+
+    }
+
+    handleClick(e) {
+        if (e.target.id === "contenedorModal") {
+            this.state.children.forEach(modal => {
+                modal.cerrar();
+            })
+        }
     }
 
     render(props) {
@@ -24,7 +36,7 @@ export class Contenedor extends Componente {
         this.portal ?? (this.portal = document.getElementById("portal"));
 
         return crearPortal(
-            <article className={`${modal.contenedor} ${props.mostrar ? modal["contenedor-show"] : ""}`}>
+            <article id="contenedorModal" onclick={this.handleClick.bind(this)} className={`${modal.contenedor} ${props.mostrar ? modal["contenedor-show"] : ""}`}>
                 {props.children}
             </article>
             , this.portal

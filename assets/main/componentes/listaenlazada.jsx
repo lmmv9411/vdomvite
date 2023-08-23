@@ -89,7 +89,7 @@ export class ListaEnlazada extends Componente {
                 </article>
 
                 {
-                    this.c?.contenedor
+                    this.c?.modalClientes
                     ??
                     <Contenedor contextoNombre="contenedor">
                         <ModalClientes contextoNombre="modalClientes" />
