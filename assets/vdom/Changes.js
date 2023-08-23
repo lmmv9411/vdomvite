@@ -3,7 +3,7 @@ import { Componente } from "./Componente";
 import { render } from "./Render";
 import { Fragment, Portal } from "./VDom";
 
-let parent;
+let parent, indexFragment = null;
 
 export default function changes($parentNode, vOldNode, vNewNode) {
     parent = vNewNode;
@@ -61,10 +61,13 @@ function _changes($parentNode, vOldNode, vNewNode) {
             chNew = vNewNode.children[i];
             chOld = vOldNode.children[i];
 
+            $n = indexFragment ?? $parentNode.childNodes[i] ?? $parentNode;
+
+            indexFragment = indexFragment && null;
+
             if (chNew.type === Fragment) {
                 $n = $parentNode;
-            } else {
-                $n = $parentNode.childNodes[i] ?? $parentNode;
+                indexFragment = $parentNode.childNodes[i] ?? $parentNode;
             }
 
             if (chNew instanceof Componente) {
@@ -131,9 +134,9 @@ function _changes($parentNode, vOldNode, vNewNode) {
                 _changes($n, chOld, chNew);
             }
 
-            if (tmpParent) {
-                parent = tmpParent;
-            }
+            parent = tmpParent ?? parent;
+
+            indexFragment = null;
 
         }
     }

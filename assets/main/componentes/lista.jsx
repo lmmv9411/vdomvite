@@ -1,4 +1,5 @@
 import { Componente } from "../../vdom/Componente";
+import { Fragment } from "../../vdom/VDom";
 import { ContextoProveedor as CP } from "../contextos/proveedores";
 
 export class Lista extends Componente {
@@ -62,16 +63,16 @@ export class Lista extends Componente {
 
         return (
             <ul class="list-group list-group-flush p-3">
-                {props.values.map(item => {
-                    return (
-                        <li key={item.v} class={item.c}>
+                {props.values.map(item => (
+                    <Fragment key={item.v}>
+                        <li class={item.c}>
                             <spam>{item.v}</spam>
                             <button class="btn btn-warning" onclick={() => {
                                 CP.children.proveedores.agregar();
                             }}>Saludar</button>
                         </li>
-                    )
-                })}
+                    </Fragment>
+                ))}
             </ul>
         )
     }

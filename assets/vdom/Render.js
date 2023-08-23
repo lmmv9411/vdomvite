@@ -60,10 +60,6 @@ function _render(node) {
 
     recursividadHijos(node, $element);
 
-    if (node.type === Fragment) {
-        node.fragmento = [...$element.children]
-    }
-
     return $element;
 
 }

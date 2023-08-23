@@ -88,7 +88,7 @@ export class Proveedores extends Componente {
                         }}>Cambia Color</button>
                 </form>
 
-                <Lista contextoNombre="lista" />
+                {this.lista ?? (this.lista = <Lista contextoNombre="lista" />)}
 
                 {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
 
