@@ -1,10 +1,11 @@
 import { Componente } from "../../vdom/Componente";
 import { Fragment } from "../../vdom/VDom";
-import { ContextoProveedor as CP } from "../contextos/proveedores";
+import { ContextoProveedor } from "../contextos/proveedores";
 
 export class Lista extends Componente {
     constructor(props) {
         super({ ...props, values: [] });
+        this.cp = ContextoProveedor.children;
     }
 
     montado() {
@@ -67,9 +68,10 @@ export class Lista extends Componente {
                     <Fragment key={item.v}>
                         <li class={item.c}>
                             <spam>{item.v}</spam>
-                            <button class="btn btn-warning" onclick={() => {
-                                CP.children.proveedores.agregar();
-                            }}>Saludar</button>
+                            <button
+                                class="btn btn-warning"
+                                onclick={() => this.cp.proveedores.agregar()}
+                            >Saludar</button>
                         </li>
                     </Fragment>
                 ))}
