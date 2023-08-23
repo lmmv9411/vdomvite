@@ -13,7 +13,7 @@ function insertarElemento($parent, nodo) {
     }
 
     if (nodo.type === Fragment) {
-        nodo.fragmento = [...$ref.children]
+        nodo.fragmento = $ref.children.length ? [...$ref.children] : nodo.fragmento;
         $parent.append(...(nodo.fragmento));
     } else {
         $parent.appendChild($ref);
@@ -43,7 +43,7 @@ function reemplazarElemento($parent, nodo) {
 
     if (!$parent.hasChildNodes()) {
         if (nodo.type === Fragment) {
-            nodo.fragmento = [...$ref.children]
+            nodo.fragmento = $ref.children.length ? [...$ref.children] : nodo.fragmento;
             $parent.append(...(nodo.fragmento));
         } else {
             $parent.appendChild($ref);
@@ -51,7 +51,7 @@ function reemplazarElemento($parent, nodo) {
 
     } else {
         if (nodo.type === Fragment) {
-            nodo.fragmento = [...$ref.children]
+            nodo.fragmento = $ref.children.length ? [...$ref.children] : nodo.fragmento;
             $parent.replaceChildren(...(nodo.fragmento));
         } else {
             $parent.replaceChildren($ref)
