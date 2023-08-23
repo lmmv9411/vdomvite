@@ -13,9 +13,7 @@ function insertarElemento($parent, nodo) {
     }
 
     if (nodo.type === Fragment) {
-        const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento ?? [])
-        $parent.append(...hijos);
-        nodo.fragmento = [...$parent.children]
+        $parent.append(...(nodo.fragmento ?? []));
     } else {
         $parent.appendChild($ref);
     }
@@ -44,18 +42,14 @@ function reemplazarElemento($parent, nodo) {
 
     if (!$parent.hasChildNodes()) {
         if (nodo.type === Fragment) {
-            const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento ?? [])
-            $parent.append(...hijos);
-            nodo.fragmento = [...$parent.children]
+            $parent.append(...(nodo.fragmento ?? []));
         } else {
             $parent.appendChild($ref);
         }
 
     } else {
         if (nodo.type === Fragment) {
-            const hijos = Array.from($ref.children.length > 0 ? $ref.children : nodo.fragmento)
-            $parent.replaceChildren(...hijos);
-            nodo.fragmento = [...$parent.children]
+            $parent.replaceChildren(...(nodo.fragmento ?? []));
         } else {
             $parent.replaceChildren($ref)
         }
@@ -121,5 +115,7 @@ function h(type, props, ...children) {
 export const Portal = Symbol("Portal");
 
 export const Fragment = Symbol("Fragment");
+
+export const Contexto = Symbol("Contexto");
 
 export { reemplazarElemento, insertarElemento, h };

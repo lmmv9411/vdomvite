@@ -15,7 +15,7 @@ export class ListaEnlazada extends Componente {
     }
 
     render(props) {
-
+        
         !this.ctrl && (this.ctrl = cListaEnlazada(this));
 
         return (

@@ -1,7 +1,7 @@
 import { Componente } from "./Componente.js";
-import { Fragment, Portal } from "./VDom.js";
+import { Contexto, Fragment, Portal } from "./VDom.js";
 
-let parent;
+let parent, contexto;
 
 export function render(node, p) {
     parent = p ?? node;
@@ -60,6 +60,10 @@ function _render(node) {
 
     recursividadHijos(node, $element);
 
+    if (node.type === Fragment) {
+        node.fragmento = [...$element.children]
+    }
+
     return $element;
 
 }
@@ -73,20 +77,27 @@ function recursividadHijos(node, $element) {
         parent = node;
     }
 
+    if (node.is === Contexto) {
+        contexto = node;
+    }
+
     if (Array.isArray(node.children) && node.children.length > 0) {
 
-        node.children.map(_render).forEach(($children, i) => {
-            if ($children !== undefined) {
+        for (let ch of node.children) {
 
-                const ch = node.children[i];
+            const $children = _render(ch);
 
-                if (ch instanceof Componente) {
-                    ch.construido($children);
-                }
-
+            if ($children) {
                 $element.appendChild($children)
             }
-        });
+
+            if (ch instanceof Componente) {
+                ch.construido($children);
+                if (contexto) {
+                    contexto.padre.children[ch.state.contextoNombre] = ch;
+                }
+            }
+        }
 
     } else {
         if (node.children.length > 0) {
@@ -97,4 +108,10 @@ function recursividadHijos(node, $element) {
     if (tmpParent) {
         parent = tmpParent;
     }
+
+    if (node === contexto) {
+        contexto = null
+        delete node.padre;
+    }
+
 }
