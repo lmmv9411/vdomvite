@@ -15,7 +15,7 @@ export class ListaEnlazada extends Componente {
     }
 
     render(props) {
-        
+
         !this.ctrl && (this.ctrl = cListaEnlazada(this));
 
         return (
@@ -26,9 +26,11 @@ export class ListaEnlazada extends Componente {
                     <h2>{`Tamaño: ${this.size ?? 0}`}</h2>
                 </header>
 
-                <section className="d-flex gap-3 align-items-end flex-wrap">
+                <form id="frmLista" className="d-flex gap-3 align-items-end flex-wrap">
 
                     <input
+                        name="valor"
+                        autoComplete="off"
                         className="form-control text-light bg-dark"
                         type="text"
                         id="txtValor"
@@ -53,6 +55,8 @@ export class ListaEnlazada extends Componente {
                     </button>
 
                     <input
+                        name="valorEn"
+                        autoComplete="off"
                         className="form-control text-light bg-dark"
                         type="number"
                         placeholder="posición"
@@ -76,7 +80,7 @@ export class ListaEnlazada extends Componente {
                         Mostrar
                     </button>
 
-                </section>
+                </form>
 
                 <article className="p-3">
                     <ol className="list-group">

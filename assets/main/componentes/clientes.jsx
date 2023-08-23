@@ -95,6 +95,7 @@ export class Clientes extends Componente {
 
                     <div className="d-flex gap-3">
                         <input
+                            autoComplete="off"
                             $ref="email"
                             pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
                             required
