@@ -48,7 +48,7 @@ export class Lista extends Componente {
     agregarItem(item) {
 
         item = this.color(item);
-        const { proveedores } = CP.children;
+        const { proveedores } = this.c;
 
         if (!this.map.has(item.v.toLowerCase())) {
             this.map.set(item.v.toLowerCase(), item);
