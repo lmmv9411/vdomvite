@@ -29,8 +29,8 @@ export function cListaEnlazada(view) {
         }
     }
 
-    const agregarCola = () => {
-
+    const agregarCola = (e) => {
+        e.preventDefault();
         view.size++;
 
         let { cabeza, cola, valor } = view.state;
