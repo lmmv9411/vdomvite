@@ -30,6 +30,7 @@ export class Clientes extends Componente {
     cambio(e) {
 
         const input = e.target
+        const node = e.currentNode;
 
         const error = this.state.error;
         const newState = { [input.name]: input.value };
@@ -37,14 +38,21 @@ export class Clientes extends Componente {
         if (input.checkValidity()) {
             delete error[input.name]
         } else {
-            newState.error = { ...error, [input.name]: input.validity }
+            let msj;
+            for (let k of Object.keys(node.$errores)) {
+                if (input.validity[k]) {
+                    msj = node.$errores[k];
+                    break;
+                }
+            }
+            newState.error = { ...error, [input.name]: msj }
         }
 
         this.update(newState);
 
         if (Object.keys(newState.error).length > 0 &&
             newState.error[input.name] !== undefined) {
-            this[input.name]?.focus();
+            input?.focus();
         }
     }
 
@@ -56,12 +64,13 @@ export class Clientes extends Componente {
             <>
                 <form $ref="formulario" action="post" className={`d-flex flex-column p-2 mt-2 ${cls.form}`} autocomplete="off">
 
-                    {error?.nombre && <spam className="text-danger d-block">{
-                        error.nombre.valueMissing ? "Nombre obligatorio" :
-                            error.nombre.patternMismatch ? "Mínimo 3 caracteres" : "Error"
-                    }</spam>}
+                    {error?.nombre && <spam className="text-danger d-block">{error.nombre}</spam>}
 
                     <input
+                        $errores={{
+                            valueMissing: "Nombre obligatorio",
+                            patternMismatch: "Mínimo 3 caracteres"
+                        }}
                         $ref="nombre"
                         type="text"
                         required
@@ -72,13 +81,14 @@ export class Clientes extends Componente {
                         value={nombre.trim()}
                         onchange={this.cambio.bind(this)} />
 
-                    {error?.edad && <spam className="text-danger d-block">{
-                        error.edad.valueMissing ? "Edad obligatoria" :
-                            error.edad.rangeUnderflow ? "Mínimo 18" :
-                                error.edad.rangeOverflow ? "Máximo 50" : "Error"
-                    }</spam>}
+                    {error?.edad && <spam className="text-danger d-block">{error.edad}</spam>}
 
                     <input
+                        $errores={{
+                            valueMissing: "Edad obligatoria",
+                            rangeUnderflow: "Mínimo 18",
+                            rangeOverflow: "Máximo 50"
+                        }}
                         $ref="edad"
                         type="number"
                         required min={18} max={50}
@@ -88,13 +98,14 @@ export class Clientes extends Componente {
                         name="edad"
                         onchange={this.cambio.bind(this)} />
 
-                    {error?.email && <spam className="text-danger d-block">{
-                        error.email.valueMissing ? "Email obligatorio" :
-                            error.email.patternMismatch ? "Email inválido" : "Error"}
-                    </spam>}
+                    {error?.email && <spam className="text-danger d-block">{error.email}</spam>}
 
                     <div className="d-flex gap-3">
                         <input
+                            $errores={{
+                                valueMissing: "Email obligatorio",
+                                patternMismatch: "Email inválido"
+                            }}
                             autoComplete="off"
                             $ref="email"
                             pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
