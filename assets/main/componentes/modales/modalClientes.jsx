@@ -23,7 +23,7 @@ export class ModalClientes extends Componente {
             this.update({ animar: false });
             setTimeout(() => {
                 this.update({ mostrar: false });
-            }, 300)
+            }, 300);
         });
     }
 
