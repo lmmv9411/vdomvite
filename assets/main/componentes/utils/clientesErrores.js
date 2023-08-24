@@ -22,7 +22,7 @@ export function eliminarCliente(cliente, e) {
 
 }
 
-export function submitCliente(e) {
+export function submitCliente(errores, e) {
 
     e.preventDefault();
     e.stopPropagation();
