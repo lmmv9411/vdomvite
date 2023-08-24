@@ -89,7 +89,6 @@ export class Clientes extends Componente {
                             rangeUnderflow: "Mínimo 18",
                             rangeOverflow: "Máximo 50"
                         }}
-                        $ref="edad"
                         type="number"
                         required min={18} max={50}
                         className="form-control text-light bg-dark"
@@ -107,7 +106,6 @@ export class Clientes extends Componente {
                                 patternMismatch: "Email inválido"
                             }}
                             autoComplete="off"
-                            $ref="email"
                             pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
                             required
                             className="form-control text-light bg-dark"
