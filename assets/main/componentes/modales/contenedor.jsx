@@ -1,6 +1,5 @@
 import { Componente } from "../../../vdom/Componente";
 import { crearPortal } from "../../../vdom/Portal";
-import { Fragment } from "../../../vdom/VDom";
 import modal from "../../estilos/modal.module.css"
 
 export class Contenedor extends Componente {
