@@ -36,12 +36,8 @@ function _render(node) {
 
         for (let [k, v] of Object.entries(node.props)) {
 
-            if (k.startsWith("$")) {
-                if (k === "$ref") {
-                    parent[v] = $element;
-                } else {
-                    node[k] = v;
-                }
+            if (k === "$ref") {
+                parent[v] = $element;
             } else if (k.startsWith("on")) {
                 k = k.substring(2)
                 $element.addEventListener(k, (e) => {

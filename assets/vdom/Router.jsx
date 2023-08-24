@@ -41,14 +41,31 @@ const navigateTo = async (idContenedor, pathRoute, componentes) => {
     }
 
     if (!nombreClase) {
-        main.innerHTML = "";
-        main.appendChild(render(<p class="alert alert-danger" role="alert">Ruta No Encontrada</p>))
+        document.body.innerHTML = "";
+        document.body.appendChild(
+            render(
+                <div className="d-flex justify-content-center align-items-center vh-100">
+                    <span className="alert alert-danger" role="alert">
+                        {`Ruta no encontrada: "${nombreClase ?? location.pathname}"`}
+                    </span >
+                </div>));
         return;
     }
 
     document.title = nombreClase?.titulo;
 
-    await buscarRutaDinamica(main, nombreClase);
+    try {
+        await buscarRutaDinamica(main, nombreClase);
+    } catch (error) {
+        document.body.innerHTML = ""
+        document.body.appendChild(render(
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <span className="alert alert-danger" role="alert">
+                    {`${error.message}, clase: "${nombreClase.componente}"`}
+                </span >
+            </div>
+        ));
+    }
 
 }
 
@@ -66,10 +83,7 @@ const buscarRutaDinamica = async (main, nombreClase) => {
         try {
             modulo = await import(`../main/componentes/${nombreClase.componente.toLowerCase()}.jsx`)
         } catch (error) {
-            console.error(error);
-            main.innerHTML = "";
-            main.appendChild(render(<p class="alert alert-danger" role="alert">{error.message}</p>))
-            return;
+            throw new Error(`Ruta no encontrada: "/${nombreClase.componente.toLowerCase()}"`)
         }
 
         let instancia;

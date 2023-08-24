@@ -1,6 +1,7 @@
 import { Componente } from "../../vdom/Componente";
 import cls from "../estilos/clientes.module.css"
 import { Fragment } from "../../vdom/VDom";
+import { cambio, eliminarCliente, erroresClientes, submitCliente } from "./utils/clientesErrores";
 
 export class Clientes extends Componente {
     constructor(props) {
@@ -27,35 +28,6 @@ export class Clientes extends Componente {
             .then(data => this.update({ clientes: data }))
     }
 
-    cambio(e) {
-
-        const input = e.target
-        const node = e.currentNode;
-
-        const error = this.state.error;
-        const newState = { [input.name]: input.value };
-
-        if (input.checkValidity()) {
-            delete error[input.name]
-        } else {
-            let msj;
-            for (let k of Object.keys(node.$errores)) {
-                if (input.validity[k]) {
-                    msj = node.$errores[k];
-                    break;
-                }
-            }
-            newState.error = { ...error, [input.name]: msj }
-        }
-
-        this.update(newState);
-
-        if (Object.keys(newState.error).length > 0 &&
-            newState.error[input.name] !== undefined) {
-            input?.focus();
-        }
-    }
-
     render(props) {
 
         const { nombre, edad, email, clientes, error, chk } = props;
@@ -67,10 +39,6 @@ export class Clientes extends Componente {
                     {error?.nombre && <spam className="text-danger d-block">{error.nombre}</spam>}
 
                     <input
-                        $errores={{
-                            valueMissing: "Nombre obligatorio",
-                            patternMismatch: "Mínimo 3 caracteres"
-                        }}
                         $ref="nombre"
                         type="text"
                         required
@@ -79,33 +47,24 @@ export class Clientes extends Componente {
                         placeholder="nombre"
                         name="nombre"
                         value={nombre.trim()}
-                        onchange={this.cambio.bind(this)} />
+                        onchange={cambio.bind(this, erroresClientes)} />
 
                     {error?.edad && <spam className="text-danger d-block">{error.edad}</spam>}
 
                     <input
-                        $errores={{
-                            valueMissing: "Edad obligatoria",
-                            rangeUnderflow: "Mínimo 18",
-                            rangeOverflow: "Máximo 50"
-                        }}
                         type="number"
                         required min={18} max={50}
                         className="form-control text-light bg-dark"
                         placeholder="edad"
                         value={edad}
                         name="edad"
-                        onchange={this.cambio.bind(this)} />
+                        onchange={cambio.bind(this, erroresClientes)} />
 
                     {error?.email && <spam className="text-danger d-block">{error.email}</spam>}
 
                     <div className="d-flex gap-3">
                         <input
-                            $errores={{
-                                valueMissing: "Email obligatorio",
-                                patternMismatch: "Email inválido"
-                            }}
-                            autoComplete="off"
+                            autocomplete="off"
                             pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
                             required
                             className="form-control text-light bg-dark"
@@ -113,7 +72,7 @@ export class Clientes extends Componente {
                             placeholder="email"
                             value={email.trim()}
                             name="email"
-                            onchange={this.cambio.bind(this)} />
+                            onchange={cambio.bind(this, erroresClientes)} />
                         <div className="d-flex align-items-center justify-content-center gap-1">
                             <label htmlFor="miCheck">Seleccion</label>
                             <input type="checkbox" id="miCheck" checked={chk}
@@ -124,7 +83,8 @@ export class Clientes extends Componente {
                     <div className="d-flex gap-2">
                         <button
                             className="btn btn-primary"
-                            onclick={submit.bind(this)}
+                            type="submit"
+                            onclick={submitCliente.bind(this)}
                         >Click Me!
                         </button>
                     </div>
@@ -159,7 +119,7 @@ export class Clientes extends Componente {
                                                 <td>
                                                     <a className="btn btn-danger"
                                                         href="#"
-                                                        onclick={e => eliminar(e, cliente, this)}
+                                                        onclick={eliminarCliente.bind(this, cliente)}
                                                     >Eliminar</a>
                                                 </td>
                                             </tr>)
@@ -172,41 +132,4 @@ export class Clientes extends Componente {
         )
     }
 
-}
-
-function eliminar(e, cliente, a) {
-
-    e.preventDefault();
-    const filtro = a.state.clientes.filter(c => c !== cliente);
-    a.update({ clientes: filtro })
-
-}
-
-function submit(e) {
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const form = this.formulario;
-
-    if (!form.checkValidity()) {
-
-        const errores = {};
-
-        form.querySelectorAll("input").forEach(inp => {
-            if (!inp.checkValidity()) {
-                errores[inp.name] = inp.validity
-            }
-        })
-
-        this.update({ error: errores })
-
-    } else {
-        const { nombre, edad, email, clientes } = this.state
-        clientes.unshift({ nombre, edad, email })
-        //this.update({ nombre: "", edad: "", email: "" })
-        form.reset();
-        this.update({});
-        this.nombre.focus();
-    }
 }

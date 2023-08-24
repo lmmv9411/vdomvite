@@ -2,6 +2,8 @@ import { Componente } from "../../../vdom/Componente";
 import { ctx } from "../listaenlazada";
 import modal from "../../estilos/modal.module.css"
 import { Fragment } from "../../../vdom/VDom";
+import { erroresClientes } from "../utils/modalClientes";
+import { cambio } from "../utils/clientesErrores";
 
 export class ModalClientes extends Componente {
 
@@ -25,35 +27,6 @@ export class ModalClientes extends Componente {
                 this.update({ mostrar: false });
             }, 300);
         });
-    }
-
-    cambio(e) {
-
-        const input = e.target
-        const node = e.currentNode;
-
-        const error = this.state.error;
-        const newState = { [input.name]: input.value };
-
-        if (input.checkValidity()) {
-            delete error[input.name]
-        } else {
-            let msj;
-            for (let k of Object.keys(node.$errores)) {
-                if (input.validity[k]) {
-                    msj = node.$errores[k];
-                    break;
-                }
-            }
-            newState.error = { ...error, [input.name]: msj }
-        }
-
-        this.update(newState);
-
-        if (Object.keys(newState.error).length > 0 &&
-            newState.error[input.name] !== undefined) {
-            input.focus();
-        }
     }
 
     render(props) {
@@ -87,11 +60,7 @@ export class ModalClientes extends Componente {
 
                                 <label htmlFor="name">Name:</label>
                                 <input
-                                    $errores={{
-                                        tooShort: "Mínimo 4 caracteres",
-                                        valueMissing: "Nombre obligatorio"
-                                    }}
-                                    autoComplete="off"
+                                    autocomplete="off"
                                     className="form-control bg-dark text-light"
                                     type="text"
                                     name="name"
@@ -99,7 +68,7 @@ export class ModalClientes extends Componente {
                                     $ref="nombre"
                                     required
                                     minLength={4}
-                                    onchange={this.cambio.bind(this)}
+                                    onchange={cambio.bind(this, erroresClientes)}
                                     value={props.name ?? ""} />
                             </div>
                             <div>
@@ -108,13 +77,7 @@ export class ModalClientes extends Componente {
 
                                 <label htmlFor="phone">Telephone</label>
                                 <input
-                                    $errores={{
-                                        valueMissing: "Teléfono obligatorio.",
-                                        patternMismatch: 'Solo números del 0 al 9 y/o "+", "-", "(", ")".',
-                                        tooShort: "Mínimo 10 números.",
-                                        tooLong: "Máximo 10 números."
-                                    }}
-                                    autoComplete="off"
+                                    autocomplete="off"
                                     className="form-control bg-dark text-light"
                                     type="tel"
                                     name="phone"
@@ -124,7 +87,7 @@ export class ModalClientes extends Componente {
                                     maxLength={10}
                                     required
                                     value={props.phone ?? ""}
-                                    onchange={this.cambio.bind(this)} />
+                                    onchange={cambio.bind(this, erroresClientes)} />
                             </div>
                             <div className="d-flex gap-2">
 

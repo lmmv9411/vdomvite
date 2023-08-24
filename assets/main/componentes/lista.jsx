@@ -63,13 +63,13 @@ export class Lista extends Componente {
     render(props) {
 
         return (
-            <ul class="list-group list-group-flush p-3">
+            <ul className="list-group list-group-flush p-3">
                 {props.values.map(item => (
                     <Fragment key={item.v}>
-                        <li class={item.c}>
+                        <li className={item.c}>
                             <spam>{item.v}</spam>
                             <button
-                                class="btn btn-warning"
+                                className="btn btn-warning"
                                 onclick={() => this.cp.proveedores.agregar()}
                             >Saludar</button>
                         </li>
