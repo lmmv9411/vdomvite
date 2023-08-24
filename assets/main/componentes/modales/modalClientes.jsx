@@ -14,12 +14,16 @@ export class ModalClientes extends Componente {
         this.c.contenedor.mostrarContenedor(() => {
             this.update({ mostrar: true });
             this.nombre?.focus();
+            this.update({ animar: true });
         });
     }
 
     cerrar() {
         this.c.contenedor.cerrarContenedor(() => {
-            this.update({ mostrar: false });
+            this.update({ animar: false });
+            setTimeout(() => {
+                this.update({ mostrar: false });
+            }, 300)
         });
     }
 
@@ -49,10 +53,10 @@ export class ModalClientes extends Componente {
         const { error } = props;
 
         return (
-            <Fragment>
+            <>
                 {
                     props.mostrar ?
-                        <section className={`card p-3 bg-dark text-light w-75 ${modal.modal} ${props.mostrar ? modal["modal-show"] : ""}`}>
+                        <section className={`card p-3 bg-dark text-light w-75 ${modal.modal} ${props.animar ? modal["modal-show"] : ""}`}>
 
                             <header className="d-flex justify-content-between">
                                 <h1 className="card-title">Clientes</h1>
@@ -153,7 +157,7 @@ export class ModalClientes extends Componente {
                             </form>
                         </section> : null
                 }
-            </Fragment>
+            </>
         )
     }
 }

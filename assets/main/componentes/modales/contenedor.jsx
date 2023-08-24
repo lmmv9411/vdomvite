@@ -1,5 +1,6 @@
 import { Componente } from "../../../vdom/Componente";
 import { crearPortal } from "../../../vdom/Portal";
+import { Fragment } from "../../../vdom/VDom";
 import modal from "../../estilos/modal.module.css"
 
 export class Contenedor extends Componente {
@@ -36,7 +37,10 @@ export class Contenedor extends Componente {
         this.portal ?? (this.portal = document.getElementById("portal"));
 
         return crearPortal(
-            <article id="contenedorModal" onclick={this.handleClick.bind(this)} className={`${modal.contenedor} ${props.mostrar ? modal["contenedor-show"] : ""}`}>
+            <article
+                id="contenedorModal"
+                onclick={this.handleClick.bind(this)}
+                className={`${modal.contenedor} ${props.mostrar ? modal["contenedor-show"] : ""}`}>
                 {props.children}
             </article>
             , this.portal
