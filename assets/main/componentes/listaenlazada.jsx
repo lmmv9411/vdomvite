@@ -89,11 +89,14 @@ export class ListaEnlazada extends Componente {
                 </article>
 
                 {
-                    this.c?.modalClientes
+                    this.contenedor
                     ??
-                    <Contenedor contextoNombre="contenedor">
-                        <ModalClientes contextoNombre="modalClientes" />
-                    </Contenedor>
+                    (
+                        this.contenedor =
+                        <Contenedor contextoNombre="contenedor">
+                            <ModalClientes contextoNombre="modalClientes" />
+                        </Contenedor>
+                    )
                 }
             </ctx.Provider>
         )
