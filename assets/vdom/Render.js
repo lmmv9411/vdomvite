@@ -92,6 +92,9 @@ function recursividadHijos(node, $element) {
                 if (contexto) {
                     contexto.padre.children[ch.state.contextoNombre] = ch;
                 }
+                if (ch.type === Fragment) {
+                    ch.$fragment = $element;
+                }
             }
         }
 

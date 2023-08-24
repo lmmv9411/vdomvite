@@ -26,13 +26,13 @@ export class Componente {
         this.montado();
     }
 
-    montado() {
+    montado() { }
 
-    }
     update(newState) {
 
         const newNode = this.render(this.#copyState(newState));
-        const $ref = this.type === Fragment ? this.$fragment : this.$element;
+
+        const $ref = this.type === Fragment ? this.$fragment : this.$element
 
         changes($ref, this, newNode);
 
@@ -42,16 +42,14 @@ export class Componente {
 
         this.state = newState
 
-        if (this.type === Fragment) {
+        if (this.type === Fragment && this.fragmento) {
             this.fragmento = [...this.$fragment.children];
         }
 
         this.postRender();
     }
 
-    postRender() {
-
-    }
+    postRender() { }
 
     #copyState(newState) {
         for (let [k, v] of Object.entries(this.state)) {
