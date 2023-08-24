@@ -67,7 +67,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
             if (chNew && chNew.type === Fragment) {
                 $n = chNew.$fragment ?? $parentNode;
-                indexFragment = chNew?.$fragment?.childNodes[i] ?? $parentNode;
+                indexFragment = chNew?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
             }
 
             if (chNew && chNew instanceof Componente) {
