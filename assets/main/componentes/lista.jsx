@@ -1,6 +1,6 @@
 import { Componente } from "../../vdom/Componente";
 import { Fragment } from "../../vdom/VDom";
-import { ContextoProveedor } from "../contextos/proveedores";
+import { ContextoProveedor } from "./proveedores";
 
 export class Lista extends Componente {
     constructor(props) {
@@ -49,10 +49,11 @@ export class Lista extends Componente {
 
         item = this.color(item);
         const { proveedores } = this.cp;
+        const { values } = this.state;
 
         if (!this.map.has(item.v.toLowerCase())) {
             this.map.set(item.v.toLowerCase(), item);
-            this.update({ values: Array.from(this.map.values()) })
+            this.update({ values: [item, ...values] })
             proveedores.update({ error: null });
         } else {
             proveedores.update({ error: `¡Ya existe el item "${item.v}"!` })

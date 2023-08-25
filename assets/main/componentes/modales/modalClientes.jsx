@@ -60,7 +60,7 @@ export class ModalClientes extends Componente {
 
                                 <input
                                     autocomplete="off"
-                                    className="form-control"
+                                    className="form-control bg-dark text-light"
                                     type="text"
                                     name="name"
                                     placeholder="Nombre"
@@ -76,7 +76,7 @@ export class ModalClientes extends Componente {
 
                                 <input
                                     autocomplete="off"
-                                    className="form-control"
+                                    className="form-control bg-dark text-light"
                                     type="tel"
                                     name="phone"
                                     placeholder="Teléfono"

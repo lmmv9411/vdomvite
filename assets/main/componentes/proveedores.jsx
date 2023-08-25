@@ -17,7 +17,7 @@ export class Proveedores extends Componente {
 
     montado() {
         this.nombre.focus();
-        CP.children.proveedores = this;
+        ContextoProveedor.children.proveedores = this;
     }
 
     agregar(e) {
@@ -25,7 +25,7 @@ export class Proveedores extends Componente {
         e?.preventDefault();
         e?.stopPropagation();
 
-        const { lista } = CP.children;
+        const { lista } = ContextoProveedor.children;
         const { nombre } = this.state;
 
         if (!nombre) {
@@ -42,8 +42,11 @@ export class Proveedores extends Componente {
 
     render(props) {
 
+
         return (
-            <CP.Provider>
+            <ContextoProveedor.Provider>
+
+                {!props.quitarRef && <h1 $ref="h1">Prueba de $Referencia</h1>}
 
                 <form className="d-flex gap-2 p-3 flex-wrap" autocomplete="off">
 
@@ -55,46 +58,49 @@ export class Proveedores extends Componente {
                         $ref="nombre"
                         name="nombre"
                         type="text"
+                        placeholder="Valor"
                         value={props.nombre}
-                        className="form-control"
+                        className="form-control bg-dark text-light"
                         onchange={e => this.update({ nombre: e.target.value.trim() })} />
 
                     <button
-                        className="btn btn-primary"
-                        onclick={this.agregar.bind(this)}>Click Me!</button>
+                        className="btn btn-success"
+                        onclick={this.agregar.bind(this)}
+                    >Agregar</button>
 
                     <button
-                        className="btn btn-secondary"
+                        className="btn btn-warning"
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
                             this.update({ quitarRef: !this.state.quitarRef })
-                        }}>{!props.quitarRef ? "Quitar Referencia" : "Agregar Referencia"}</button>
+                        }}
+                    >{!props.quitarRef ? "Quitar Referencia" : "Agregar Referencia"}</button>
 
                     <button
-                        className="btn btn-secondary"
+                        className="btn btn-primary"
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
                             if (this.h1) {
                                 this.h1.textContent = this.state.nombre
                             }
-                        }}>Test Referencia</button>
+                        }}
+                    >Test Referencia</button>
 
                     <button
-                        className="btn btn-secondary"
+                        className="btn btn-info"
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            CP.children.lista.cambiarColor();
-                        }}>Cambia Color</button>
+                            ContextoProveedor.children.lista.cambiarColor();
+                        }}
+                    >Cambia Color</button>
                 </form>
 
                 {this.lista ?? (this.lista = <Lista contextoNombre="lista" />)}
 
-                {!props.quitarRef && <h1 $ref="h1">Prueba</h1>}
-
-            </CP.Provider >
+            </ContextoProveedor.Provider >
         )
     }
 

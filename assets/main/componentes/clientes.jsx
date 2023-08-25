@@ -43,7 +43,7 @@ export class Clientes extends Componente {
                         type="text"
                         required
                         pattern=".{3,}"
-                        className="form-control"
+                        className="form-control bg-dark text-light"
                         placeholder="Nombre"
                         name="nombre"
                         value={nombre.trim()}
@@ -54,10 +54,10 @@ export class Clientes extends Componente {
                     <input
                         type="number"
                         required min={18} max={50}
-                        className="form-control"
+                        className="form-control bg-dark text-light"
                         placeholder="Edad"
                         value={edad}
-                        name="Edad"
+                        name="edad"
                         onchange={cambio.bind(this, erroresClientes)} />
 
                     {error?.email && <spam className="text-danger d-block">{error.email}</spam>}
@@ -67,7 +67,7 @@ export class Clientes extends Componente {
                             autocomplete="off"
                             pattern="[a-zA-z0-9_\-]{4,}@[a-zA-Z]{4,}\.[a-zA-z]{3,4}"
                             required
-                            className="form-control"
+                            className="form-control bg-dark text-light"
                             type="email"
                             placeholder="Email"
                             value={email.trim()}
