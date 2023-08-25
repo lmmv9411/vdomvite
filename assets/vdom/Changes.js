@@ -114,6 +114,9 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         max = Math.max(on, nn);
 
                     } else if (nn < on) {
+
+                        $n = chNew.type === Fragment ? indexFragment : $n
+
                         $n.remove();
 
                         vOldNode.children.splice(i, 1);
@@ -123,6 +126,9 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         max = Math.max(on, nn);
                         i--;
                     } else {
+
+                        $n = chNew.type === Fragment ? indexFragment : $n
+
                         reemplazarNodo($n, chNew);
                         vOldNode.children[i] = chNew;
                     }
@@ -135,7 +141,6 @@ function _changes($parentNode, vOldNode, vNewNode) {
             }
 
             parent = tmpParent ?? parent;
-
             indexFragment = null;
 
         }

@@ -25,11 +25,9 @@ export class Lista extends Componente {
 
     cambiarColor() {
 
-        this.map.forEach((v, k) => {
-            this.map.set(k, this.color.call(this, v));
-        });
+        const valores = this.state.values.map(v => this.color(v));
 
-        this.update({ values: Array.from(this.map.values()) })
+        this.update({ values: valores })
     }
 
     color(item) {
@@ -61,6 +59,16 @@ export class Lista extends Componente {
 
     }
 
+    eliminar(key) {
+
+        if (this.map.has(key.toLowerCase())) {
+            const valores = this.state.values.filter(item => item.v !== key);
+            this.update({ values: valores });
+            this.map.delete(key.toLowerCase());
+        }
+
+    }
+
     render(props) {
 
         return (
@@ -73,6 +81,10 @@ export class Lista extends Componente {
                                 className="btn btn-warning"
                                 onclick={() => this.cp.proveedores.agregar()}
                             >Saludar</button>
+                            <button
+                                className="btn btn-danger"
+                                onclick={() => this.eliminar(item.v)}
+                            >Eliminar</button>
                         </li>
                     </Fragment>
                 ))}
