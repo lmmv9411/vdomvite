@@ -54,7 +54,7 @@ export class Proveedores extends Componente {
                         name="nombre"
                         type="text"
                         value={props.nombre}
-                        className="form-control bg-dark text-light"
+                        className="form-control"
                         onchange={e => this.update({ nombre: e.target.value.trim() })} />
 
                     <button

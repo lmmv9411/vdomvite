@@ -58,13 +58,12 @@ export class ModalClientes extends Componente {
 
                                 {error?.name && <spam className="text-danger d-block">{error.name}</spam>}
 
-                                <label htmlFor="name">Name:</label>
                                 <input
                                     autocomplete="off"
-                                    className="form-control bg-dark text-light"
+                                    className="form-control"
                                     type="text"
                                     name="name"
-                                    id="name"
+                                    placeholder="Nombre"
                                     $ref="nombre"
                                     required
                                     minLength={4}
@@ -75,13 +74,12 @@ export class ModalClientes extends Componente {
 
                                 {error?.phone && <spam className="text-danger d-block">{error.phone}</spam>}
 
-                                <label htmlFor="phone">Telephone</label>
                                 <input
                                     autocomplete="off"
-                                    className="form-control bg-dark text-light"
+                                    className="form-control"
                                     type="tel"
                                     name="phone"
-                                    id="phone"
+                                    placeholder="Teléfono"
                                     pattern="[0-9\+\-\(\)]*"
                                     minLength={10}
                                     maxLength={10}
@@ -93,7 +91,7 @@ export class ModalClientes extends Componente {
 
                                 <button
                                     className="btn btn-primary"
-                                    type="button"
+                                    type="submit"
                                     onclick={(e) => {
                                         e.preventDefault()
                                         e.stopPropagation();
@@ -104,13 +102,22 @@ export class ModalClientes extends Componente {
 
                                         if (!form.checkValidity()) {
 
+                                            let erroresII = {};
+
                                             form.querySelectorAll("input").forEach(inp => {
-                                                if (!inp.checkValidity()) {
-                                                    errores[inp.name] = inp.validity
+                                                let msj;
+                                                const inpErr = erroresClientes[inp.name];
+                                                for (let error of Object.keys(inpErr)) {
+                                                    if (inp.validity[error]) {
+                                                        msj = inpErr[error];
+                                                        break;
+                                                    }
                                                 }
+
+                                                erroresII[inp.name] = msj;
                                             })
 
-                                            this.update({ error: errores })
+                                            this.update({ error: erroresII })
                                         } else {
                                             console.log(this.state);
                                         }

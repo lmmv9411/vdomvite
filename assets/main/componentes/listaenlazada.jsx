@@ -31,7 +31,7 @@ export class ListaEnlazada extends Componente {
                     <input
                         name="valor"
                         autocomplete="off"
-                        className="form-control text-light bg-dark"
+                        className="form-control"
                         type="text"
                         id="txtValor"
                         $ref="txtValor"
@@ -57,7 +57,7 @@ export class ListaEnlazada extends Componente {
                     <input
                         name="valorEn"
                         autocomplete="off"
-                        className="form-control text-light bg-dark"
+                        className="form-control"
                         type="number"
                         placeholder="posición"
                         value={props.pos}
