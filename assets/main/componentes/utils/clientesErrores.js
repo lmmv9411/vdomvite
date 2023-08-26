@@ -1,4 +1,4 @@
-export const erroresClientes = {
+const erroresClientes = {
     nombre: {
         valueMissing: "Nombre obligatorio",
         patternMismatch: "Mínimo 3 caracteres"
@@ -14,7 +14,7 @@ export const erroresClientes = {
     }
 }
 
-export function eliminarCliente(cliente, e) {
+function eliminarCliente(cliente, e) {
 
     e.preventDefault();
     const filtro = this.state.clientes.filter(c => c !== cliente);
@@ -22,7 +22,7 @@ export function eliminarCliente(cliente, e) {
 
 }
 
-export function submitCliente(errores, e) {
+function submitCliente(errores, e) {
 
     e.preventDefault();
     e.stopPropagation();
@@ -61,7 +61,7 @@ export function submitCliente(errores, e) {
     }
 }
 
-export function cambio(errores, e) {
+function cambio(errores, e) {
 
     const input = e.target
 
@@ -71,8 +71,11 @@ export function cambio(errores, e) {
     if (input.checkValidity()) {
         delete error[input.name]
     } else {
+
         let msj;
+
         const inpErr = errores[input.name];
+
         for (let error of Object.keys(inpErr)) {
             if (input.validity[error]) {
                 msj = inpErr[error];
@@ -81,12 +84,11 @@ export function cambio(errores, e) {
         }
 
         newState.error = { ...error, [input.name]: msj }
+        input?.focus();
     }
 
     this.update(newState);
 
-    if (Object.keys(newState.error).length > 0 &&
-        newState.error[input.name] !== undefined) {
-        input?.focus();
-    }
 }
+
+export { eliminarCliente, erroresClientes, cambio, submitCliente };

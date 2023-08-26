@@ -73,11 +73,17 @@ export class Clientes extends Componente {
                             value={email.trim()}
                             name="email"
                             onchange={cambio.bind(this, erroresClientes)} />
-                        <div className="d-flex align-items-center justify-content-center gap-1">
-                            <label htmlFor="miCheck">Seleccion</label>
-                            <input type="checkbox" id="miCheck" checked={chk}
-                                onclick={() => this.update({ chk: !this.state.chk })} />
-                        </div>
+
+                        <label className="d-flex align-items-center justify-content-center gap-2">
+                            <span>Seleccion</span>
+                            <input
+                                type="checkbox"
+                                checked={chk}
+                                defaultChecked={true}
+                                onclick={() => this.update({ chk: !this.state.chk })}
+                            />
+                        </label>
+
                     </div>
 
                     <div className="d-flex gap-2">
@@ -89,7 +95,7 @@ export class Clientes extends Componente {
                         </button>
                     </div>
 
-                </form>
+                </form >
 
                 <div className={`overflow-x-auto overflow-y-hidden m-2
                     ${clientes.length == 0 ? "d-flex justify-content-center" : ""}`.trim()}>
