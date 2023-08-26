@@ -1,138 +1,143 @@
 import { Componente } from "./Componente.js";
 import { Contexto, Fragment, Portal } from "./VDom.js";
 
-let parent, contexto, $parent;
+export const VDOM = (function () {
 
-/**
- * Convierte Objeto jsx en objeto html.
- * @param {Object} node Objeto jsx.
- * @param {Object} p Padre del "node".
- * @param {HTMLElement} $nodeParent Elemento Html referencia del padre.
- * @returns {HTMLElement} Elemento Html;
- */
-export function render(node, p, $nodeParent) {
-    parent = p ?? node;
-    $parent = $nodeParent;
-    return _render(node);
-}
+    let parent, contexto, $parent;
 
-function _render(node) {
+    /**
+     * Convierte Objeto jsx en objeto html.
+     * @param {Object} node Objeto jsx.
+     * @param {Object} p Padre del "node".
+     * @param {HTMLElement} $nodeParent Elemento Html referencia del padre.
+     * @returns {HTMLElement} Elemento Html;
+     */
+    const render = function (node, p, $nodeParent) {
+        parent = p ?? node;
+        $parent = $nodeParent;
+        return _render(node);
+    }
 
-    if (!node || !node.type) {
-        if (typeof node === "string" || typeof node === "number") {
-            return document.createTextNode(node);
+    const _render = function (node) {
+
+        if (!node || !node.type) {
+            if (typeof node === "string" || typeof node === "number") {
+                return document.createTextNode(node);
+            }
+            return;
         }
-        return;
-    }
 
-    if (Array.isArray(node)) {
-        return node.map(_render);
-    }
+        if (Array.isArray(node)) {
+            return node.map(_render);
+        }
 
-    let $element;
+        let $element;
 
-    if (node.type === Fragment) {
-        $element = document.createDocumentFragment();
-        node.$fragment = $parent;
-    } else if (node.type === Portal) {
-        recursividadHijos(node, node.$element);
-        return;
-    } else {
-        $element = document.createElement(node.type);
-    }
+        if (node.type === Fragment) {
+            $element = document.createDocumentFragment();
+            node.$fragment = $parent;
+        } else if (node.type === Portal) {
+            recursividadHijos(node, node.$element);
+            return;
+        } else {
+            $element = document.createElement(node.type);
+        }
 
-    if (!!node.props && typeof node.props === 'object') {
+        if (!!node.props && typeof node.props === 'object') {
 
-        for (let [k, v] of Object.entries(node.props)) {
+            for (let [k, v] of Object.entries(node.props)) {
 
-            if (k === "$ref") {
-                parent[v] = $element;
-            } else if (k.startsWith("on")) {
-                k = k.substring(2)
-                $element.addEventListener(k, v);
-            } else {
-                if (k in $element) {
-                    if (typeof v === "object") {
-                        Object.entries(v).forEach(([key, value]) => {
-                            $element[k][key] = value;
-                        })
-                    } else {
-                        $element[k] = v;
-                    }
+                if (k === "$ref") {
+                    parent[v] = $element;
+                } else if (k.startsWith("on")) {
+                    k = k.substring(2)
+                    $element.addEventListener(k, v);
                 } else {
-                    $element.setAttribute(k, v)
+                    if (k in $element) {
+                        if (typeof v === "object") {
+                            Object.entries(v).forEach(([key, value]) => {
+                                $element[k][key] = value;
+                            })
+                        } else {
+                            $element[k] = v;
+                        }
+                    } else {
+                        $element.setAttribute(k, v)
+                    }
                 }
             }
+
         }
 
+        recursividadHijos(node, $element);
+
+        if (node.type === Fragment) {
+            node.fragmento = [...$element.children];
+        }
+
+        return $element;
+
     }
 
-    recursividadHijos(node, $element);
+    /**
+     * Recorre los hijos de un nodo y los renderiza al $element padre.
+     * @param {Object} node Nodo padre.
+     * @param {HTMLElement} $element Html Elemento del padre.
+     * @returns {void}
+     */
+    const recursividadHijos = function (node, $element) {
 
-    if (node.type === Fragment) {
-        node.fragmento = [...$element.children];
-    }
+        let tmpParent, $tmpParent = $parent;
 
-    return $element;
+        if (node instanceof Componente) {
+            tmpParent = parent;
+            parent = node;
+        }
 
-}
+        if ($element.nodeName !== "#document-fragment") {
+            $parent = $element;
+        }
 
-/**
- * Recorre los hijos de un nodo y los renderiza al $element padre.
- * @param {Object} node Nodo padre.
- * @param {HTMLElement} $element Html Elemento del padre.
- * @returns {void}
- */
-function recursividadHijos(node, $element) {
+        if (node.is === Contexto) {
+            contexto = node;
+        }
 
-    let tmpParent, $tmpParent = $parent;
+        if (Array.isArray(node.children) && node.children.length > 0) {
 
-    if (node instanceof Componente) {
-        tmpParent = parent;
-        parent = node;
-    }
+            for (let ch of node.children) {
 
-    if ($element.nodeName !== "#document-fragment") {
-        $parent = $element;
-    }
+                const $children = _render(ch);
 
-    if (node.is === Contexto) {
-        contexto = node;
-    }
+                if ($children) {
+                    $element.appendChild($children)
+                }
 
-    if (Array.isArray(node.children) && node.children.length > 0) {
-
-        for (let ch of node.children) {
-
-            const $children = _render(ch);
-
-            if ($children) {
-                $element.appendChild($children)
-            }
-
-            if (ch instanceof Componente) {
-                ch.construido($children);
-                if (contexto) {
-                    contexto.padre.children[ch.state.contextoNombre] = ch;
+                if (ch instanceof Componente) {
+                    ch.construido($children);
+                    if (contexto) {
+                        contexto.padre.children[ch.state.contextoNombre] = ch;
+                    }
                 }
             }
+
+        } else {
+            if (node.children.length > 0) {
+                $element.textContent = node.children;
+            }
         }
 
-    } else {
-        if (node.children.length > 0) {
-            $element.textContent = node.children;
+        if (tmpParent) {
+            parent = tmpParent;
         }
+
+        if (node === contexto) {
+            contexto = null
+            delete node.padre;
+        }
+
+        $parent = $tmpParent;
+
     }
 
-    if (tmpParent) {
-        parent = tmpParent;
-    }
-
-    if (node === contexto) {
-        contexto = null
-        delete node.padre;
-    }
-
-    $parent = $tmpParent;
-
-}
+    return { render };
+})();

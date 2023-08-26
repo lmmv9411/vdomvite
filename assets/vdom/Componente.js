@@ -1,4 +1,4 @@
-import changes from "./Changes.js";
+import { reconciliacion } from "./updateDOM.js";
 import { Fragment } from "./VDom.js"
 
 export class Componente {
@@ -28,13 +28,18 @@ export class Componente {
 
     montado() { }
 
+    /**
+     * Actualizar el DOM si hay cambios en el estado.
+     * @param {Object} newState nuevo estado ha crear
+     * @returns {void}
+     */
     update(newState) {
 
         const newNode = this.render(this.#copyState(newState));
 
         const $ref = this.type === Fragment ? this.$fragment : this.$element
 
-        changes($ref, this, newNode);
+        reconciliacion.updateDOM($ref, this, newNode);
 
         for (let [k, v] of Object.entries(newNode)) {
             this[k] = v;

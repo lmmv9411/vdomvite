@@ -1,4 +1,4 @@
-import { render } from "./Render.js";
+import { VDOM } from "./Render";
 
 function insertarElemento($parent, nodo) {
 
@@ -7,7 +7,7 @@ function insertarElemento($parent, nodo) {
     let $ref;
 
     if (!tmp) {
-        $ref = render(nodo, null, $parent);
+        $ref = VDOM.render(nodo, null, $parent);
     }
 
     if (nodo.type === Fragment) {
@@ -29,7 +29,7 @@ function reemplazarElemento($parent, nodo) {
     let $ref;
 
     if (!tmp) {
-        $ref = render(nodo, null, $parent);
+        $ref = VDOM.render(nodo, null, $parent);
     }
 
     if (!$parent.hasChildNodes()) {

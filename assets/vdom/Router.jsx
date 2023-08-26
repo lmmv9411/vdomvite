@@ -1,4 +1,4 @@
-import { render } from "./Render";
+import { VDOM } from "./Render";
 import { Fragment, reemplazarElemento } from "./VDom";
 
 const instancias = [];
@@ -10,7 +10,7 @@ const estilos = {
     position: "absolute"
 }
 
-const load = render(
+const load = VDOM.render(
     <div style={estilos}>
         <div className="spinner-border text-primary" role="status">
             <span className="sr-only"></span>
@@ -43,7 +43,7 @@ const navigateTo = async (idContenedor, pathRoute, componentes) => {
     if (!nombreClase) {
         document.body.innerHTML = "";
         document.body.appendChild(
-            render(
+            VDOM.render(
                 <div className="d-flex justify-content-center align-items-center vh-100">
                     <span className="alert alert-danger" role="alert">
                         {`Ruta no encontrada: "${nombreClase ?? location.pathname}"`}
@@ -58,7 +58,7 @@ const navigateTo = async (idContenedor, pathRoute, componentes) => {
         await buscarRutaDinamica(main, nombreClase);
     } catch (error) {
         document.body.innerHTML = ""
-        document.body.appendChild(render(
+        document.body.appendChild(VDOM.render(
             <div className="d-flex justify-content-center align-items-center vh-100">
                 <span className="alert alert-danger" role="alert">
                     {`${error.message}, clase: "${nombreClase.componente}"`}
