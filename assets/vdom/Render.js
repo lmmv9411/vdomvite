@@ -51,10 +51,7 @@ function _render(node) {
                 parent[v] = $element;
             } else if (k.startsWith("on")) {
                 k = k.substring(2)
-                $element.addEventListener(k, (e) => {
-                    e.currentNode = node;
-                    v(e)
-                });
+                $element.addEventListener(k, v);
             } else {
                 if (k in $element) {
                     if (typeof v === "object") {
