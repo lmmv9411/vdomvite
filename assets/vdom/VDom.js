@@ -2,28 +2,21 @@ import { render } from "./Render.js";
 
 function insertarElemento($parent, nodo) {
 
-    const tmp = nodo.$element;
+    const tmp = nodo.$element ?? nodo.$fragment;
 
     let $ref;
 
     if (!tmp) {
-        $ref = render(nodo);
-    } else {
-        $ref = tmp;
+        $ref = render(nodo, null, $parent);
     }
 
     if (nodo.type === Fragment) {
-        nodo.fragmento = $ref.children.length ? [...$ref.children] : nodo.fragmento;
-        $parent.append(...(nodo.fragmento));
+        $parent.append(...nodo.fragmento);
     } else {
         $parent.appendChild($ref);
     }
 
-    if (nodo.type === Fragment) {
-        nodo.$fragment = $parent;
-    }
-
-    if (!tmp) {
+    if (!tmp && nodo.construido) {
         nodo.construido($ref);
     }
 
@@ -31,35 +24,26 @@ function insertarElemento($parent, nodo) {
 
 function reemplazarElemento($parent, nodo) {
 
-    const tmp = nodo.$element;
+    const tmp = nodo.$element ?? nodo.$fragment;
 
     let $ref;
 
     if (!tmp) {
-        $ref = render(nodo);
-    } else {
-        $ref = tmp;
+        $ref = render(nodo, null, $parent);
     }
 
     if (!$parent.hasChildNodes()) {
         if (nodo.type === Fragment) {
-            nodo.fragmento = $ref.children.length ? [...$ref.children] : nodo.fragmento;
-            $parent.append(...(nodo.fragmento));
+            $parent.appendChild(...nodo.fragmento);
         } else {
             $parent.appendChild($ref);
         }
-
     } else {
         if (nodo.type === Fragment) {
-            nodo.fragmento = $ref.children.length ? [...$ref.children] : nodo.fragmento;
-            $parent.replaceChildren(...(nodo.fragmento));
+            $parent.replaceChildren(...nodo.fragmento);
         } else {
-            $parent.replaceChildren($ref)
+            $parent.replaceChildren($ref);
         }
-    }
-
-    if (nodo.type === Fragment) {
-        nodo.$fragment = $parent;
     }
 
     if (!tmp && nodo.construido) {

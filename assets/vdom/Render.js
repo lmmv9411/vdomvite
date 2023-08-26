@@ -1,10 +1,18 @@
 import { Componente } from "./Componente.js";
 import { Contexto, Fragment, Portal } from "./VDom.js";
 
-let parent, contexto;
+let parent, contexto, $parent;
 
-export function render(node, p) {
+/**
+ * Convierte Objeto jsx en objeto html.
+ * @param {Object} node Objeto jsx.
+ * @param {Object} p Padre del "node".
+ * @param {HTMLElement} parent Elemento Html referencia del padre.
+ * @returns {HTMLElement} Elemento Html;
+ */
+export function render(node, p, $nodeParent) {
     parent = p ?? node;
+    $parent = $nodeParent;
     return _render(node);
 }
 
@@ -25,6 +33,9 @@ function _render(node) {
 
     if (node.type === Fragment) {
         $element = document.createDocumentFragment();
+        if (node instanceof Componente) {
+            node.$fragment = $parent;
+        }
     } else if (node.type === Portal) {
         recursividadHijos(node, node.$element);
         return;
@@ -63,17 +74,32 @@ function _render(node) {
 
     recursividadHijos(node, $element);
 
+    if (node.type === Fragment && node instanceof Componente) {
+        node.fragmento = [...$element.children];
+    }
+
     return $element;
 
 }
 
+/**
+ * Recorre los hijos de un nodo y los renderiza al $element padre.
+ * @param {Object} node Nodo padre.
+ * @param {HTMLElement} $element Html Elemento del padre.
+ * @returns {void}
+ */
 function recursividadHijos(node, $element) {
 
-    let tmpParent;
+    let tmpParent, $tmpParent = $parent;
 
     if (node instanceof Componente) {
+
         tmpParent = parent;
         parent = node;
+
+        if ($element.nodeName !== "#document-fragment") {
+            $parent = $element;
+        }
     }
 
     if (node.is === Contexto) {
@@ -95,9 +121,6 @@ function recursividadHijos(node, $element) {
                 if (contexto) {
                     contexto.padre.children[ch.state.contextoNombre] = ch;
                 }
-                if (ch.type === Fragment) {
-                    ch.$fragment = $element;
-                }
             }
         }
 
@@ -115,5 +138,7 @@ function recursividadHijos(node, $element) {
         contexto = null
         delete node.padre;
     }
+
+    $parent = $tmpParent;
 
 }
