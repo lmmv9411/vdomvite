@@ -115,7 +115,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
 
                     } else if (nn < on) {
 
-                        $n = chNew.type === Fragment ? indexFragment : $n
+                        $n = chNew?.type === Fragment ? indexFragment : $n
 
                         $n.remove();
 
@@ -127,7 +127,7 @@ function _changes($parentNode, vOldNode, vNewNode) {
                         i--;
                     } else {
 
-                        $n = chNew.type === Fragment ? indexFragment : $n
+                        $n = chNew?.type === Fragment ? indexFragment : $n
 
                         reemplazarNodo($n, chNew);
                         vOldNode.children[i] = chNew;
