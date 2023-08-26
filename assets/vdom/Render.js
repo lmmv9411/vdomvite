@@ -33,9 +33,7 @@ function _render(node) {
 
     if (node.type === Fragment) {
         $element = document.createDocumentFragment();
-        if (node instanceof Componente) {
-            node.$fragment = $parent;
-        }
+        node.$fragment = $parent;
     } else if (node.type === Portal) {
         recursividadHijos(node, node.$element);
         return;
@@ -71,7 +69,7 @@ function _render(node) {
 
     recursividadHijos(node, $element);
 
-    if (node.type === Fragment && node instanceof Componente) {
+    if (node.type === Fragment) {
         node.fragmento = [...$element.children];
     }
 
@@ -90,13 +88,12 @@ function recursividadHijos(node, $element) {
     let tmpParent, $tmpParent = $parent;
 
     if (node instanceof Componente) {
-
         tmpParent = parent;
         parent = node;
+    }
 
-        if ($element.nodeName !== "#document-fragment") {
-            $parent = $element;
-        }
+    if ($element.nodeName !== "#document-fragment") {
+        $parent = $element;
     }
 
     if (node.is === Contexto) {
