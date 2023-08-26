@@ -7,7 +7,7 @@ let parent, contexto, $parent;
  * Convierte Objeto jsx en objeto html.
  * @param {Object} node Objeto jsx.
  * @param {Object} p Padre del "node".
- * @param {HTMLElement} parent Elemento Html referencia del padre.
+ * @param {HTMLElement} $nodeParent Elemento Html referencia del padre.
  * @returns {HTMLElement} Elemento Html;
  */
 export function render(node, p, $nodeParent) {
