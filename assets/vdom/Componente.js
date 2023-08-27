@@ -31,16 +31,6 @@ export class Componente {
    * @param {Object} newState nuevo estado ha crear
    * @returns {void}
    */
-
-    setState(callBack) {
-
-        if (typeof callBack === "function") {
-            this.update(callBack(this.state));
-        } else if (typeof callBack === "object") {
-            this.update(callBack);
-        }
-    }
-
     update(newState) {
 
         this.#copyState(newState)

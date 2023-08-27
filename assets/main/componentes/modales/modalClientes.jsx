@@ -14,9 +14,9 @@ export class ModalClientes extends Componente {
 
     abrir() {
         this.c.contenedor.mostrarContenedor(() => {
-            this.setState({ mostrar: true })
+            this.update({ mostrar: true })
             this.nombre?.focus();
-            this.setState({ animar: true })
+            this.update({ animar: true })
         });
     }
 
