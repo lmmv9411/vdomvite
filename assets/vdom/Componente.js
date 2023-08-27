@@ -13,7 +13,7 @@ export class Componente {
             this[k] = v;
         }
 
-        Object.freeze(this.state);
+        // Object.freeze(this.state);
 
     }
 
@@ -35,17 +35,12 @@ export class Componente {
      */
     update(newState) {
 
-        const newNode = this.render(this.#copyState(newState));
+        this.#copyState(newState)
+        const newNode = this.render(this.state);
 
         const $ref = this.type === Fragment ? this.$fragment : this.$element
 
         reconciliacion.updateDOM($ref, this, newNode);
-
-        for (let [k, v] of Object.entries(newNode)) {
-            this[k] = v;
-        }
-
-        this.state = newState
 
         if (this.type === Fragment && this.fragmento) {
             this.fragmento = [...this.$fragment.children];
@@ -57,12 +52,12 @@ export class Componente {
     postRender() { }
 
     #copyState(newState) {
-        for (let [k, v] of Object.entries(this.state)) {
-            if (newState[k] === undefined) {
-                newState[k] = v
+
+        for (let k of Object.keys(newState)) {
+            if (!k in this.state || newState[k] !== this.state[k]) {
+                this.state[k] = newState[k];
             }
         }
-        return newState;
     }
 
 }

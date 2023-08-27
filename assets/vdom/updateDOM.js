@@ -9,11 +9,20 @@ export const reconciliacion = (function () {
     let parent, indexFragment = null;
 
     const updateDOM = function ($parentNode, vOldNode, vNewNode) {
-        parent = vNewNode;
+        parent = vOldNode;
         _updateDOM($parentNode, vOldNode, vNewNode);
     }
 
-    const _updateDOM = function ($parentNode, vOldNode, vNewNode) {
+    /**
+     * Comparar nodos virtual y reflejar cambios en DOM.
+     * @param {HTMLElement} $parentNode Nodo del DOM, referencia de los nodos a comparar.
+     * @param {Object} vOldNode Nodo Virtual antiguo.
+     * @param {Object} vNewNode Nodo Virtual nuevo
+     * @param {Object} padre Padre de los dos nodo virtuales.
+     * @param {Number} idx Índice de los hijos del padre.
+     * @returns {Boolean} retorna true si hubo cambios;
+     */
+    const _updateDOM = function ($parentNode, vOldNode, vNewNode, padre = null, idx = null) {
 
         if (vNewNode && vNewNode.type === Portal) {
             $parentNode = vNewNode.$element;
@@ -23,12 +32,14 @@ export const reconciliacion = (function () {
             (vOldNode === undefined && vNewNode === undefined) ||
             (vOldNode === null && vNewNode === null) ||
             compararNodos(vOldNode, vNewNode)) {
-            return;
+            return false;
         }
 
         if (vNewNode === undefined || vNewNode === null) {
 
             $parentNode.remove();
+            padre && (padre.children.splice(idx, 1))
+            return true;
 
         } else if (vOldNode === undefined || vOldNode === null) {
 
@@ -44,17 +55,27 @@ export const reconciliacion = (function () {
                 setReff(vNewNode, $ref);
             }
 
+            padre && (padre.children.splice(idx, 0, vNewNode))
+
+            return true;
+
         } else if (sonDiferentes(vOldNode, vNewNode)) {
 
             reemplazarNodo($parentNode, vNewNode);
 
+            padre && (padre.children[idx] = vNewNode)
+
+            return true;
+
         } else {
 
-            compararAtributos($parentNode, vOldNode, vNewNode);
+            let respuesta = false, respuestaRecursiva = false, respuestaFinal = false;
+            respuesta = compararAtributos($parentNode, vOldNode, vNewNode);
 
-            let sizeChildrenOldNode = vOldNode.children?.length ?? 0;
-            let sizeChildrenNewNode = vNewNode.children?.length ?? 0;
-            let maxSizeChildren = Math.max(sizeChildrenOldNode, sizeChildrenNewNode);
+            let { sizeChildrenOldNode,
+                sizeChildrenNewNode,
+                maxSizeChildren } = getSizeChildren(vOldNode, vNewNode)
+
             let $refChildren = null;
             let childrenOld, childrenNew;
 
@@ -118,9 +139,7 @@ export const reconciliacion = (function () {
 
                             vOldNode.children.splice(i, 0, childrenNew);
 
-                            sizeChildrenOldNode = vOldNode.children?.length ?? 0;
-                            sizeChildrenNewNode = vNewNode.children?.length ?? 0;
-                            maxSizeChildren = Math.max(sizeChildrenOldNode, sizeChildrenNewNode);
+                            respuesta = true;
 
                         } else if (sizeChildrenNewNode < sizeChildrenOldNode) {
 
@@ -130,31 +149,47 @@ export const reconciliacion = (function () {
 
                             vOldNode.children.splice(i, 1);
 
-                            sizeChildrenOldNode = vOldNode.children?.length ?? 0;
-                            sizeChildrenNewNode = vNewNode.children?.length ?? 0;
-                            maxSizeChildren = Math.max(sizeChildrenOldNode, sizeChildrenNewNode);
                             i--;
+
+                            respuesta = true;
                         } else {
 
                             $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
-
                             reemplazarNodo($refChildren, childrenNew);
                             vOldNode.children[i] = childrenNew;
+                            respuesta = true;
                         }
                     } else {
-                        _updateDOM($refChildren, childrenOld, childrenNew);
+                        respuestaRecursiva = _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
                     }
 
                 } else {
-                    _updateDOM($refChildren, childrenOld, childrenNew);
+                    respuestaRecursiva = _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
+                }
+
+                if (respuesta || respuestaRecursiva) {
+                    const newSizeValues = getSizeChildren(vOldNode, vNewNode);
+                    sizeChildrenOldNode = newSizeValues.sizeChildrenOldNode;
+                    sizeChildrenNewNode = newSizeValues.sizeChildrenNewNode;
+                    maxSizeChildren = newSizeValues.maxSizeChildren;
+                    respuestaFinal = true;
                 }
 
                 parent = tmpParent ?? parent;
                 indexFragment = null;
 
             }
+
+            return respuesta || respuestaRecursiva || respuestaFinal;
         }
 
+    }
+
+    const getSizeChildren = function (vOldNode, vNewNode) {
+        let sizeChildrenOldNode = vOldNode?.children?.length ?? 0;
+        let sizeChildrenNewNode = vNewNode?.children?.length ?? 0;
+        let maxSizeChildren = Math.max(sizeChildrenOldNode, sizeChildrenNewNode);
+        return { sizeChildrenNewNode, sizeChildrenOldNode, maxSizeChildren }
     }
 
     const sonDiferentes = function (vOldNode, vNewNode) {
@@ -197,13 +232,15 @@ export const reconciliacion = (function () {
      * @param {HTMLElement} $node Referencia al DOM del elemento a comparar.
      * @param {Object} vOldNode Antiguo estado del VDOM.
      * @param {Object} vNewNode Nuevo estado del VDOM.
-     * @returns {void}
+     * @returns {Boolean} retorna true si hubo cambios.
      */
     const compararAtributos = function ($node, vOldNode, vNewNode) {
 
         if (!vOldNode || !vNewNode) {
-            return;
+            return false;
         }
+
+        let respuesta = false;
 
         for (let att in vOldNode.props) {
             if ((!vNewNode.props) || !(att in vNewNode.props)) {
@@ -214,17 +251,24 @@ export const reconciliacion = (function () {
                     continue
                 } else if (att === "$ref") {
                     parent[v] = null;
+                    respuesta = true;
                 } else {
                     if (!att in $node) {
                         $node.removeAttribute(att);
+                        delete vOldNode.props[att]
+                        respuesta = true;
                     } else {
 
                         if (typeof v === "object") {
                             Object.keys(v).forEach((key) => {
                                 $node[att][key] = "";
+                                delete vOldNode.props[att][key]
+                                respuesta = true;
                             })
                         } else {
                             $node[att] = "";
+                            delete vOldNode.props[att]
+                            respuesta = true;
                         }
 
                     }
@@ -233,7 +277,6 @@ export const reconciliacion = (function () {
             }
 
         }
-
 
         for (let att in vNewNode.props) {
             if (!vOldNode.props
@@ -258,21 +301,30 @@ export const reconciliacion = (function () {
                         if (typeof v === "object") {
                             Object.entries(v).forEach(([key, value]) => {
                                 $node[att][key] = value;
+                                vOldNode.props[att][key] = v;
+                                respuesta = true;
                             })
                         } else {
                             $node[att] = v;
+                            vOldNode.props[att] = v;
+                            respuesta = true;
                         }
 
                     } else {
                         $node.setAttribute(att, v);
+                        vOldNode.props[att] = v;
+                        respuesta = true;
                     }
 
                 } else {
                     parent[v] = $node;
+                    respuesta = true;
                 }
 
             }
         }
+
+        return respuesta;
     }
 
     return { updateDOM };
