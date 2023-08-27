@@ -13,8 +13,6 @@ export class Componente {
             this[k] = v;
         }
 
-        Object.freeze(this.state);
-
     }
 
     /**
@@ -29,17 +27,25 @@ export class Componente {
     montado() { }
 
     /**
-     * Actualizar el DOM si hay cambios en el estado.
-     * @param {Object} newState nuevo estado ha crear
-     * @returns {void}
-     */
+   * Actualizar el DOM si hay cambios en el estado.
+   * @param {Object} newState nuevo estado ha crear
+   * @returns {void}
+   */
+
+    setState(callBack) {
+
+        if (typeof callBack === "function") {
+            this.update(callBack(this.state));
+        } else if (typeof callBack === "object") {
+            this.update(callBack);
+        }
+    }
+
     update(newState) {
 
-        const oldState = { ...this.state };
+        this.#copyState(newState)
 
-        this.#copyState(newState, oldState)
-
-        const newNode = this.render(oldState);
+        const newNode = this.render(this.state);
 
         let $ref = this.type === Fragment ? this.$fragment : this.$element
 
@@ -49,18 +55,20 @@ export class Componente {
             this.fragmento = [...this.$fragment.children];
         }
 
-        this.state = oldState;
-
         this.postRender();
     }
 
     postRender() { }
 
-    #copyState(newState, oldState) {
+    #copyState(newState) {
+
+        if (!newState) {
+            return;
+        }
 
         for (let k of Object.keys(newState)) {
-            if (!k in this.state || newState[k] !== oldState[k]) {
-                oldState[k] = newState[k];
+            if (!k in this.state || newState[k] !== this.state[k]) {
+                this.state[k] = newState[k];
             }
         }
     }
