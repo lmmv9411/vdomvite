@@ -1,0 +1,43 @@
+.alerta {
+
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem;
+    border-radius: 10px;
+    color: #fff;
+    position: absolute;
+    background-color: var(--bg-danger);
+    box-shadow: 5px 5px 10px #1a1a1a;
+    top: 3em;
+    z-index: 2;
+    max-width: 90%;
+    min-width: 10%;
+    justify-content: space-between;
+}
+
+.hidden {
+    display: none;
+}
+
+.show {
+    display: flex;
+    animation: show_slide .5s ease forwards;
+}
+
+@keyframes show_slide {
+    0% {
+        transform: translateX(-45%);
+    }
+
+    25% {
+        transform: translateX(-55%);
+    }
+
+    50% {
+        transform: translateX(-45%);
+    }
+
+    75% {
+        transform: translateX(-55%);
+    }
+}

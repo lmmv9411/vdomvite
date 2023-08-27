@@ -83,7 +83,7 @@ const buscarRutaDinamica = async (main, nombreClase) => {
         try {
             modulo = await import(`../main/componentes/${nombreClase.componente.toLowerCase()}.jsx`)
         } catch (error) {
-            throw new Error(`Ruta no encontrada: "/${nombreClase.componente.toLowerCase()}"`)
+            throw new Error(`${error.message} ${error.stack}`)
         }
 
         let instancia;

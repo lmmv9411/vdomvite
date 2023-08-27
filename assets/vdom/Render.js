@@ -113,11 +113,16 @@ export const VDOM = (function () {
                 }
 
                 if (ch instanceof Componente) {
-                    ch.construido($children);
+
+                    if (ch.type !== Portal) {
+                        ch.construido($children);
+                    }
+
                     if (contexto) {
                         contexto.padre.children[ch.state.contextoNombre] = ch;
                     }
                 }
+
             }
 
         } else {
