@@ -8,20 +8,18 @@ export const reconciliacion = (function () {
 
     let parent, indexFragment = null;
 
-    const updateDOM = function ($parentNode, vOldNode, vNewNode) {
-        parent = vOldNode;
-        _updateDOM($parentNode, vOldNode, vNewNode);
-    }
-
     /**
      * Comparar nodos virtual y reflejar cambios en DOM.
      * @param {HTMLElement} $parentNode Nodo del DOM, referencia de los nodos a comparar.
      * @param {Object} vOldNode Nodo Virtual antiguo.
      * @param {Object} vNewNode Nodo Virtual nuevo
-     * @param {Object} padre Padre de los dos nodo virtuales.
-     * @param {Number} idx Índice de los hijos del padre.
-     * @returns {Boolean} retorna true si hubo cambios;
-     */
+     * @returns {void}
+     * */
+    const updateDOM = function ($parentNode, vOldNode, vNewNode) {
+        parent = vOldNode;
+        _updateDOM($parentNode, vOldNode, vNewNode);
+    }
+
     const _updateDOM = function ($parentNode, vOldNode, vNewNode, padre = null, idx = null) {
 
         if (vNewNode && vNewNode.type === Portal) {
@@ -32,14 +30,13 @@ export const reconciliacion = (function () {
             (vOldNode === undefined && vNewNode === undefined) ||
             (vOldNode === null && vNewNode === null) ||
             compararNodos(vOldNode, vNewNode)) {
-            return false;
+            return;
         }
 
         if (vNewNode === undefined || vNewNode === null) {
 
             $parentNode.remove();
             padre && (padre.children.splice(idx, 1))
-            return true;
 
         } else if (vOldNode === undefined || vOldNode === null) {
 
@@ -57,29 +54,23 @@ export const reconciliacion = (function () {
 
             padre && (padre.children.splice(idx, 0, vNewNode))
 
-            return true;
-
         } else if (sonDiferentes(vOldNode, vNewNode)) {
 
             reemplazarNodo($parentNode, vNewNode);
 
             padre && (padre.children[idx] = vNewNode)
 
-            return true;
-
         } else {
 
-            let respuesta = false, respuestaRecursiva = false, respuestaFinal = false;
-            respuesta = compararAtributos($parentNode, vOldNode, vNewNode);
+            compararAtributos($parentNode, vOldNode, vNewNode);
 
-            let { sizeChildrenOldNode,
-                sizeChildrenNewNode,
-                maxSizeChildren } = getSizeChildren(vOldNode, vNewNode)
+            let sizes = { childrenOldNode: 0, childrenNewNode: 0, maxChildren: 0 };
+            let size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
 
             let $refChildren = null;
             let childrenOld, childrenNew;
 
-            for (let i = 0; i < maxSizeChildren; i++) {
+            for (let i = 0; i < size.maxChildren; i++) {
 
                 let tmpParent;
                 childrenNew = vNewNode.children[i];
@@ -122,8 +113,8 @@ export const reconciliacion = (function () {
 
                     if (childrenNew?.key !== childrenOld?.key || diferentesNodos) {
 
-                        if (sizeChildrenNewNode > sizeChildrenOldNode) {
-                            const index = i + 1 === sizeChildrenNewNode ? i + 1 : i;
+                        if (size.childrenNewNode > size.childrenOldNode) {
+                            const index = i + 1 === size.childrenNewNode ? i + 1 : i;
 
                             const $ref = VDOM.render(childrenNew, parent);
 
@@ -139,9 +130,7 @@ export const reconciliacion = (function () {
 
                             vOldNode.children.splice(i, 0, childrenNew);
 
-                            respuesta = true;
-
-                        } else if (sizeChildrenNewNode < sizeChildrenOldNode) {
+                        } else if (size.childrenNewNode < size.childrenOldNode) {
 
                             $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
 
@@ -151,45 +140,36 @@ export const reconciliacion = (function () {
 
                             i--;
 
-                            respuesta = true;
                         } else {
 
                             $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
                             reemplazarNodo($refChildren, childrenNew);
                             vOldNode.children[i] = childrenNew;
-                            respuesta = true;
                         }
                     } else {
-                        respuestaRecursiva = _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
+                        _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
                     }
 
                 } else {
-                    respuestaRecursiva = _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
+                    _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
                 }
 
-                if (respuesta || respuestaRecursiva) {
-                    const newSizeValues = getSizeChildren(vOldNode, vNewNode);
-                    sizeChildrenOldNode = newSizeValues.sizeChildrenOldNode;
-                    sizeChildrenNewNode = newSizeValues.sizeChildrenNewNode;
-                    maxSizeChildren = newSizeValues.maxSizeChildren;
-                    respuestaFinal = true;
-                }
+                size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
 
                 parent = tmpParent ?? parent;
                 indexFragment = null;
 
             }
 
-            return respuesta || respuestaRecursiva || respuestaFinal;
         }
 
     }
 
-    const getSizeChildren = function (vOldNode, vNewNode) {
-        let sizeChildrenOldNode = vOldNode?.children?.length ?? 0;
-        let sizeChildrenNewNode = vNewNode?.children?.length ?? 0;
-        let maxSizeChildren = Math.max(sizeChildrenOldNode, sizeChildrenNewNode);
-        return { sizeChildrenNewNode, sizeChildrenOldNode, maxSizeChildren }
+    const getSizeChildren = function (size) {
+        let childrenOldNode = size.vOldNode?.children?.length ?? 0;
+        let childrenNewNode = size.vNewNode?.children?.length ?? 0;
+        let maxChildren = Math.max(childrenOldNode, childrenNewNode);
+        return { childrenNewNode, childrenOldNode, maxChildren };
     }
 
     const sonDiferentes = function (vOldNode, vNewNode) {
@@ -232,15 +212,13 @@ export const reconciliacion = (function () {
      * @param {HTMLElement} $node Referencia al DOM del elemento a comparar.
      * @param {Object} vOldNode Antiguo estado del VDOM.
      * @param {Object} vNewNode Nuevo estado del VDOM.
-     * @returns {Boolean} retorna true si hubo cambios.
+     * @returns {void}
      */
     const compararAtributos = function ($node, vOldNode, vNewNode) {
 
         if (!vOldNode || !vNewNode) {
-            return false;
+            return;
         }
-
-        let respuesta = false;
 
         for (let att in vOldNode.props) {
             if ((!vNewNode.props) || !(att in vNewNode.props)) {
@@ -251,24 +229,20 @@ export const reconciliacion = (function () {
                     continue
                 } else if (att === "$ref") {
                     parent[v] = null;
-                    respuesta = true;
                 } else {
                     if (!att in $node) {
                         $node.removeAttribute(att);
                         delete vOldNode.props[att]
-                        respuesta = true;
                     } else {
 
                         if (typeof v === "object") {
                             Object.keys(v).forEach((key) => {
                                 $node[att][key] = "";
-                                delete vOldNode.props[att][key]
-                                respuesta = true;
+                                delete vOldNode.props[att][key];
                             })
                         } else {
                             $node[att] = "";
-                            delete vOldNode.props[att]
-                            respuesta = true;
+                            delete vOldNode.props[att];
                         }
 
                     }
@@ -302,29 +276,24 @@ export const reconciliacion = (function () {
                             Object.entries(v).forEach(([key, value]) => {
                                 $node[att][key] = value;
                                 vOldNode.props[att][key] = v;
-                                respuesta = true;
                             })
                         } else {
                             $node[att] = v;
                             vOldNode.props[att] = v;
-                            respuesta = true;
                         }
 
                     } else {
                         $node.setAttribute(att, v);
                         vOldNode.props[att] = v;
-                        respuesta = true;
                     }
 
                 } else {
                     parent[v] = $node;
-                    respuesta = true;
                 }
 
             }
         }
 
-        return respuesta;
     }
 
     return { updateDOM };
