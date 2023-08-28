@@ -80,10 +80,17 @@ export const reconciliacion = (function () {
 
                 indexFragment = indexFragment && null;
 
-                if (childrenNew && childrenNew.type === Fragment) {
-                    $refChildren = childrenNew.$fragment ?? $parentNode;
-                    indexFragment = childrenNew?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
-                }
+                let r = tratarFragmentos(
+                    childrenNew,
+                    childrenOld,
+                    $parentNode,
+                    indexFragment,
+                    $refChildren,
+                    i
+                );
+
+                indexFragment = r.indexFragment;
+                $refChildren = r.$refChildren
 
                 if (childrenNew && childrenNew instanceof Componente) {
                     tmpParent = parent;
@@ -163,6 +170,22 @@ export const reconciliacion = (function () {
 
         }
 
+    }
+
+    const tratarFragmentos = function (childrenNew, childrenOld, $parentNode, indexFragment, $refChildren, i) {
+        if (childrenNew && childrenNew.type === Fragment) {
+            debugger
+            $refChildren = childrenNew.$fragment ?? $parentNode;
+            indexFragment = childrenNew?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
+        }
+
+        if ((childrenOld && !childrenNew) && childrenOld.type === Fragment) {
+            debugger
+            $refChildren = childrenOld.$fragment ?? $parentNode;
+            indexFragment = childrenOld?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
+        }
+
+        return { $refChildren, indexFragment };
     }
 
     const getSizeChildren = function (size) {
