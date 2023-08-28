@@ -1,8 +1,8 @@
 import { Componente } from "../../vdom/Componente";
-import { CrearContexto } from "../../vdom/Contexto";
+import { CreateContext } from "../../vdom/Context";
 import { Lista } from "./lista";
 
-export const ContextoProveedor = new CrearContexto();
+export const ContextoProveedor = new CreateContext();
 
 export class Proveedores extends Componente {
 

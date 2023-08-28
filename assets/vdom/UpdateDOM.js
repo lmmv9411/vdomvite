@@ -69,6 +69,34 @@ export const reconciliation = (function () {
 
     }
 
+    const tratarFragmentos = function ($parentNode, vOldNode, vNewNode, padre, idx) {
+        let sizes = { childrenOldNode: 0, childrenNewNode: 0, maxChildren: 0 };
+        let size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
+
+        let $refChildren = null, childrenNew = null, childrenOld = null;
+
+        for (let i = 0; i < size.maxChildren; i++) {
+
+            if (vNewNode) {
+                if (vNewNode.fragmento && vNewNode.fragmento.length > 0) {
+                    $refChildren = vNewNode?.fragmento[i];
+                } else {
+                    $refChildren = $parentNode;
+                }
+            } else {
+                if (vOldNode.fragmento && vOldNode.fragmento.length > 0) {
+                    $refChildren = vOldNode?.fragmento[i];
+                } else {
+                    $refChildren = $parentNode;
+                }
+            }
+
+            childrenNew = vNewNode?.children[i];
+            childrenOld = vOldNode?.children[i];
+
+            _updateDOM($refChildren, childrenOld, childrenNew, padre, idx);
+        }
+    }
 
     const compareChildren = function ($parentNode, vOldNode, vNewNode) {
 
@@ -81,31 +109,24 @@ export const reconciliation = (function () {
         for (let i = 0; i < size.maxChildren; i++) {
 
             let tmpParent;
-            childrenNew = vNewNode.children[i];
-            childrenOld = vOldNode.children[i];
+            childrenNew = vNewNode?.children[i];
+            childrenOld = vOldNode?.children[i];
 
             $refChildren = indexFragment ?? $parentNode.childNodes[i] ?? $parentNode;
 
             indexFragment = indexFragment && null;
-            //--------------------------------------------------------------------------------------------
 
-            if (!indexFragment && childrenNew && childrenNew.type === Fragment) {
-                $refChildren = childrenNew.$fragment ?? $parentNode;
-                indexFragment = childrenNew?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
+            if (childrenNew && childrenNew.type === Fragment) {
+                debugger
+                tratarFragmentos($parentNode, childrenOld, childrenNew, vOldNode, i);
+                continue
             }
 
             if (!childrenNew && childrenOld.type === Fragment) {
                 debugger
-
-                $refChildren = childrenOld.$fragment ?? $parentNode;
-                /*
-                    indexFragment = childrenOld?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
-                */
-                _updateDOM($refChildren, childrenOld, childrenNew);
+                tratarFragmentos($parentNode, childrenOld, childrenNew, vOldNode, i);
                 continue
             }
-
-            //--------------------------------------------------------------------------------------------
 
             if (childrenNew && childrenNew instanceof Componente) {
                 tmpParent = parent;
@@ -176,7 +197,13 @@ export const reconciliation = (function () {
                 _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
             }
 
-            size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
+            const tmp = getSizeChildren({ vOldNode, vNewNode, ...sizes })
+
+            if (tmp.maxChildren < size.maxChildren) {
+                i--;
+            }
+
+            size = tmp;
 
             parent = tmpParent ?? parent;
             indexFragment = null;
