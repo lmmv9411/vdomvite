@@ -20,7 +20,9 @@ export const reconciliation = (function () {
         _updateDOM($parentNode, vOldNode, vNewNode);
     }
 
-    const _updateDOM = function ($parentNode, vOldNode, vNewNode, padre = null, idx = null) {
+    const _updateDOM = function ($parentNode, vOldNode, vNewNode) {
+
+        const respuesta = { add: false, remove: false, update: false, cambio: false };
 
         if (vNewNode && vNewNode.type === Portal) {
             $parentNode = vNewNode.$element;
@@ -34,9 +36,10 @@ export const reconciliation = (function () {
         }
 
         if (vNewNode === undefined || vNewNode === null) {
-            debugger
+
             $parentNode.remove();
-            padre && (padre.children.splice(idx, 1))
+            respuesta.remove = !0;
+            respuesta.cambio = !0;
 
         } else if (vOldNode === undefined || vOldNode === null) {
 
@@ -52,13 +55,15 @@ export const reconciliation = (function () {
                 setReff(vNewNode, $ref);
             }
 
-            padre && (padre.children.splice(idx, 0, vNewNode))
+            respuesta.add = !0;
+            respuesta.cambio = !0;
 
         } else if (compareNodes(vOldNode, vNewNode)) {
 
             replaceNode($parentNode, vNewNode);
 
-            padre && (padre.children[idx] = vNewNode)
+            respuesta.update = !0;
+            respuesta.cambio = !0;
 
         } else {
 
@@ -67,11 +72,14 @@ export const reconciliation = (function () {
 
         }
 
+        return respuesta;
+
     }
 
     const tratarFragmentos = function ($parentNode, vOldNode, vNewNode, padre, idx) {
         let sizes = { childrenOldNode: 0, childrenNewNode: 0, maxChildren: 0 };
         let size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
+        let cambio = false;
 
         let $refChildren = null, childrenNew = null, childrenOld = null;
 
@@ -81,20 +89,37 @@ export const reconciliation = (function () {
                 if (vNewNode.fragmento && vNewNode.fragmento.length > 0) {
                     $refChildren = vNewNode?.fragmento[i];
                 } else {
-                    $refChildren = $parentNode;
+                    $refChildren = $parentNode.children[idx++] ?? $parentNode;
                 }
             } else {
                 if (vOldNode.fragmento && vOldNode.fragmento.length > 0) {
                     $refChildren = vOldNode?.fragmento[i];
                 } else {
-                    $refChildren = $parentNode;
+                    $refChildren = $parentNode.children[idx++] ?? $parentNode;
                 }
             }
 
             childrenNew = vNewNode?.children[i];
             childrenOld = vOldNode?.children[i];
 
-            _updateDOM($refChildren, childrenOld, childrenNew, padre, idx);
+            const respuestaUpdate = _updateDOM($refChildren, childrenOld, childrenNew);
+
+            if (!cambio && respuestaUpdate && respuestaUpdate.cambio) {
+
+                if (respuestaUpdate.add) {
+                    padre.children.splice(idx, 0, vNewNode);
+                } else if (respuestaUpdate.update) {
+                    padre.children[idx] = vNewNode;
+                } else {
+                    padre.children.splice(idx, 1);
+                    idx--;
+                }
+
+                size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
+
+                cambio = !0;
+            }
+
         }
     }
 
@@ -105,6 +130,8 @@ export const reconciliation = (function () {
 
         let $refChildren = null;
         let childrenOld, childrenNew;
+
+        let respuestaUpdate = null;
 
         for (let i = 0; i < size.maxChildren; i++) {
 
@@ -118,11 +145,15 @@ export const reconciliation = (function () {
 
             if (childrenNew && childrenNew.type === Fragment) {
                 debugger
-                tratarFragmentos($parentNode, childrenOld, childrenNew, vOldNode, i);
-                continue
+                if (!childrenNew.key) {
+                    tratarFragmentos($parentNode, childrenOld, childrenNew, vOldNode, i);
+                    continue
+                }
+                indexFragment = $parentNode.childNodes[i] ?? $parentNode;
+                $refChildren = $parentNode;
             }
 
-            if (!childrenNew && childrenOld.type === Fragment) {
+            if (!childrenNew && childrenOld && childrenOld.type === Fragment && !childrenOld.key) {
                 debugger
                 tratarFragmentos($parentNode, childrenOld, childrenNew, vOldNode, i);
                 continue
@@ -190,23 +221,30 @@ export const reconciliation = (function () {
                         vOldNode.children[i] = childrenNew;
                     }
                 } else {
-                    _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
+                    respuestaUpdate = _updateDOM($refChildren, childrenOld, childrenNew);
                 }
 
             } else {
-                _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
+                respuestaUpdate = _updateDOM($refChildren, childrenOld, childrenNew);
             }
 
-            const tmp = getSizeChildren({ vOldNode, vNewNode, ...sizes })
+            if (respuestaUpdate && respuestaUpdate.cambio) {
 
-            if (tmp.maxChildren < size.maxChildren) {
-                i--;
+                if (respuestaUpdate.add) {
+                    vOldNode.children.splice(i, 0, childrenNew);
+                } else if (respuestaUpdate.update) {
+                    vOldNode.children[i] = vNewNode;
+                } else {
+                    vOldNode.children.splice(i, 1);
+                    i--;
+                }
+
+                size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
             }
-
-            size = tmp;
 
             parent = tmpParent ?? parent;
             indexFragment = null;
+            respuestaUpdate = null;
 
         }
 

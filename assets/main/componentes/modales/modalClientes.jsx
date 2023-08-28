@@ -130,11 +130,17 @@ export class ModalClientes extends Componente {
                                 className="btn btn-primary"
                                 type="button"
                                 onclick={() => {
-                                    debugger
-                                    this.update({ showAlert: !this.state.showAlert, btnAlerta: "Ocultar Alerta" })
-                                    //this.c.alerta.abrir({ mensaje: "Desde modal", estilo: "bg-danger text-light", mostrar: true })
+                                    this.update({ showAlert: !this.state.showAlert, btnAlerta: !this.state.btnAlerta })
+                                    this.c.alerta.abrir({ mensaje: "Desde modal", estilo: "bg-danger text-light", mostrar: true })
                                 }}
-                            >{props.btnAlerta ?? "Mostrar Alerta"}</button>
+                            >{props.btnAlerta ? "Ocultar Alerta" : "Mostrar Alerta"}</button>
+
+                            <button
+                                type="button"
+                                onclick={() => { this.update({ ocultarSeccion: !this.state.ocultarSeccion }) }}
+                                className="btn btn-primary">
+                                {!props.ocultarSeccion ? "Ocultar Seccion I" : "Mostrar Seccion I"}
+                            </button>
 
                         </div>
                     </form>
@@ -144,16 +150,23 @@ export class ModalClientes extends Componente {
                         &&
                         <>
                             <header>
-                                <h1>Hola</h1>
+                                <h1>Titulo I</h1>
                             </header>
                             <article>
-                                <section>Sección I</section>
+                                {
+                                    !props.ocultarSeccion
+                                    &&
+                                    <section>Sección I</section>
+
+                                }
                                 <section>Sección II</section>
                             </article>
                         </>
                     }
 
                 </section>
+
+                <Alerta contextoNombre="alerta" />
 
             </>
 
