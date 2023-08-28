@@ -47,6 +47,8 @@ export const VDOM = (function () {
 
             for (let [k, v] of Object.entries(node.props)) {
 
+                v = typeof v === "string" ? v.trim() : v;
+
                 if (k === "$ref") {
                     parent[v] = $element;
                 } else if (k.startsWith("on")) {

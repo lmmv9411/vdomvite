@@ -4,7 +4,7 @@ import { VDOM } from "./Render";
 import { Fragment, Portal } from "./VDom";
 
 
-export const reconciliacion = (function () {
+export const reconciliation = (function () {
 
     let parent, indexFragment = null;
 
@@ -34,7 +34,7 @@ export const reconciliacion = (function () {
         }
 
         if (vNewNode === undefined || vNewNode === null) {
-
+            debugger
             $parentNode.remove();
             padre && (padre.children.splice(idx, 1))
 
@@ -54,138 +54,135 @@ export const reconciliacion = (function () {
 
             padre && (padre.children.splice(idx, 0, vNewNode))
 
-        } else if (sonDiferentes(vOldNode, vNewNode)) {
+        } else if (compareNodes(vOldNode, vNewNode)) {
 
-            reemplazarNodo($parentNode, vNewNode);
+            replaceNode($parentNode, vNewNode);
 
             padre && (padre.children[idx] = vNewNode)
 
         } else {
 
-            compararAtributos($parentNode, vOldNode, vNewNode);
-
-            let sizes = { childrenOldNode: 0, childrenNewNode: 0, maxChildren: 0 };
-            let size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
-
-            let $refChildren = null;
-            let childrenOld, childrenNew;
-
-            for (let i = 0; i < size.maxChildren; i++) {
-
-                let tmpParent;
-                childrenNew = vNewNode.children[i];
-                childrenOld = vOldNode.children[i];
-
-                $refChildren = indexFragment ?? $parentNode.childNodes[i] ?? $parentNode;
-
-                indexFragment = indexFragment && null;
-
-                let r = tratarFragmentos(
-                    childrenNew,
-                    childrenOld,
-                    $parentNode,
-                    indexFragment,
-                    $refChildren,
-                    i
-                );
-
-                indexFragment = r.indexFragment;
-                $refChildren = r.$refChildren
-
-                if (childrenNew && childrenNew instanceof Componente) {
-                    tmpParent = parent;
-                    parent = childrenNew;
-                }
-
-                let conKeys = false;
-
-                if (typeof childrenNew === "object" || typeof childrenOld === "object") {
-
-                    let a = false, b = false;
-
-                    if (childrenNew && childrenNew.key) {
-                        a = !a;
-                    }
-                    if (childrenOld && childrenOld.key) {
-                        b = !b;
-                    }
-
-                    conKeys = (a || b);
-
-                }
-
-                const diferentesNodos = sonDiferentes(childrenOld, childrenNew);
-
-                if (conKeys || diferentesNodos) {
-
-                    if (childrenNew?.key !== childrenOld?.key || diferentesNodos) {
-
-                        if (size.childrenNewNode > size.childrenOldNode) {
-                            const index = i + 1 === size.childrenNewNode ? i + 1 : i;
-
-                            const $ref = VDOM.render(childrenNew, parent);
-
-                            const $nextSibling = $parentNode.children[index];
-
-                            if ($nextSibling) {
-                                $parentNode.insertBefore($ref, $nextSibling);
-                            } else {
-                                $parentNode.appendChild($ref);
-                            }
-
-                            setReff(childrenNew, $ref);
-
-                            vOldNode.children.splice(i, 0, childrenNew);
-
-                        } else if (size.childrenNewNode < size.childrenOldNode) {
-
-                            $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
-
-                            $refChildren.remove();
-
-                            vOldNode.children.splice(i, 1);
-
-                            i--;
-
-                        } else {
-
-                            $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
-                            reemplazarNodo($refChildren, childrenNew);
-                            vOldNode.children[i] = childrenNew;
-                        }
-                    } else {
-                        _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
-                    }
-
-                } else {
-                    _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
-                }
-
-                size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
-
-                parent = tmpParent ?? parent;
-                indexFragment = null;
-
-            }
+            compareAttributes($parentNode, vOldNode, vNewNode);
+            compareChildren($parentNode, vOldNode, vNewNode);
 
         }
 
     }
 
-    const tratarFragmentos = function (childrenNew, childrenOld, $parentNode, indexFragment, $refChildren, i) {
-        if (childrenNew && childrenNew.type === Fragment) {
-            debugger
-            $refChildren = childrenNew.$fragment ?? $parentNode;
-            indexFragment = childrenNew?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
+
+    const compareChildren = function ($parentNode, vOldNode, vNewNode) {
+
+        let sizes = { childrenOldNode: 0, childrenNewNode: 0, maxChildren: 0 };
+        let size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
+
+        let $refChildren = null;
+        let childrenOld, childrenNew;
+
+        for (let i = 0; i < size.maxChildren; i++) {
+
+            let tmpParent;
+            childrenNew = vNewNode.children[i];
+            childrenOld = vOldNode.children[i];
+
+            $refChildren = indexFragment ?? $parentNode.childNodes[i] ?? $parentNode;
+
+            indexFragment = indexFragment && null;
+            //--------------------------------------------------------------------------------------------
+
+            if (!indexFragment && childrenNew && childrenNew.type === Fragment) {
+                $refChildren = childrenNew.$fragment ?? $parentNode;
+                indexFragment = childrenNew?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
+            }
+
+            if (!childrenNew && childrenOld.type === Fragment) {
+                debugger
+
+                $refChildren = childrenOld.$fragment ?? $parentNode;
+                /*
+                    indexFragment = childrenOld?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
+                */
+                _updateDOM($refChildren, childrenOld, childrenNew);
+                continue
+            }
+
+            //--------------------------------------------------------------------------------------------
+
+            if (childrenNew && childrenNew instanceof Componente) {
+                tmpParent = parent;
+                parent = childrenNew;
+            }
+
+            let conKeys = false;
+
+            if (typeof childrenNew === "object" || typeof childrenOld === "object") {
+
+                let a = false, b = false;
+
+                if (childrenNew && childrenNew.key) {
+                    a = !a;
+                }
+                if (childrenOld && childrenOld.key) {
+                    b = !b;
+                }
+
+                conKeys = (a || b);
+
+            }
+
+            const diferentesNodos = compareNodes(childrenOld, childrenNew);
+
+            if (conKeys || diferentesNodos) {
+
+                if (childrenNew?.key !== childrenOld?.key || diferentesNodos) {
+
+                    if (size.childrenNewNode > size.childrenOldNode) {
+                        const index = i + 1 === size.childrenNewNode ? i + 1 : i;
+
+                        const $ref = VDOM.render(childrenNew, parent);
+
+                        const $nextSibling = $parentNode.children[index];
+
+                        if ($nextSibling) {
+                            $parentNode.insertBefore($ref, $nextSibling);
+                        } else {
+                            $parentNode.appendChild($ref);
+                        }
+
+                        setReff(childrenNew, $ref);
+
+                        vOldNode.children.splice(i, 0, childrenNew);
+
+                    } else if (size.childrenNewNode < size.childrenOldNode) {
+
+                        $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
+
+                        $refChildren.remove();
+
+                        vOldNode.children.splice(i, 1);
+
+                        i--;
+
+                    } else {
+
+                        $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
+                        replaceNode($refChildren, childrenNew);
+                        vOldNode.children[i] = childrenNew;
+                    }
+                } else {
+                    _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
+                }
+
+            } else {
+                _updateDOM($refChildren, childrenOld, childrenNew, vOldNode, i);
+            }
+
+            size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
+
+            parent = tmpParent ?? parent;
+            indexFragment = null;
+
         }
 
-        if ((childrenOld && !childrenNew) && childrenOld.type === Fragment) {
-            debugger
-            $refChildren = childrenOld.$fragment ?? $parentNode;
-            indexFragment = childrenOld?.$fragment?.childNodes[i] ?? $parentNode.childNodes[i] ?? $parentNode;
-        }
-
-        return { $refChildren, indexFragment };
     }
 
     const getSizeChildren = function (size) {
@@ -195,7 +192,7 @@ export const reconciliacion = (function () {
         return { childrenNewNode, childrenOldNode, maxChildren };
     }
 
-    const sonDiferentes = function (vOldNode, vNewNode) {
+    const compareNodes = function (vOldNode, vNewNode) {
 
         if (vNewNode === undefined || vOldNode === undefined) {
             return false
@@ -221,7 +218,7 @@ export const reconciliacion = (function () {
 
     }
 
-    const reemplazarNodo = function ($n, vNewNode) {
+    const replaceNode = function ($n, vNewNode) {
         if (vNewNode === undefined || vNewNode === null) {
             return;
         }
@@ -237,7 +234,7 @@ export const reconciliacion = (function () {
      * @param {Object} vNewNode Nuevo estado del VDOM.
      * @returns {void}
      */
-    const compararAtributos = function ($node, vOldNode, vNewNode) {
+    const compareAttributes = function ($node, vOldNode, vNewNode) {
 
         if (!vOldNode || !vNewNode) {
             return;
@@ -280,7 +277,9 @@ export const reconciliacion = (function () {
                 || !(att in vOldNode.props)
                 || vNewNode.props[att] !== vOldNode.props[att]) {
 
-                const v = vNewNode.props[att];
+                let v = vNewNode.props[att];
+
+                v = typeof v === "string" ? v.trim() : v;
 
                 if (typeof v === "object") {
                     const tmpNewNode = JSON.stringify(v);

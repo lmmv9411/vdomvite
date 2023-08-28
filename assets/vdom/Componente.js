@@ -1,4 +1,4 @@
-import { reconciliacion } from "./UpdateDOM.js";
+import { reconciliation } from "./UpdateDOM.js";
 import { Fragment } from "./VDom.js"
 
 export class Componente {
@@ -39,7 +39,7 @@ export class Componente {
 
         let $ref = this.type === Fragment ? this.$fragment : this.$element
 
-        reconciliacion.updateDOM($ref, this, newNode);
+        reconciliation.updateDOM($ref, this, newNode);
 
         if (this.type === Fragment && this.fragmento) {
             this.fragmento = [...this.$fragment.children];

@@ -1,6 +1,6 @@
 import { Contexto, Fragment } from "./VDom";
 
-export class CrearContexto {
+export class CreateContext {
     constructor() {
         this.children = {};
 

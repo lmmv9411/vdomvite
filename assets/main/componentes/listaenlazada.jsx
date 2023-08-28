@@ -1,10 +1,10 @@
 import { Componente } from "../../vdom/Componente";
-import { CrearContexto } from "../../vdom/Contexto";
+import { CreateContext } from "../../vdom/Context";
 import { cListaEnlazada } from "../controladores/listaenlazada";
 import { Contenedor } from "./modales/contenedor";
 import { ModalClientes } from "./modales/modalClientes";
 
-export const ctx = new CrearContexto();
+export const ctx = new CreateContext();
 
 export class ListaEnlazada extends Componente {
 

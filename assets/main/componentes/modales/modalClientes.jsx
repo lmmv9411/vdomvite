@@ -37,7 +37,7 @@ export class ModalClientes extends Componente {
         return (
             <>
 
-                <section className={`card p-3 bg-dark text-light w-75 ${modal.modal} ${animar ? modal["modal-show"] : ""}`}>
+                <section className={`card p-3 bg-dark text-light w-75 ${modal.modal} ${animar ? modal["modal-show"] : ''}`}>
 
                     <header className="d-flex justify-content-between">
                         <h1 className="card-title">Clientes</h1>
@@ -129,13 +129,28 @@ export class ModalClientes extends Componente {
                             <button
                                 className="btn btn-primary"
                                 type="button"
-                                onclick={() => this.c.alerta.abrir({ mensaje: "Desde modal", estilo: "bg-danger text-light", mostrar: true })}
+                                onclick={() => {
+                                    this.update({ showAlert: !this.state.showAlert })
+                                    //this.c.alerta.abrir({ mensaje: "Desde modal", estilo: "bg-danger text-light", mostrar: true })
+                                }}
                             >Alerta</button>
 
                         </div>
                     </form>
 
-                    <Alerta contextoNombre="alerta" />
+                    {
+                        props.showAlert
+                        &&
+                        <>
+                            <header>
+                                <h1>Hola</h1>
+                            </header>
+                            <article>
+                                <section>Sección I</section>
+                                <section>Sección II</section>
+                            </article>
+                        </>
+                    }
 
                 </section>
 
