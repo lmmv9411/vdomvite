@@ -144,7 +144,7 @@ export const reconciliation = (function () {
             indexFragment = indexFragment && null;
 
             if (childrenNew && childrenNew.type === Fragment) {
-                debugger
+                
                 if (!childrenNew.key) {
                     tratarFragmentos($parentNode, childrenOld, childrenNew, vOldNode, i);
                     continue
@@ -154,7 +154,7 @@ export const reconciliation = (function () {
             }
 
             if (!childrenNew && childrenOld && childrenOld.type === Fragment && !childrenOld.key) {
-                debugger
+                
                 tratarFragmentos($parentNode, childrenOld, childrenNew, vOldNode, i);
                 continue
             }

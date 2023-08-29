@@ -1,13 +1,23 @@
+import { Componente } from "./Componente";
 import { VDOM } from "./Render";
+
+/**
+ * Construir jsx en nodo html en insertar.
+ * @param {HTMLElement} $parent nodo donde se insertara
+ * @param {Componente} nodo nodo jsx a convertir
+ * @returns {void}
+ */
 
 function insertarElemento($parent, nodo) {
 
-    const tmp = nodo.$element ?? nodo.$fragment;
+    const tmp = nodo.$fragment ?? nodo.$element;
 
     let $ref;
 
     if (!tmp) {
         $ref = VDOM.render(nodo, null, $parent);
+    } else {
+        $ref = tmp;
     }
 
     if (nodo.type === Fragment) {
@@ -24,12 +34,14 @@ function insertarElemento($parent, nodo) {
 
 function reemplazarElemento($parent, nodo) {
 
-    const tmp = nodo.$element ?? nodo.$fragment;
+    const tmp = nodo.$fragment ?? nodo.$element;
 
     let $ref;
 
     if (!tmp) {
         $ref = VDOM.render(nodo, null, $parent);
+    } else {
+        $ref = tmp;
     }
 
     if (!$parent.hasChildNodes()) {

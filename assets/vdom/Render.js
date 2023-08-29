@@ -96,7 +96,7 @@ export const VDOM = (function () {
             parent = node;
         }
 
-        if ($element.nodeName !== "#document-fragment") {
+        if (node.type !== Fragment) {
             $parent = $element;
         }
 

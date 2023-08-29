@@ -1,13 +1,16 @@
 import { reconciliation } from "./UpdateDOM.js";
-import { Fragment } from "./VDom.js"
+import { Fragment, Portal } from "./VDom.js"
 
 export class Componente {
 
-    constructor(state) {
+    /**
+     * 
+     * @param {Object} props Propiedades que tendrá el nodo en su estado.
+     */
+    constructor(props) {
+        this.state = props;
 
-        this.state = state;
-
-        const nodo = this.render(this.state);
+        const nodo = this.render(props);
 
         for (let [k, v] of Object.entries(nodo)) {
             this[k] = v;
@@ -16,14 +19,28 @@ export class Componente {
     }
 
     /**
-     * Evento que se dispara cuando el elemento está en el dom real
-     * @param {HTMLElement} $ref 
+     * Crear objeto jsx
+     * @param {Object} props Propiedades para crear jsx.
+     * @returns {{type: String, props: Object, children: Array.<Object>}} Objeto jsx.
+     */
+    render(props) {
+        return null;
+    }
+
+    /**
+     * Método que se llama cuando se construlle Element Html y lo agrega a this.$element.
+     * @param {HTMLElement} $ref Elemento Html
+     * @returns {void}
      */
     construido($ref) {
         this.$element = $ref;
         this.montado();
     }
 
+    /**
+     * Método que se invoca cuando se crea Elemento Html y se monta en el dom.
+     * @returns {void}
+     */
     montado() { }
 
     /**
@@ -44,11 +61,7 @@ export class Componente {
         if (this.type === Fragment && this.fragmento) {
             this.fragmento = [...this.$fragment.children];
         }
-
-        this.postRender();
     }
-
-    postRender() { }
 
     #copyState(newState) {
 
