@@ -8,6 +8,7 @@ export class Componente {
      * @param {Object} props Propiedades que tendrá el nodo en su estado.
      */
     constructor(props) {
+
         this.state = props;
 
         const nodo = this.render(props);
@@ -67,6 +68,7 @@ export class Componente {
         if (this.type === Fragment && this.fragmento) {
             this.fragmento = [...this.$fragment.children];
         }
+
     }
 
     #copyState(newState) {

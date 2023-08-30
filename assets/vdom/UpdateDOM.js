@@ -64,30 +64,6 @@ export const reconciliation = (function () {
 
     }
 
-    const tratarFragmentos = function ($parentNode, vOldNode, vNewNode, idx = 0) {
-
-        let sizes = { childrenOldNode: 0, childrenNewNode: 0, maxChildren: 0 };
-        let size = getSizeChildren({ vOldNode, vNewNode, ...sizes })
-
-        let $refChildren = null, childrenNew = null, childrenOld = null;
-
-        for (let i = 0; i < size.maxChildren; i++) {
-
-            childrenNew = vNewNode?.children[i] ?? vNewNode;
-            childrenOld = vOldNode?.children[i] ?? vOldNode;
-
-            $refChildren = $parentNode.children[idx++] ?? $parentNode;
-
-            _updateDOM($refChildren, childrenOld, childrenNew);
-
-            if (!vNewNode) {
-                idx--;
-                size.maxChildren = $parentNode.children.length;
-            }
-
-        }
-    }
-
     const compareChildren = function ($parentNode, vOldNode, vNewNode) {
 
         let sizes = { childrenOldNode: 0, childrenNewNode: 0, maxChildren: 0 };
@@ -103,26 +79,6 @@ export const reconciliation = (function () {
             childrenOld = vOldNode?.children[i];
 
             $refChildren = $parentNode.childNodes[i] ?? $parentNode;
-
-            if (childrenNew && childrenNew.type === Fragment) {
-
-                if (!childrenNew.key) {
-                    tratarFragmentos($parentNode, childrenOld, childrenNew, i);
-                    continue
-                }
-
-                $refChildren = $parentNode;
-            }
-
-            if (!childrenNew && childrenOld && childrenOld.type === Fragment && !childrenOld.key) {
-                tratarFragmentos($parentNode, childrenOld, childrenNew, i);
-                continue
-            }
-
-            if (childrenNew && childrenNew instanceof Componente) {
-                tmpParent = parent;
-                parent = childrenNew;
-            }
 
             let conKeys = false;
 
@@ -164,13 +120,6 @@ export const reconciliation = (function () {
 
                         vOldNode.children.splice(i, 0, childrenNew);
 
-                        if (childrenNew.type === Fragment) {
-                            if (!vNewNode.children[i].fragmento) {
-                                vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
-                            }
-                            //vNewNode.children.splice(0, vOldNode.children.length, ...vOldNode.children.slice(0, vOldNode.children.length));
-                        }
-
                     } else if (size.childrenNewNode < size.childrenOldNode) {
 
                         if (childrenOld.type === Fragment) {
@@ -180,19 +129,10 @@ export const reconciliation = (function () {
                             $refChildren.remove();
                         }
 
-                        vOldNode.children.splice(i, 1);
-
-                        if (childrenOld.type === Fragment) {
-                            vNewNode.children.splice(0, vOldNode.children.length, ...vOldNode.children.slice(0, vOldNode.children.length));
-                        }
-
-                        i--;
-
+                        vOldNode.children.splice(i--, 1);
 
                     } else {
 
-                        $refChildren
-                        replaceNode($refChildren, childrenNew);
                         vOldNode.children[i] = childrenNew;
 
                         if (childrenOld.type === Fragment) {
@@ -203,30 +143,46 @@ export const reconciliation = (function () {
                             vOldNode.children[i] = childrenNew;
                         }
 
-                        if (childrenNew.type === Fragment) {
-                            if (!vNewNode.children[i].fragmento) {
-                                vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
-                            }
-                            //vNewNode.children.splice(0, vOldNode.children.length, ...vOldNode.children.slice(0, vOldNode.children.length));
-                        }
                     }
                 } else {
+
                     if (childrenOld.type === Fragment) {
-                        const $childrens = vOldNode.children[i].fragmento;
-                        $childrens.forEach(($ch, i) => {
+
+                        const $children = vOldNode.children[i].fragmento;
+
+                        $children.forEach(($ch, i) => {
                             _updateDOM($ch, childrenOld.children[i], childrenNew.children[i])
                         });
 
                         if (!vNewNode.children[i].fragmento) {
                             vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
                         }
+
                     } else {
                         _updateDOM($refChildren, childrenOld, childrenNew);
                     }
                 }
 
             } else {
-                _updateDOM($refChildren, childrenOld, childrenNew);
+                if (childrenOld?.type === Fragment) {
+
+                    let $children = vOldNode.children[i].fragmento ?? $parentNode.children;
+
+                    if ($children instanceof HTMLCollection) {
+                        $children = Array.from($children).splice(i);
+                    }
+
+                    $children.forEach(($ch, i) => {
+                        _updateDOM($ch, childrenOld?.children[i], childrenNew?.children[i])
+                    });
+
+                    if (vNewNode?.children[i] && !vNewNode.children[i]?.fragmento) {
+                        vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
+                    }
+
+                } else {
+                    _updateDOM($refChildren, childrenOld, childrenNew);
+                }
             }
 
             parent = tmpParent ?? parent;
