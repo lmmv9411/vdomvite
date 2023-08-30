@@ -6,7 +6,7 @@ import { Fragment, Portal } from "./VDom";
 
 export const reconciliation = (function () {
 
-    let parent, indexFragment = null;
+    let parent;
 
     /**
      * Comparar nodos virtual y reflejar cambios en DOM.
@@ -102,9 +102,7 @@ export const reconciliation = (function () {
             childrenNew = vNewNode?.children[i];
             childrenOld = vOldNode?.children[i];
 
-            $refChildren = indexFragment ?? $parentNode.childNodes[i] ?? $parentNode;
-
-            indexFragment = indexFragment && null;
+            $refChildren = $parentNode.childNodes[i] ?? $parentNode;
 
             if (childrenNew && childrenNew.type === Fragment) {
 
@@ -112,7 +110,7 @@ export const reconciliation = (function () {
                     tratarFragmentos($parentNode, childrenOld, childrenNew, i);
                     continue
                 }
-                indexFragment = $parentNode.childNodes[i] ?? $parentNode;
+
                 $refChildren = $parentNode;
             }
 
@@ -166,24 +164,65 @@ export const reconciliation = (function () {
 
                         vOldNode.children.splice(i, 0, childrenNew);
 
+                        if (childrenNew.type === Fragment) {
+                            if (!vNewNode.children[i].fragmento) {
+                                vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
+                            }
+                            //vNewNode.children.splice(0, vOldNode.children.length, ...vOldNode.children.slice(0, vOldNode.children.length));
+                        }
+
                     } else if (size.childrenNewNode < size.childrenOldNode) {
 
-                        $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
-
-                        $refChildren.remove();
+                        if (childrenOld.type === Fragment) {
+                            const $childrens = vOldNode.children[i].fragmento;
+                            $childrens.forEach($ch => $parentNode.removeChild($ch))
+                        } else {
+                            $refChildren.remove();
+                        }
 
                         vOldNode.children.splice(i, 1);
 
+                        if (childrenOld.type === Fragment) {
+                            vNewNode.children.splice(0, vOldNode.children.length, ...vOldNode.children.slice(0, vOldNode.children.length));
+                        }
+
                         i--;
+
 
                     } else {
 
-                        $refChildren = childrenNew?.type === Fragment ? indexFragment : $refChildren
+                        $refChildren
                         replaceNode($refChildren, childrenNew);
                         vOldNode.children[i] = childrenNew;
+
+                        if (childrenOld.type === Fragment) {
+                            const $childrens = vOldNode.children[i].fragmento;
+                            $childrens.forEach(($ch, i) => { replaceNode($ch, childrenNew.children[i]) })
+                        } else {
+                            replaceNode($refChildren, childrenNew);
+                            vOldNode.children[i] = childrenNew;
+                        }
+
+                        if (childrenNew.type === Fragment) {
+                            if (!vNewNode.children[i].fragmento) {
+                                vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
+                            }
+                            //vNewNode.children.splice(0, vOldNode.children.length, ...vOldNode.children.slice(0, vOldNode.children.length));
+                        }
                     }
                 } else {
-                    _updateDOM($refChildren, childrenOld, childrenNew);
+                    if (childrenOld.type === Fragment) {
+                        const $childrens = vOldNode.children[i].fragmento;
+                        $childrens.forEach(($ch, i) => {
+                            _updateDOM($ch, childrenOld.children[i], childrenNew.children[i])
+                        });
+
+                        if (!vNewNode.children[i].fragmento) {
+                            vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
+                        }
+                    } else {
+                        _updateDOM($refChildren, childrenOld, childrenNew);
+                    }
                 }
 
             } else {
@@ -191,7 +230,6 @@ export const reconciliation = (function () {
             }
 
             parent = tmpParent ?? parent;
-            indexFragment = null;
 
         }
 
