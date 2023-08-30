@@ -131,7 +131,7 @@ export class ModalClientes extends Componente {
                                 type="button"
                                 onclick={() => {
                                     this.update({ showAlert: !this.state.showAlert })
-                                    this.c.alerta.abrir({ mensaje: "Desde modal", estilo: "bg-danger text-light", mostrar: true })
+                                   // this.c.alerta.abrir({ mensaje: "Desde modal", estilo: "bg-danger text-light", mostrar: true })
                                 }}
                             >{props.showAlert ? "Ocultar Alerta" : "Mostrar Alerta"}</button>
 
