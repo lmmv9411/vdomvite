@@ -116,7 +116,18 @@ export class ModalClientes extends Componente {
 
                                         this.update({ error: erroresII })
                                     } else {
-                                        this.c.alerta.abrir({ mensaje: JSON.stringify(this.state), estilo: "bg-warning", mostrar: true })
+                                        this.c.alerta.abrir({
+                                            mensaje:
+                                                <span
+                                                    style={{
+                                                        wordWrap: "break-word",
+                                                        overflow: "auto"
+                                                    }}>
+                                                    {JSON.stringify(this.state)}
+                                                </span>,
+                                            estilo: "bg-warning",
+                                            mostrar: true
+                                        })
                                     }
                                 }}
                             >Submit</button>
@@ -132,7 +143,7 @@ export class ModalClientes extends Componente {
                                 onclick={() => {
                                     this.update({ showAlert: !this.state.showAlert })
                                     if (this.state.showAlert) {
-                                        this.c.alerta.abrir({ mensaje: "Desde modal", estilo: "bg-danger text-light", mostrar: true })
+                                        this.c.alerta.abrir({ mensaje: <span>"Desde Modal"</span>, estilo: "bg-danger text-light", mostrar: true })
                                     }
                                 }}
                             >{props.showAlert ? "Ocultar Alerta" : "Mostrar Alerta"}</button>
