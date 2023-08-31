@@ -1,7 +1,7 @@
 import { Componente } from "../../vdom/Componente";
-import cls from "../estilos/clientes.module.css"
 import { Fragment } from "../../vdom/VDom";
 import { cambio, eliminarCliente, erroresClientes, submitCliente } from "./utils/clientesErrores";
+import cls from "../estilos/clientes.module.css"
 
 export class Clientes extends Componente {
     constructor(props) {
@@ -34,7 +34,7 @@ export class Clientes extends Componente {
 
         return (
             <>
-                <form $ref="formulario" action="post" className={`d-flex flex-column p-2 mt-2 ${cls.form}`} autocomplete="off">
+                <form $ref="formulario" action="post" className={`gap-3 d-flex flex-column ${cls.form} card bg-dark p-3`} autocomplete="off">
 
                     {error?.nombre && <spam className="text-danger d-block">{error.nombre}</spam>}
 
@@ -75,7 +75,7 @@ export class Clientes extends Componente {
                             onchange={cambio.bind(this, erroresClientes)} />
 
                         <label className="d-flex align-items-center justify-content-center gap-2">
-                            <span>Seleccion</span>
+                            <span className="text-light">Seleccion</span>
                             <input
                                 type="checkbox"
                                 checked={chk}

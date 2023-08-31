@@ -1,4 +1,10 @@
 .form {
-    gap: 10px;
+    width: 50%;
     margin: auto;
+}
+
+@media screen and (max-width: 720px) {
+    .form {
+        width: 95%;
+    }
 }

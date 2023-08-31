@@ -37,7 +37,7 @@ export class ModalClientes extends Componente {
         return (
             <>
 
-                <section className={`card p-3 bg-dark text-light w-75 ${modal.modal} ${animar ? modal["modal-show"] : ''}`}>
+                <section className={`card p-3 bg-dark text-light ${modal.modal} ${animar ? modal["modal-show"] : ''}`}>
 
                     <header className="d-flex justify-content-between">
                         <h1 className="card-title">Clientes</h1>
@@ -51,42 +51,39 @@ export class ModalClientes extends Componente {
                     <form
                         $ref="modalCliente"
                         id="modalCliente"
-                        className="card-body d-flex flex-column gap-2">
+                        className="card-body d-flex flex-column gap-3 p-0 mb-3">
 
-                        <div>
+                        {error?.name && <spam className="text-danger d-block">{error.name}</spam>}
 
-                            {error?.name && <spam className="text-danger d-block">{error.name}</spam>}
+                        <input
+                            autocomplete="off"
+                            className="form-control bg-dark text-light"
+                            type="text"
+                            name="name"
+                            placeholder="Nombre"
+                            $ref="nombre"
+                            required
+                            minLength={4}
+                            onchange={cambio.bind(this, erroresClientes)}
+                            value={props.name ?? ""} />
 
-                            <input
-                                autocomplete="off"
-                                className="form-control bg-dark text-light"
-                                type="text"
-                                name="name"
-                                placeholder="Nombre"
-                                $ref="nombre"
-                                required
-                                minLength={4}
-                                onchange={cambio.bind(this, erroresClientes)}
-                                value={props.name ?? ""} />
-                        </div>
-                        <div>
 
-                            {error?.phone && <spam className="text-danger d-block">{error.phone}</spam>}
+                        {error?.phone && <spam className="text-danger d-block">{error.phone}</spam>}
 
-                            <input
-                                autocomplete="off"
-                                className="form-control bg-dark text-light"
-                                type="tel"
-                                name="phone"
-                                placeholder="Teléfono"
-                                pattern="[0-9\+\-\(\)]*"
-                                minLength={10}
-                                maxLength={10}
-                                required
-                                value={props.phone ?? ""}
-                                onchange={cambio.bind(this, erroresClientes)} />
-                        </div>
-                        <div className="d-flex gap-2">
+                        <input
+                            autocomplete="off"
+                            className="form-control bg-dark text-light"
+                            type="tel"
+                            name="phone"
+                            placeholder="Teléfono"
+                            pattern="[0-9\+\-\(\)]*"
+                            minLength={10}
+                            maxLength={10}
+                            required
+                            value={props.phone ?? ""}
+                            onchange={cambio.bind(this, erroresClientes)} />
+
+                        <div className="d-flex gap-2 flex-wrap">
 
                             <button
                                 className="btn btn-primary"
@@ -138,21 +135,32 @@ export class ModalClientes extends Componente {
                             >Reset</button>
 
                             <button
-                                className="btn btn-primary"
+                                className={`btn ${!props.showAlert ? "btn-success" : "btn-danger"}`}
                                 type="button"
                                 onclick={() => {
+
                                     this.update({ showAlert: !this.state.showAlert })
+
                                     if (this.state.showAlert) {
-                                        this.c.alerta.abrir({ mensaje: <span>"Desde Modal"</span>, estilo: "bg-danger text-light", mostrar: true })
+                                        this.c.alerta.abrir({
+                                            mensaje: <span>Desde Modal</span>,
+                                            estilo: "bg-danger text-light",
+                                            mostrar: true
+                                        })
                                     }
                                 }}
-                            >{props.showAlert ? "Ocultar Alerta" : "Mostrar Alerta"}</button>
+                            >{props.showAlert ? "Ocultar Alerta" : "Mostrar Alerta"}
+                            </button>
 
                             <button
                                 type="button"
-                                onclick={() => { this.update({ ocultarSeccion: !this.state.ocultarSeccion }) }}
-                                className="btn btn-primary">
-                                {!props.ocultarSeccion ? "Ocultar Seccion I" : "Mostrar Seccion I"}
+                                onclick={() => this.update({
+                                    ocultarSeccion: !this.state.ocultarSeccion
+                                })}
+                                className={`btn ${!props.ocultarSeccion ? "btn-danger" : "btn-warning"}`}
+                            >{!props.ocultarSeccion ?
+                                "Reemplazar Seccion I" :
+                                "Regresar Seccion I"}
                             </button>
 
                         </div>
@@ -163,16 +171,25 @@ export class ModalClientes extends Componente {
                         &&
                         <>
                             <header>
-                                <h1>Titulo I</h1>
+                                <h3> El Impacto de la Meditación en la Salud Mental</h3>
                             </header>
                             <article>
                                 {
-                                    !props.ocultarSeccion
-                                    &&
-                                    <section>Sección I</section>
+                                    props.ocultarSeccion ?
+                                        <article>
+                                            <h4>Introducción:</h4>
+                                            <p>En la actualidad, el estrés y la ansiedad son desafíos comunes que enfrentamos en nuestra vida cotidiana. Ante esta realidad, la meditación ha emergido como una herramienta poderosa para promover la salud mental y el bienestar emocional. En este artículo, exploraremos cómo la práctica regular de la meditación puede tener un impacto positivo en nuestra salud mental.</p>
+                                        </article> :
+                                        <section>
+                                            <h4>Beneficios de la Meditación</h4>
+                                            <p>La meditación ofrece una serie de beneficios para la salud mental. En primer lugar, ayuda a reducir el estrés al permitirnos desconectar de las preocupaciones y las tensiones del día a día. A través de técnicas de respiración y enfoque mental, la meditación fomenta la relajación y la calma interior, lo que contribuye a disminuir los niveles de cortisol, la hormona del estrés.</p>
+                                        </section>
 
                                 }
-                                <section>Sección II</section>
+                                <section>
+                                    <h4>Meditación y Bienestar Emocional</h4>
+                                    <p>La meditación también tiene un impacto significativo en nuestro bienestar emocional. A través de la autorreflexión y la autoaceptación, podemos desarrollar una mayor comprensión de nuestras emociones y patrones de pensamiento. Esto puede llevar a una mayor resiliencia emocional, ya que aprendemos a manejar de manera más efectiva los desafíos emocionales que enfrentamos.</p>
+                                </section>
                             </article>
                         </>
                     }

@@ -9,6 +9,7 @@
     opacity: 0;
     transition: opacity .5s linear;
     backdrop-filter: blur(2px);
+    overflow-y: auto;
 }
 
 .contenedor-show {
@@ -22,15 +23,20 @@
 }
 
 .modal {
-    margin-top: 1rem;
-    margin-right: auto;
-    margin-left: auto;
+    margin: 1rem auto;
     position: relative;
     top: -100%;
     box-shadow: 8px 8px 20px 0px #14141485;
     transition: top .5s ease-in-out;
+    width: 50%;
 }
 
 .modal-show {
     top: 0;
+}
+
+@media screen and (max-width: 720px) {
+    .modal {
+        width: 95%;
+    }
 }

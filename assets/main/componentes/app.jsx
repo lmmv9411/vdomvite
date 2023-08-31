@@ -38,7 +38,7 @@ export class App extends Componente {
                         </ul>
                     </nav>
 
-                    <main id="main" className="p-3"></main>
+                    <main id="main"></main>
 
                 </Router >
 
