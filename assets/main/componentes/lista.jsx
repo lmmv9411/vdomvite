@@ -69,6 +69,31 @@ export class Lista extends Componente {
 
     }
 
+    editar(key) {
+
+        const { proveedores } = this.cp;
+
+        if (this.map.has(key.toLowerCase())) {
+            const newValue = proveedores.state.nombre;
+            if (!newValue) {
+                proveedores.update({ error: `¡Valor vacío!` })
+                return;
+            }
+            const newItems = this.state.values.map(item => {
+                if (item.v === key) {
+                    item.v = newValue;
+                }
+                return item
+            });
+
+            this.update({ values: newItems });
+            this.map.delete(key.toLowerCase());
+            this.map.set(newValue.toLowerCase(), newValue);
+            proveedores.update({ error: null, nombre: "" });
+            proveedores.nombre.focus();
+        }
+    }
+
     render(props) {
 
         return (
@@ -84,6 +109,10 @@ export class Lista extends Componente {
                             className="btn btn-danger"
                             onclick={() => this.eliminar(item.v)}
                         >Eliminar</button>
+                        <button
+                            className="btn btn-primary"
+                            onclick={() => this.editar(item.v)}
+                        >Editar</button>
                     </Fragment>
                 ))}
             </ul>

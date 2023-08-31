@@ -1,5 +1,4 @@
 import { compararNodos } from "./CompararNodos";
-import { Componente } from "./Componente";
 import { VDOM } from "./Render";
 import { Fragment, Portal } from "./VDom";
 
@@ -13,11 +12,11 @@ export const reconciliation = (function () {
      * @param {HTMLElement} $parentNode Nodo del DOM, referencia de los nodos a comparar.
      * @param {Object} vOldNode Nodo Virtual antiguo.
      * @param {Object} vNewNode Nodo Virtual nuevo
-     * @returns {void}
+     * @returns {Boolean} Retorna true si hubo cabios;
      * */
     const updateDOM = function ($parentNode, vOldNode, vNewNode) {
         parent = vOldNode;
-        _updateDOM($parentNode, vOldNode, vNewNode);
+        return _updateDOM($parentNode, vOldNode, vNewNode);
     }
 
     const _updateDOM = function ($parentNode, vOldNode, vNewNode) {
@@ -30,7 +29,7 @@ export const reconciliation = (function () {
             (vOldNode === undefined && vNewNode === undefined) ||
             (vOldNode === null && vNewNode === null) ||
             compararNodos(vOldNode, vNewNode)) {
-            return;
+            return false;
         }
 
         if (vNewNode === undefined || vNewNode === null) {
@@ -62,6 +61,8 @@ export const reconciliation = (function () {
 
         }
 
+
+        return true;
     }
 
     const compareChildren = function ($parentNode, vOldNode, vNewNode) {
@@ -133,11 +134,19 @@ export const reconciliation = (function () {
 
                     } else {
 
-                        vOldNode.children[i] = childrenNew;
-
                         if (childrenOld.type === Fragment) {
+
                             const $childrens = vOldNode.children[i].fragmento;
-                            $childrens.forEach(($ch, i) => { replaceNode($ch, childrenNew.children[i]) })
+
+                            vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
+
+                            $childrens.forEach(($ch, idx) => {
+                                if (!compararNodos(childrenOld.children[idx], childrenNew.children[idx])) {
+                                    const $ref = replaceNode($ch, childrenNew.children[idx])
+                                    vNewNode.children[i].fragmento[idx] = $ref;
+                                }
+                            })
+
                         } else {
                             replaceNode($refChildren, childrenNew);
                             vOldNode.children[i] = childrenNew;
@@ -231,6 +240,7 @@ export const reconciliation = (function () {
         const $ref = VDOM.render(vNewNode, parent);
         $n.replaceWith($ref);
         setReff(vNewNode, $ref);
+        return $ref;
     }
 
     /**
