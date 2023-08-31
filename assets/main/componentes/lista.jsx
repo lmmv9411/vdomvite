@@ -97,22 +97,36 @@ export class Lista extends Componente {
     render(props) {
 
         return (
+
             <ul className="list-group list-group-flush p-3">
+
                 {props.values.map(item => (
+
                     <Fragment key={item.v}>
-                        <li className={item.c}>{item.v}</li>
-                        <button
-                            className="btn btn-warning"
-                            onclick={() => this.cp.proveedores.agregar()}
-                        >Saludar</button>
-                        <button
-                            className="btn btn-danger"
-                            onclick={() => this.eliminar(item.v)}
-                        >Eliminar</button>
-                        <button
-                            className="btn btn-primary"
-                            onclick={() => this.editar(item.v)}
-                        >Editar</button>
+
+                        <li className={item.c}>
+
+                            <span className="me-1">{item.v}</span>
+
+                            <button
+                                className="btn btn-warning me-1"
+                                onclick={() => this.cp.proveedores.agregar()}
+                            >Saludar
+                            </button>
+
+                            <button
+                                className="btn btn-danger me-1"
+                                onclick={() => this.eliminar(item.v)}
+                            >Eliminar
+                            </button>
+
+                            <button
+                                className="btn btn-primary"
+                                onclick={() => this.editar(item.v)}
+                            >Editar
+                            </button>
+
+                        </li>
                     </Fragment>
                 ))}
             </ul>
