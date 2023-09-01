@@ -6,9 +6,6 @@ export class Lista extends Componente {
     constructor(props) {
         super({ ...props, values: [] });
         this.cp = ContextoProveedor.children;
-    }
-
-    montado() {
         this.items = [
             "list-group-item list-group-item-primary",
             "list-group-item list-group-item-secondary",

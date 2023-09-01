@@ -5,6 +5,7 @@ import modal from "../../estilos/modal.module.css"
 export class Contenedor extends Componente {
     constructor(props) {
         super({ mostrar: false, ...props });
+        this.portal = document.getElementById("portal");
     }
 
     mostrarContenedor(cll) {
@@ -32,8 +33,6 @@ export class Contenedor extends Componente {
     }
 
     render(props) {
-
-        this.portal ?? (this.portal = document.getElementById("portal"));
 
         return crearPortal(
             <article

@@ -13,10 +13,7 @@ export class Proveedores extends Componente {
             crear: false,
             quitarRef: true
         })
-    }
-
-    montado() {
-        this.nombre.focus();
+        //this.nombre.focus();
         ContextoProveedor.children.proveedores = this;
     }
 

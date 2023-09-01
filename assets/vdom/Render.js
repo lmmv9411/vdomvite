@@ -20,6 +20,10 @@ export const VDOM = (function () {
 
     const _render = function (node) {
 
+        if (node instanceof Componente) {
+            node.construir();
+        }
+
         if (!node || !node.type) {
             if (typeof node === "string" || typeof node === "number") {
                 return document.createTextNode(node);

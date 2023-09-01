@@ -1,5 +1,5 @@
 import { reconciliation } from "./UpdateDOM.js";
-import { Fragment, Portal } from "./VDom.js"
+import { Fragment } from "./VDom.js"
 
 export class Componente {
 
@@ -11,12 +11,14 @@ export class Componente {
 
         this.state = props;
 
-        const nodo = this.render(props);
+    }
 
-        for (let [k, v] of Object.entries(nodo)) {
-            this[k] = v;
+    construir() {
+        const nodo = this.render(this.state);
+
+        for (const k of Object.keys(nodo)) {
+            this[k] = nodo[k];
         }
-
     }
 
     /**
@@ -61,7 +63,7 @@ export class Componente {
 
         if (cambio) {
             this.state = newState;
-            for (let k of Object.keys(newNode)) {
+            for (const k of Object.keys(newNode)) {
                 this[k] = newNode[k];
             }
 

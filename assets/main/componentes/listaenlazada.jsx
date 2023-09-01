@@ -12,11 +12,10 @@ export class ListaEnlazada extends Componente {
         super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false })
         this.size = 0;
         this.c = ctx.children;
+        this.ctrl = cListaEnlazada(this)
     }
 
-    render(props) {
-
-        !this.ctrl && (this.ctrl = cListaEnlazada(this));
+    render(props) {        
 
         return (
             <ctx.Provider>
