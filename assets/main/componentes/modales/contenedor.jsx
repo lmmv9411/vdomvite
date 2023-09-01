@@ -42,8 +42,8 @@ export class Contenedor extends Componente {
                 className={`${modal.contenedor} ${props.mostrar ? modal["contenedor-show"] : ""}`}>
                 {props.children}
             </article>
-            , this.portal
-        );
+            , this.portal)
+
     }
 
 }
