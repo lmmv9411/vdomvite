@@ -77,6 +77,7 @@ export class Clientes extends Componente {
                         <label className="d-flex align-items-center justify-content-center gap-2">
                             <span className="text-light">Seleccion</span>
                             <input
+                                name="seleccion"
                                 type="checkbox"
                                 checked={chk}
                                 defaultChecked={true}
