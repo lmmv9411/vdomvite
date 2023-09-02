@@ -14,9 +14,13 @@ export class App extends Componente {
         return (
             <>
                 <header>
-                    <h1><strong>VDOM</strong></h1>
+                    <h1>
+                        <strong>VDOM</strong>
+                    </h1>
                 </header>
+
                 <Router idContenedor="main" pathBase="">
+
                     <nav>
                         <ul className="d-flex flex-wrap" style={{ listStyle: "none", padding: "0" }}>
                             <li>

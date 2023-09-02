@@ -13,8 +13,12 @@ export class Proveedores extends Componente {
             crear: false,
             quitarRef: true
         })
-        //this.nombre.focus();
+    
         ContextoProveedor.children.proveedores = this;
+    }
+
+    montado(){
+        this.nombre.focus();
     }
 
     agregar(e) {
@@ -26,13 +30,13 @@ export class Proveedores extends Componente {
         const { nombre } = this.state;
 
         if (!nombre) {
-            this.update({ error: "¡Item vacío!" })
+            this.setState({ error: "¡Item vacío!" })
             return;
         }
 
         lista.agregarItem(nombre);
 
-        this.update({ nombre: "" })
+        this.setState({ nombre: "" })
 
         this.nombre.focus();
     }
@@ -58,7 +62,7 @@ export class Proveedores extends Componente {
                         placeholder="Valor"
                         value={props.nombre}
                         className="form-control bg-dark text-light"
-                        onchange={e => this.update({ nombre: e.target.value.trim() })} />
+                        onchange={e => this.setState({ nombre: e.target.value.trim() })} />
 
                     <button
                         className="btn btn-success"
@@ -70,7 +74,7 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            this.update({ quitarRef: !this.state.quitarRef })
+                            this.setState({ quitarRef: !this.state.quitarRef })
                         }}
                     >{!props.quitarRef ? "Quitar Referencia" : "Agregar Referencia"}</button>
 

@@ -36,7 +36,7 @@ export class ListaEnlazada extends Componente {
                         $ref="txtValor"
                         placeholder="Valor"
                         value={props.valor}
-                        onchange={e => this.update({ valor: e.target.value })}
+                        onchange={e => this.setState({ valor: e.target.value })}
                     />
 
                     <button
@@ -62,7 +62,7 @@ export class ListaEnlazada extends Componente {
                         value={props.pos}
                         min={1}
                         max={this.size ?? 0}
-                        onchange={(e) => this.update({ pos: Number(e.target.value) })}
+                        onchange={(e) => this.setState({ pos: Number(e.target.value) })}
                     />
 
                     <button

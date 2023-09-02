@@ -24,7 +24,7 @@ export class Lista extends Componente {
 
         const valores = this.state.values.map(v => this.color(v));
 
-        this.update({ values: valores })
+        this.setState({ values: valores })
     }
 
     color(item) {
@@ -48,10 +48,10 @@ export class Lista extends Componente {
 
         if (!this.map.has(item.v.toLowerCase())) {
             this.map.set(item.v.toLowerCase(), item);
-            this.update({ values: [item, ...values] })
-            proveedores.update({ error: null });
+            this.setState({ values: [item, ...values] })
+            proveedores.setState({ error: null });
         } else {
-            proveedores.update({ error: `¡Ya existe el item "${item.v}"!` })
+            proveedores.setState({ error: `¡Ya existe el item "${item.v}"!` })
         }
 
     }
@@ -60,7 +60,7 @@ export class Lista extends Componente {
 
         if (this.map.has(key.toLowerCase())) {
             const valores = this.state.values.filter(item => item.v !== key);
-            this.update({ values: valores });
+            this.setState({ values: valores });
             this.map.delete(key.toLowerCase());
         }
 
@@ -73,7 +73,7 @@ export class Lista extends Componente {
         if (this.map.has(key.toLowerCase())) {
             const newValue = proveedores.state.nombre;
             if (!newValue) {
-                proveedores.update({ error: `¡Valor vacío!` })
+                proveedores.setState({ error: `¡Valor vacío!` })
                 return;
             }
             const newItems = this.state.values.map(item => {
@@ -83,10 +83,10 @@ export class Lista extends Componente {
                 return item
             });
 
-            this.update({ values: newItems });
+            this.setState({ values: newItems });
             this.map.delete(key.toLowerCase());
             this.map.set(newValue.toLowerCase(), newValue);
-            proveedores.update({ error: null, nombre: "" });
+            proveedores.setState({ error: null, nombre: "" });
             proveedores.nombre.focus();
         }
     }

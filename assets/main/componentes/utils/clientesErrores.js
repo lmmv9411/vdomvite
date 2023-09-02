@@ -18,7 +18,7 @@ function eliminarCliente(cliente, e) {
 
     e.preventDefault();
     const filtro = this.state.clientes.filter(c => c !== cliente);
-    this.update({ clientes: filtro })
+    this.setState({ clientes: filtro })
 
 }
 
@@ -49,14 +49,14 @@ function submitCliente(errores, e) {
             }
         })
 
-        this.update({ error: erroresII })
+        this.setState({ error: erroresII })
 
     } else {
         const { nombre, edad, email, clientes } = this.state
         clientes.unshift({ nombre, edad, email })
-        //this.update({ nombre: "", edad: "", email: "" })
+        //this.setState({ nombre: "", edad: "", email: "" })
         form.reset();
-        this.update({});
+        this.setState({});
         this.nombre.focus();
     }
 }
@@ -87,7 +87,7 @@ function cambio(errores, e) {
         input?.focus();
     }
 
-    this.update(newState);
+    this.setState(newState);
 
 }
 

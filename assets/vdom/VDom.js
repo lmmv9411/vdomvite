@@ -61,7 +61,6 @@ function reemplazarElemento($parent, nodo) {
     if (!tmp && nodo.construido) {
         nodo.construido($ref);
     }
-
 }
 
 function h(type, props, ...children) {

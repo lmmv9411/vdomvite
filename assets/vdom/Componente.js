@@ -30,28 +30,36 @@ export class Componente {
         return null;
     }
 
-    /**
-     * Método que se llama cuando se construlle Element Html y lo agrega a this.$element.
-     * @param {HTMLElement} $ref Elemento Html
-     * @returns {void}
-     */
     construido($ref) {
         this.$element = $ref;
         this.montado();
     }
 
     /**
-     * Método que se invoca cuando se crea Elemento Html y se monta en el dom.
+     * Método que se invoca cuando este componente ya se agregó en el HTMLElement Padre.
      * @returns {void}
      */
     montado() { }
 
     /**
-   * Actualizar el DOM si hay cambios en el estado.
-   * @param {Object} newState nuevo estado ha crear
-   * @returns {void}
-   */
-    update(newState) {
+       * Establecer y actualizar estado y el DOM si existen cambios.
+       * @param {Object} newState Nuevo estado.
+       * @returns {void}
+       */
+    setState(state) {
+        if (typeof state === "function") {
+            const newState = state(this.state);
+            this.#update(newState);
+        } else if (typeof state === "object") {
+            this.#update(state)
+        }
+    }
+
+    #update(newState) {
+
+        if (typeof newState !== "object") {
+            return
+        }
 
         newState = this.#copyState(newState)
 

@@ -22,10 +22,8 @@ export class Clientes extends Componente {
 
         fetch("https://jsonplaceholder.typicode.com/users")
             .then(data => data.json())
-            .then(users => users.map(user => {
-                return { edad: user.id, nombre: user.name, email: user.email }
-            }))
-            .then(data => this.update({ clientes: data }))
+            .then(users => users.map(user => ({ edad: user.id, nombre: user.name, email: user.email })))
+            .then(data => this.setState({ clientes: data }))
     }
 
     render(props) {
@@ -81,7 +79,7 @@ export class Clientes extends Componente {
                                 type="checkbox"
                                 checked={chk}
                                 defaultChecked={true}
-                                onclick={() => this.update({ chk: !this.state.chk })}
+                                onclick={() => this.setState(a => !a.chk)}
                             />
                         </label>
 
