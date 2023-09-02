@@ -9,7 +9,7 @@ export class Contenedor extends Componente {
     }
 
     mostrarContenedor(cll) {
-        this.update({ mostrar: true });
+        this.setState({ mostrar: true });
         cll();
     }
 
@@ -18,7 +18,7 @@ export class Contenedor extends Componente {
 
         if (this.state.mostrar) {
             setTimeout(() => {
-                this.update({ mostrar: false });
+                this.setState({ mostrar: false });
             }, 600);
         }
 

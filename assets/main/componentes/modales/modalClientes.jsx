@@ -5,27 +5,28 @@ import { Fragment } from "../../../vdom/VDom";
 import { erroresClientes } from "../utils/modalClientes";
 import { cambio } from "../utils/clientesErrores";
 import { Alerta } from "./alert";
+import style from "../../estilos/alerta.module.css"
 
 export class ModalClientes extends Componente {
 
     constructor(props) {
-        super({ ...props, mostrar: false, error: {} })
+        super({ mostrar: false, error: {}, hover: !0, ...props })
         this.c = ctx.children;
     }
 
     abrir() {
         this.c.contenedor.mostrarContenedor(() => {
-            this.update({ mostrar: true })
+            this.setState({ mostrar: true })
             this.nombre?.focus();
-            this.update({ animar: true })
+            this.setState({ animar: true })
         });
     }
 
     cerrar() {
         this.c.contenedor.cerrarContenedor(() => {
-            this.update({ animar: false });
+            this.setState({ animar: false });
             setTimeout(() => {
-                this.update({ mostrar: false });
+                this.setState({ mostrar: false });
             }, 300);
         });
     }
@@ -39,13 +40,13 @@ export class ModalClientes extends Componente {
 
                 <section className={`card p-3 bg-dark text-light ${modal.modal} ${animar ? modal["modal-show"] : ''}`}>
 
-                    <header className="d-flex justify-content-between">
+                    <header className="d-flex justify-content-between align-items-start">
                         <h1 className="card-title">Clientes</h1>
                         <button
-                            className="btn text-light bg-danger p-1 d-flex justify-content-center align-items-center rounded"
-                            style={{ width: "20px", height: "25px" }}
                             onclick={this.cerrar.bind(this)}
-                        >X</button>
+                            className={style["btn-close"]}>
+                            ❌
+                        </button>
                     </header>
 
                     <form
@@ -111,7 +112,7 @@ export class ModalClientes extends Componente {
                                             erroresII[inp.name] = msj;
                                         })
 
-                                        this.update({ error: erroresII })
+                                        this.setState({ error: erroresII })
                                     } else {
                                         this.c.alerta.abrir({
                                             mensaje:
@@ -139,7 +140,7 @@ export class ModalClientes extends Componente {
                                 type="button"
                                 onclick={() => {
 
-                                    this.update({ showAlert: !this.state.showAlert })
+                                    this.setState({ showAlert: !this.state.showAlert })
 
                                     if (this.state.showAlert) {
                                         this.c.alerta.abrir({
@@ -154,7 +155,7 @@ export class ModalClientes extends Componente {
 
                             <button
                                 type="button"
-                                onclick={() => this.update({
+                                onclick={() => this.setState({
                                     ocultarSeccion: !this.state.ocultarSeccion
                                 })}
                                 className={`btn ${!props.ocultarSeccion ? "btn-danger" : "btn-warning"}`}

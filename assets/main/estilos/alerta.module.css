@@ -1,5 +1,22 @@
-.alerta {
+.btn-close {
+    transform-origin: center;
+    transition: scale .5s ease, transform .5s ease;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    outline: none;
+}
 
+.btn-close:hover {
+    scale: 1.5;
+    transform: rotate(180deg);
+}
+
+.alerta {
     left: 50%;
     transform: translateX(-50%);
     padding: 1rem;
