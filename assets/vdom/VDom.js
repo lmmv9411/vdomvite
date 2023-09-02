@@ -7,7 +7,6 @@ import { VDOM } from "./Render";
  * @param {Componente} nodo nodo jsx a convertir
  * @returns {void}
  */
-
 function insertarElemento($parent, nodo) {
 
     const tmp = nodo.$fragment ?? nodo.$element;
@@ -81,7 +80,7 @@ function h(type, props, ...children) {
 
     if (type instanceof Function) {
         let componente
-
+        
         if (!(type.prototype instanceof Object)) {
             componente = type({ ...props, children });
         } else {

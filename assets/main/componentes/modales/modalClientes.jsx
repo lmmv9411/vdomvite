@@ -169,8 +169,7 @@ export class ModalClientes extends Componente {
                     </form>
 
                     {
-                        props.showAlert
-                        &&
+                        props.showAlert &&
                         <>
                             <header>
                                 <h3> El Impacto de la Meditación en la Salud Mental</h3>
