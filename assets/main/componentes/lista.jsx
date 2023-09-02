@@ -71,11 +71,17 @@ export class Lista extends Componente {
         const { proveedores } = this.cp;
 
         if (this.map.has(key.toLowerCase())) {
+
             const newValue = proveedores.state.nombre;
+
             if (!newValue) {
                 proveedores.setState({ error: `¡Valor vacío!` })
                 return;
+            } else if (this.map.has(newValue.toLowerCase())) {
+                proveedores.setState({ error: `¡El valor "${newValue}" ya existe!` })
+                return;
             }
+
             const newItems = this.state.values.map(item => {
                 if (item.v === key) {
                     item.v = newValue;
@@ -124,6 +130,7 @@ export class Lista extends Componente {
                             </button>
 
                         </li>
+
                     </Fragment>
                 ))}
             </ul>

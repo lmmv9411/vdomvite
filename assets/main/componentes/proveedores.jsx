@@ -13,11 +13,13 @@ export class Proveedores extends Componente {
             crear: false,
             quitarRef: true
         })
-    
-        ContextoProveedor.children.proveedores = this;
+
+        this.lista = <Lista contextoNombre="lista" />;
+        this.c = ContextoProveedor.children;
+        this.c.proveedores = this;
     }
 
-    montado(){
+    montado() {
         this.nombre.focus();
     }
 
@@ -43,11 +45,10 @@ export class Proveedores extends Componente {
 
     render(props) {
 
-
         return (
             <ContextoProveedor.Provider>
 
-                {!props.quitarRef && <h1 $ref="h1">Prueba de $Referencia</h1>}
+                {!props.quitarRef && <h3 $ref="h1">Prueba de $Referencia</h3>}
 
                 <form className="d-flex gap-2 p-3 flex-wrap" autocomplete="off">
 
@@ -74,7 +75,7 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            this.setState({ quitarRef: !this.state.quitarRef })
+                            this.setState(s => ({ quitarRef: !s.quitarRef }))
                         }}
                     >{!props.quitarRef ? "Quitar Referencia" : "Agregar Referencia"}</button>
 
@@ -94,12 +95,12 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            ContextoProveedor.children.lista.cambiarColor();
+                            this.c.lista.cambiarColor();
                         }}
                     >Cambia Color</button>
                 </form>
 
-                {this.lista ?? (this.lista = <Lista contextoNombre="lista" />)}
+                {this.lista}
 
             </ContextoProveedor.Provider >
         )
