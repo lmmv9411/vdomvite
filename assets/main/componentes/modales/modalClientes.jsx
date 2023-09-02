@@ -1,10 +1,10 @@
 import { Componente } from "../../../vdom/Componente";
 import { ctx } from "../listaenlazada";
-import modal from "../../estilos/modal.module.css"
 import { Fragment } from "../../../vdom/VDom";
 import { erroresClientes } from "../utils/modalClientes";
 import { cambio } from "../utils/clientesErrores";
 import { Alerta } from "./alert";
+import modal from "../../estilos/modal.module.css"
 import style from "../../estilos/alerta.module.css"
 
 export class ModalClientes extends Componente {
@@ -140,7 +140,7 @@ export class ModalClientes extends Componente {
                                 type="button"
                                 onclick={() => {
 
-                                    this.setState({ showAlert: !this.state.showAlert })
+                                    this.setState(s => ({ showAlert: !s.showAlert }))
 
                                     if (this.state.showAlert) {
                                         this.c.alerta.abrir({
@@ -149,15 +149,16 @@ export class ModalClientes extends Componente {
                                             mostrar: true
                                         })
                                     }
-                                }}
-                            >{props.showAlert ? "Ocultar Alerta" : "Mostrar Alerta"}
+
+                                }}>
+                                {props.showAlert ? "Ocultar Alerta" : "Mostrar Alerta"}
                             </button>
 
                             <button
                                 type="button"
-                                onclick={() => this.setState({
-                                    ocultarSeccion: !this.state.ocultarSeccion
-                                })}
+                                onclick={() => this.setState(s => (
+                                    { ocultarSeccion: !s.ocultarSeccion }
+                                ))}
                                 className={`btn ${!props.ocultarSeccion ? "btn-danger" : "btn-warning"}`}
                             >{!props.ocultarSeccion ?
                                 "Reemplazar Seccion I" :

@@ -27,8 +27,9 @@
     position: relative;
     top: -100%;
     box-shadow: 8px 8px 20px 0px #14141485;
-    transition: top .5s ease-in-out;
     width: 50%;
+    transition: top .5s ease-in-out, max-height .5s ease;
+    overflow: hidden;
 }
 
 .modal-show {
