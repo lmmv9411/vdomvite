@@ -1,8 +1,8 @@
 import { Componente } from "../../vdom/Componente";
 import { CreateContext } from "../../vdom/Context";
-import { cListaEnlazada } from "../controladores/listaenlazada";
 import { Contenedor } from "./modales/contenedor";
 import { ModalClientes } from "./modales/modalClientes";
+import ctl from "../controladores/listaenlazada";
 
 export const ctx = new CreateContext();
 
@@ -12,10 +12,9 @@ export class ListaEnlazada extends Componente {
         super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false })
         this.size = 0;
         this.c = ctx.children;
-        this.ctrl = cListaEnlazada(this)
     }
 
-    render(props) {        
+    render(props) {
 
         return (
             <ctx.Provider>
@@ -42,14 +41,14 @@ export class ListaEnlazada extends Componente {
                     <button
                         className="btn btn-primary"
                         type="button"
-                        onclick={this.ctrl.agregarCola}>
+                        onclick={ctl.agregarCola.bind(this)}>
                         Agregar Cola
                     </button>
 
                     <button
                         className="btn btn-primary"
                         type="button"
-                        onclick={this.ctrl.agregarCabeza}>
+                        onclick={ctl.agregarCabeza.bind(this)}>
                         Agregar Cabeza
                     </button>
 
@@ -68,7 +67,7 @@ export class ListaEnlazada extends Componente {
                     <button
                         className="btn btn-primary"
                         type="button"
-                        onclick={this.ctrl.agregarEn}>
+                        onclick={ctl.agregarEn.bind(this)}>
                         Agregar en
                     </button>
 
@@ -115,7 +114,7 @@ export class ListaEnlazada extends Componente {
                     <button
                         className="btn btn-danger"
                         type="button"
-                        onclick={() => this.ctrl.eliminar(nodo.valor)}
+                        onclick={() => ctl.eliminar.bind(this, nodo.valor)}
                     >Eliminar
                     </button>
                 </li>;
