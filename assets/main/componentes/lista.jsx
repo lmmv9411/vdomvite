@@ -113,20 +113,20 @@ export class Lista extends Componente {
 
                             <button
                                 className="btn btn-warning me-1"
-                                onclick={() => this.cp.proveedores.agregar()}
-                            >Saludar
+                                onclick={() => this.cp.proveedores.agregar()}>
+                                Saludar
                             </button>
 
                             <button
                                 className="btn btn-danger me-1"
-                                onclick={() => this.eliminar(item.v)}
-                            >Eliminar
+                                onclick={() => this.eliminar(item.v)}>
+                                Eliminar
                             </button>
 
                             <button
                                 className="btn btn-primary"
-                                onclick={() => this.editar(item.v)}
-                            >Editar
+                                onclick={() => this.editar(item.v)}>
+                                Editar
                             </button>
 
                         </li>

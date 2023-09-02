@@ -89,8 +89,8 @@ export class Clientes extends Componente {
                         <button
                             className="btn btn-primary"
                             type="submit"
-                            onclick={submitCliente.bind(this, erroresClientes)}
-                        >Click Me!
+                            onclick={submitCliente.bind(this, erroresClientes)}>
+                            Agregar
                         </button>
                     </div>
 

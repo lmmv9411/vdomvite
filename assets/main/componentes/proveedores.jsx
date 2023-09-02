@@ -63,12 +63,14 @@ export class Proveedores extends Componente {
                         placeholder="Valor"
                         value={props.nombre}
                         className="form-control bg-dark text-light"
-                        onchange={e => this.setState({ nombre: e.target.value.trim() })} />
+                        onchange={e => this.setState({ nombre: e.target.value.trim() })}
+                    />
 
                     <button
                         className="btn btn-success"
-                        onclick={this.agregar.bind(this)}
-                    >Agregar</button>
+                        onclick={this.agregar.bind(this)}>
+                        Agregar
+                    </button>
 
                     <button
                         className="btn btn-warning"
@@ -87,8 +89,9 @@ export class Proveedores extends Componente {
                             if (this.h1) {
                                 this.h1.textContent = this.state.nombre
                             }
-                        }}
-                    >Test Referencia</button>
+                        }}>
+                        Test Referencia
+                    </button>
 
                     <button
                         className="btn btn-info"
@@ -96,8 +99,9 @@ export class Proveedores extends Componente {
                             e.preventDefault();
                             e.stopPropagation()
                             this.cp.lista.cambiarColor();
-                        }}
-                    >Cambia Color</button>
+                        }}>
+                        Cambia Color
+                    </button>
                 </form>
 
                 {this.lista}
