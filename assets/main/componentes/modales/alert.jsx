@@ -12,6 +12,7 @@ export class Alerta extends Componente {
 
     abrir(data) {
         const alerta = new Alerta({ ...data });
+        alerta.cerrar = this.cerrar.bind(alerta, this.alertas);
         this.alertas.push(alerta);
 
         VDOM.render(alerta);
@@ -20,6 +21,13 @@ export class Alerta extends Componente {
             const portal = this.alertas.shift();
             portal.alerta.remove();
         }, 5000);
+    }
+
+    cerrar(alertas) {
+        const i = alertas.findIndex(a => a.alerta === this.alerta);
+        const portal = alertas[i];
+        alertas.splice(i, 1);
+        portal.alerta.remove();
     }
 
     render(props) {
@@ -33,6 +41,11 @@ export class Alerta extends Componente {
                         class={`${props.estilo} ${style.alerta} ${props.mostrar ? style.show : style.hidden}`}
                         role="alert">
                         {props.mensaje}
+                        <button
+                            onclick={this.cerrar}
+                            className={style["btn-close"]}>
+                            ❌
+                        </button>
                     </div>, document.getElementById("portal")
                 )}
             </>

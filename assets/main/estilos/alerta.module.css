@@ -17,6 +17,10 @@
 }
 
 .alerta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
     left: 50%;
     transform: translateX(-50%);
     padding: 1rem;
