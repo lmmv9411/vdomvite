@@ -18,6 +18,13 @@ export class Alerta extends Componente {
         VDOM.render(alerta);
 
         setTimeout(() => {
+            if (this.alertas.length === 0) {
+                return
+            }
+            const peek = this.alertas[0];
+            if (peek.alerta !== alerta.alerta) {
+                return;
+            }
             const portal = this.alertas.shift();
             portal.alerta.remove();
         }, 5000);
