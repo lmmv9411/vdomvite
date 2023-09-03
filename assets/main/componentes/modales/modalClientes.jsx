@@ -37,14 +37,14 @@ export class ModalClientes extends Componente {
 
         return (
             <>
-
                 <section className={`card p-3 bg-dark text-light ${modal.modal} ${animar ? modal["modal-show"] : ''}`}>
 
                     <header className="d-flex justify-content-between align-items-start">
                         <h1 className="card-title">Clientes</h1>
                         <button
                             onclick={this.cerrar.bind(this)}
-                            className={style["btn-close"]}>
+                            className={style["btn-close"]}
+                        >
                             ❌
                         </button>
                     </header>
@@ -66,8 +66,8 @@ export class ModalClientes extends Componente {
                             required
                             minLength={4}
                             onchange={cambio.bind(this, erroresClientes)}
-                            value={props.name ?? ""} />
-
+                            value={props.name ?? ""}
+                        />
 
                         {error?.phone && <spam className="text-danger d-block">{error.phone}</spam>}
 
@@ -82,7 +82,8 @@ export class ModalClientes extends Componente {
                             maxLength={10}
                             required
                             value={props.phone ?? ""}
-                            onchange={cambio.bind(this, erroresClientes)} />
+                            onchange={cambio.bind(this, erroresClientes)}
+                        />
 
                         <div className="d-flex gap-2 flex-wrap">
 
@@ -198,7 +199,6 @@ export class ModalClientes extends Componente {
                 </section>
 
                 <Alerta contextoNombre="alerta" />
-
             </>
 
         )
