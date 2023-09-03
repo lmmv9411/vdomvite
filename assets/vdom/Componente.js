@@ -61,6 +61,10 @@ export class Componente {
             return
         }
 
+        if (!this.#compareState(newState)) {
+            return;
+        }
+
         newState = this.#copyState(newState)
 
         const newNode = this.render(newState);
@@ -80,6 +84,21 @@ export class Componente {
             }
         }
 
+    }
+
+    /**
+     * Comparar nuevo estado con el anteriror.
+     * @param {Object} newState Nuevo estado
+     * @returns {Boolean} Regresa true si son iguales o false si al menos un valor es diferente.
+     */
+    #compareState(newState) {
+        for (const [key, value] of Object.entries(newState)) {
+            if (!(key in this.state) || value !== this.state[key]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     #copyState(newState) {
