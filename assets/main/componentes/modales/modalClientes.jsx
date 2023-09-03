@@ -10,7 +10,7 @@ import style from "../../estilos/alerta.module.css"
 export class ModalClientes extends Componente {
 
     constructor(props) {
-        super({ mostrar: false, error: {}, hover: !0, ...props })
+        super({ mostrar: false, error: {}, ...props })
         this.c = ctx.children;
     }
 
