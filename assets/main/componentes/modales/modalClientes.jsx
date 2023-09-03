@@ -43,26 +43,25 @@ export class ModalClientes extends Componente {
                         <h1 className="card-title">Clientes</h1>
                         <button
                             onclick={this.cerrar.bind(this)}
-                            className={style["btn-close"]}
-                        >
+                            className={style["btn-close"]}>
                             ❌
                         </button>
                     </header>
 
                     <form
-                        $ref="modalCliente"
-                        id="modalCliente"
+                        $ref="formCliente"
+                        id="formCliente"
                         className="card-body d-flex flex-column gap-3 p-0 mb-3">
 
                         {error?.name && <spam className="text-danger d-block">{error.name}</spam>}
 
                         <input
+                            $ref="name"
                             autocomplete="off"
                             className="form-control bg-dark text-light"
                             type="text"
                             name="name"
                             placeholder="Nombre"
-                            $ref="nombre"
                             required
                             minLength={4}
                             onchange={cambio.bind(this, erroresClientes)}
@@ -72,6 +71,7 @@ export class ModalClientes extends Componente {
                         {error?.phone && <spam className="text-danger d-block">{error.phone}</spam>}
 
                         <input
+                            $ref="phone"
                             autocomplete="off"
                             className="form-control bg-dark text-light"
                             type="tel"
@@ -94,26 +94,27 @@ export class ModalClientes extends Componente {
                                     e.preventDefault()
                                     e.stopPropagation();
 
-                                    const form = this.modalCliente;
+                                    const form = this.formCliente;
 
                                     if (!form.checkValidity()) {
 
-                                        let erroresII = {};
+                                        let errores = {};
 
-                                        form.querySelectorAll("input").forEach(inp => {
-                                            let msj;
-                                            const inpErr = erroresClientes[inp.name];
-                                            for (let error of Object.keys(inpErr)) {
-                                                if (inp.validity[error]) {
-                                                    msj = inpErr[error];
-                                                    break;
+                                        form.querySelectorAll("input")
+                                            .forEach(inp => {
+
+                                                const inpErr = erroresClientes[inp.name];
+
+                                                for (const error of Object.keys(inpErr)) {
+                                                    if (inp.validity[error]) {
+                                                        errores[inp.name] = inpErr[error];
+                                                        break;
+                                                    }
                                                 }
-                                            }
 
-                                            erroresII[inp.name] = msj;
-                                        })
+                                            })
 
-                                        this.setState({ error: erroresII })
+                                        this.setState({ error: errores })
                                     } else {
                                         this.c.alerta.abrir({
                                             mensaje:
@@ -196,7 +197,7 @@ export class ModalClientes extends Componente {
                         </>
                     }
 
-                </section>
+                </section >
 
                 <Alerta contextoNombre="alerta" />
             </>
