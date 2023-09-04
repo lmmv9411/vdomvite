@@ -53,10 +53,8 @@ function submitCliente(errores, e) {
 
     } else {
         const { nombre, edad, email, clientes } = this.state
-        clientes.unshift({ nombre, edad, email })
-        //this.setState({ nombre: "", edad: "", email: "" })
         form.reset();
-        this.setState({});
+        this.setState({ clientes: [{ nombre, edad, email }, ...clientes] });
         this.nombre.focus();
     }
 }
