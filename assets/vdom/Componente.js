@@ -57,14 +57,10 @@ export class Componente {
 
     #update(newState) {
 
-        if (typeof newState !== "object") {
+        if (typeof newState !== "object" || !this.#compareState(newState)) {
             return
         }
-
-        if (!this.#compareState(newState)) {
-            return;
-        }
-
+        
         newState = this.#copyState(newState)
 
         const newNode = this.render(newState);
