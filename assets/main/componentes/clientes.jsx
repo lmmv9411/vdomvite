@@ -79,20 +79,19 @@ export class Clientes extends Componente {
                                 type="checkbox"
                                 checked={chk}
                                 defaultChecked={true}
-                                onclick={() => this.setState(a => !a.chk)}
+                                onclick={() => this.setState(s => ({ chk: !s.chk }))}
                             />
                         </label>
 
                     </div>
 
-                    <div className="d-flex gap-2">
-                        <button
-                            className="btn btn-primary"
-                            type="submit"
-                            onclick={submitCliente.bind(this, erroresClientes)}>
-                            Agregar
-                        </button>
-                    </div>
+                    <button
+                        className="btn btn-primary"
+                        type="submit"
+                        disabled={!props.chk}
+                        onclick={submitCliente.bind(this, erroresClientes)}>
+                        Agregar
+                    </button>
 
                 </form >
 

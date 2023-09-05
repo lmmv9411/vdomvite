@@ -306,7 +306,7 @@ export const reconciliation = (function () {
                 }
 
                 if (att.startsWith("on")) {
-                    continue
+                    continue;
                 } else if (att !== "$ref") {
 
                     if (att in $node) {

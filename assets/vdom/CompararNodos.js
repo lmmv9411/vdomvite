@@ -35,7 +35,7 @@ export function compararNodos(oldNode, newNode) {
     for (let att in newProps) {
         if ((!oldNode.props) || !(att in oldNode.props)
             || newNode.props[att] !== oldNode.props[att]) {
-
+        
             if (att.startsWith("on")) {
                 continue
             }
