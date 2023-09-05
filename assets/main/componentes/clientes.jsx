@@ -88,7 +88,7 @@ export class Clientes extends Componente {
                     <button
                         className="btn btn-primary"
                         type="submit"
-                        disabled={!props.chk}
+                        disabled={props.chk}
                         onclick={submitCliente.bind(this, erroresClientes)}>
                         Agregar
                     </button>
