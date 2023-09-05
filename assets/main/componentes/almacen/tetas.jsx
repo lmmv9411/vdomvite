@@ -1,4 +1,4 @@
-import { Fragment } from "../../vdom/VDom";
+import { Fragment } from "../../../vdom/VDom";
 
 export const Tetas = () => (
     <>

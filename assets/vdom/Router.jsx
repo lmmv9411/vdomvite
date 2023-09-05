@@ -18,109 +18,21 @@ const load = VDOM.render(
     </div>
 )
 
-const navigateTo = async (idContenedor, pathRoute, componentes) => {
-
-    const paths = window.location.pathname.slice(1).split("/");
-
-    let nombreClase = ""
-
-    if (paths.length === 1) {
-        nombreClase = componentes[paths[0]];
-    } else {
-
-        const i = paths.findIndex(path => path === pathRoute);
-
-        nombreClase = componentes[paths[i + 1]]
-
-    }
-
-    const main = document.getElementById(idContenedor);
-
-    if (!main) {
-        return;
-    }
-
-    if (!nombreClase) {
-        document.body.innerHTML = "";
-        document.body.appendChild(
-            VDOM.render(
-                <div className="d-flex justify-content-center align-items-center vh-100">
-                    <span className="alert alert-danger" role="alert">
-                        {`Ruta no encontrada: "${nombreClase ?? location.pathname}"`}
-                    </span >
-                </div>));
-        return;
-    }
-
-    document.title = nombreClase?.titulo;
-
-    try {
-        await buscarRutaDinamica(main, nombreClase);
-    } catch (error) {
-        document.body.innerHTML = ""
-        document.body.appendChild(VDOM.render(
-            <div className="d-flex justify-content-center align-items-center vh-100">
-                <span className="alert alert-danger" role="alert">
-                    {`${error.message}, clase: "${nombreClase.componente}"`}
-                </span >
-            </div>
-        ));
-    }
-
-}
-
-const buscarRutaDinamica = async (main, nombreClase) => {
-
-    main.innerHTML = "";
-    main.appendChild(load);
-
-    let i = instancias.findIndex(i => i.key === nombreClase.componente);
-
-    if (i === -1) {
-
-        let modulo;
-
-        try {
-            modulo = await import(`../main/componentes/${nombreClase.componente.toLowerCase()}.jsx`)
-        } catch (error) {
-            throw new Error(`${error.message} ${error.stack}`)
-        }
-
-        let instancia;
-
-        let clase = await modulo[nombreClase.componente];
-
-        if (!(clase.prototype instanceof Object)) {
-            instancia = clase({ ...nombreClase.props });
-        } else {
-            instancia = new clase({ ...nombreClase.props });
-        }
-
-        instancias.push({ key: nombreClase.componente, instancia });
-
-        i = instancias.length - 1;
-    }
-
-    reemplazarElemento(
-        main,
-        instancias[i].instancia
-    )
-}
-
 export class Router {
 
-    constructor({ idContenedor, pathBase, children }) {
+    constructor({ idContenedor, pathBase, children, rutaComponentes }) {
 
         this.idContenedor = idContenedor
         this.pathBase = pathBase;
         this.componentes = {};
+        this.rutaComponentes = rutaComponentes;
 
         children.forEach(ch => this.setEvent(ch))
 
         window.addEventListener('popstate', (e) => {
             e.preventDefault()
             e.stopPropagation()
-            navigateTo(this.idContenedor, this.pathBase, this.componentes)
+            this.navigateTo()
         });
 
         this.props = {};
@@ -131,7 +43,7 @@ export class Router {
             mutations.forEach(mutation => {
                 mutation.addedNodes.forEach(node => {
                     if (node.id === this.idContenedor) {
-                        navigateTo(this.idContenedor, this.pathBase, this.componentes);
+                        this.navigateTo();
                         observer.disconnect();
                     }
                 })
@@ -142,6 +54,90 @@ export class Router {
 
     }
 
+    async navigateTo() {
+
+        const paths = window.location.pathname.slice(1).split("/");
+
+        let nombreClase = ""
+
+        if (paths.length === 1) {
+            nombreClase = this.componentes[paths[0]];
+        } else {
+            const i = paths.findIndex(path => path === this.pathBase);
+            nombreClase = this.componentes[paths[i + 1]]
+        }
+
+        const main = document.getElementById(this.idContenedor);
+
+        if (!main) {
+            this.manejarError('¡Contenedor "main" inválido!.');
+            return;
+        }
+
+        if (!nombreClase) {
+            this.manejarError(`Ruta no encontrada: "${nombreClase ?? location.pathname}"`);
+            return;
+        }
+
+        document.title = nombreClase?.titulo;
+
+        try {
+            await this.buscarRutaDinamica(main, nombreClase);
+        } catch (error) {
+            this.manejarError(`${error.message}, clase: "${nombreClase.componente}"`);
+        }
+
+    }
+
+    manejarError(mensaje) {
+        document.body.innerHTML = ""
+        document.body.appendChild(VDOM.render(
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <span className="alert alert-danger" role="alert">
+                    {mensaje}
+                </span >
+            </div>
+        ));
+    }
+
+    async buscarRutaDinamica(main, nombreClase) {
+
+        main.innerHTML = "";
+        main.appendChild(load);
+
+        let i = instancias.findIndex(i => i.key === nombreClase.componente);
+
+        if (i === -1) {
+
+            let modulo;
+
+            try {
+                modulo = await this.rutaComponentes(nombreClase.componente.toLowerCase());
+            } catch (error) {
+                throw new Error(`${error.message} ${error.stack}`)
+            }
+
+            let instancia;
+
+            let clase = await modulo[nombreClase.componente];
+
+            if (!(clase.prototype instanceof Object)) {
+                instancia = clase({ ...nombreClase.props });
+            } else {
+                instancia = new clase({ ...nombreClase.props });
+            }
+
+            instancias.push({ key: nombreClase.componente, instancia });
+
+            i = instancias.length - 1;
+        }
+
+        reemplazarElemento(
+            main,
+            instancias[i].instancia
+        )
+    }
+
     redirect(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -149,7 +145,7 @@ export class Router {
         const url = e.target.href;
         window.history.pushState(null, null, url);
 
-        navigateTo(this.idContenedor, this.pathBase, this.componentes);
+        this.navigateTo();
     }
 
     setEvent(ch) {
@@ -201,11 +197,11 @@ export const Link = (props) => {
     }
 
     return (
-        <a {...p}
+        <a
             titulo={titulo}
             componente={to}
-            href={url}>
-            {children}
-        </a>
+            href={url}
+            {...p}
+        >{children}</a>
     )
 }

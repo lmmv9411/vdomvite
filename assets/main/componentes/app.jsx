@@ -9,6 +9,10 @@ export class App extends Componente {
         super({ ...props })
     }
 
+    async handleRoute(path) {
+        return await import(`../componentes/${path}.jsx`);
+    }
+
     render() {
 
         return (
@@ -19,25 +23,47 @@ export class App extends Componente {
                     </h1>
                 </header>
 
-                <Router idContenedor="main" pathBase="">
+                <Router idContenedor="main" pathBase="" rutaComponentes={this.handleRoute}>
 
                     <nav>
-                        <ul className="d-flex flex-wrap" style={{ listStyle: "none", padding: "0" }}>
+                        <ul
+                            className="d-flex flex-wrap"
+                            style={{ listStyle: "none", padding: "0" }}>
                             <li>
-                                <Link className={menu.link} url="" to="HomeInit" titulo="Inicio De Virtual Dom">Home</Link>
+                                <Link
+                                    className={menu.link}
+                                    url=""
+                                    to="HomeInit"
+                                    titulo="Inicio De Virtual Dom"
+                                >Home</Link>
                             </li>
 
                             <li>
-                                <Link className={menu.link} to="Clientes" titulo="Clientes">Clientes</Link>
+                                <Link
+                                    className={menu.link}
+                                    to="Clientes"
+                                    titulo="Clientes"
+                                >Clientes</Link>
                             </li>
                             <li>
-                                <Link className={menu.link} to="Proveedores" titulo="Preveedores 🏭">Proveedores</Link>
+                                <Link
+                                    className={menu.link}
+                                    to="Proveedores"
+                                    titulo="Preveedores 🏭"
+                                >Proveedores</Link>
                             </li>
                             <li>
-                                <Link className={menu.link} to="Almacen" titulo="Almacen 🏭">Almacen</Link>
+                                <Link
+                                    className={menu.link}
+                                    to="Almacen"
+                                    titulo="Almacen 🏭"
+                                >Almacen</Link>
                             </li>
                             <li>
-                                <Link className={menu.link} to="ListaEnlazada" titulo="Lista Enlazada">Lista Enlazada</Link>
+                                <Link
+                                    className={menu.link}
+                                    to="ListaEnlazada"
+                                    titulo="Lista Enlazada">Lista Enlazada</Link>
                             </li>
                         </ul>
                     </nav>
