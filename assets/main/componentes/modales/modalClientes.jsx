@@ -49,8 +49,8 @@ export class ModalClientes extends Componente {
                     </header>
 
                     <form
-                        $ref="formCliente"
-                        id="formCliente"
+                        $ref="formulario"
+                        id="formulario"
                         className="card-body d-flex flex-column gap-3 p-0 mb-3">
 
                         {error?.name && <spam className="text-danger d-block">{error.name}</spam>}
@@ -94,7 +94,7 @@ export class ModalClientes extends Componente {
                                     e.preventDefault()
                                     e.stopPropagation();
 
-                                    const form = this.formCliente;
+                                    const form = this.formulario;
 
                                     if (!form.checkValidity()) {
 
