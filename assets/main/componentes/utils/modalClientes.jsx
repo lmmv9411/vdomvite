@@ -43,7 +43,8 @@ function handleSubmit(e) {
                     style={{
                         wordWrap: "break-word",
                         overflow: "auto"
-                    }}>
+                    }}
+                >
                     {JSON.stringify(this.state)}
                 </span>,
             estilo: "bg-warning",

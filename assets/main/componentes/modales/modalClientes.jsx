@@ -96,7 +96,10 @@ export class ModalClientes extends Componente {
                             <button
                                 className="btn btn-warning"
                                 type="reset"
-                            >Reset</button>
+                                onClick={() => this.setState(s => ({ disable: !s.disable }))}
+                            >
+                                Reset
+                            </button>
 
                             <button
                                 className={`btn ${!props.showAlert ? "btn-success" : "btn-danger"}`}
