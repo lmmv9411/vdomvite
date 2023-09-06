@@ -56,8 +56,19 @@ export const VDOM = (function () {
                 if (k === "$ref") {
                     parent[v] = $element;
                 } else if (k.startsWith("on")) {
-                    k = k.substring(2)
-                    $element.addEventListener(k, v);
+                    k = k.substring(2).toLowerCase();
+
+                    switch (k) {
+                        case "focus":
+                            $element.addEventListener("focusin", v);
+                            break;
+                        case "blur":
+                            $element.addEventListener("focusout", v);
+                            break;
+                        default:
+                            $element.addEventListener(k, v);
+                    }
+
                 } else {
                     if (k in $element) {
                         if (typeof v === "object") {

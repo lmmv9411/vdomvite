@@ -12,6 +12,7 @@ export class Clientes extends Componente {
             clientes: [],
             error: {},
             chk: true,
+            disable: true,
             ...props,
         })
     }
@@ -45,18 +46,30 @@ export class Clientes extends Componente {
                         placeholder="Nombre"
                         name="nombre"
                         value={nombre.trim()}
-                        onchange={cambio.bind(this, erroresClientes)} />
+                        onchange={cambio.bind(this, erroresClientes)}
+                    />
 
                     {error?.edad && <spam className="text-danger d-block">{error.edad}</spam>}
 
                     <input
                         type="number"
-                        required min={18} max={50}
+                        required
+                        min={18}
+                        max={50}
                         className="form-control bg-dark text-light"
                         placeholder="Edad"
                         value={edad}
                         name="edad"
-                        onchange={cambio.bind(this, erroresClientes)} />
+                        onchange={cambio.bind(this, erroresClientes)}
+                        onFocus={(e) => e.target.value === "0" && (e.target.value = "")}
+                        onInput={(e) => {
+                            const inp = e.target;
+                            const val = inp.value;
+                            if (val.length > 2) {
+                                inp.value = inp.value.substring(0, 2)
+                            }
+                        }}
+                    />
 
                     {error?.email && <spam className="text-danger d-block">{error.email}</spam>}
 
@@ -88,7 +101,7 @@ export class Clientes extends Componente {
                     <button
                         className="btn btn-primary"
                         type="submit"
-                        disabled={props.chk}
+                        disabled={props.disable}
                         onclick={submitCliente.bind(this, erroresClientes)}>
                         Agregar
                     </button>

@@ -54,7 +54,7 @@ function submitCliente(errores, e) {
     } else {
         const { nombre, edad, email, clientes } = this.state
         form.reset();
-        this.setState({ clientes: [{ nombre, edad, email }, ...clientes], chk: true });
+        this.setState({ clientes: [{ nombre, edad, email }, ...clientes], disable: true });
         this.nombre.focus();
     }
 }
@@ -69,7 +69,7 @@ function cambio(errores, e) {
     if (input.checkValidity()) {
         delete error[input.name]
         if (this.formulario.checkValidity()) {
-            newState.chk = false;
+            newState.disable = false;
         }
     } else {
 
@@ -85,7 +85,7 @@ function cambio(errores, e) {
         }
 
         newState.error = { ...error, [input.name]: msj }
-        newState.chk = true;
+        newState.disable = true;
         input?.focus();
     }
 

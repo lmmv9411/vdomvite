@@ -1,7 +1,7 @@
 import { Componente } from "../../../vdom/Componente";
 import { ctx } from "../listaenlazada";
 import { Fragment } from "../../../vdom/VDom";
-import { erroresClientes } from "../utils/modalClientes";
+import { erroresClientes, handleSubmit, showAlert } from "../utils/modalClientes";
 import { cambio } from "../utils/clientesErrores";
 import { Alerta } from "./alert";
 import modal from "../../estilos/modal.module.css"
@@ -10,7 +10,7 @@ import style from "../../estilos/alerta.module.css"
 export class ModalClientes extends Componente {
 
     constructor(props) {
-        super({ mostrar: false, error: {}, ...props })
+        super({ mostrar: false, disable: true, error: {}, ...props })
         this.c = ctx.children;
     }
 
@@ -43,9 +43,8 @@ export class ModalClientes extends Componente {
                         <h1 className="card-title">Clientes</h1>
                         <button
                             onclick={this.cerrar.bind(this)}
-                            className={style["btn-close"]}>
-                            ❌
-                        </button>
+                            className={style["btn-close"]}
+                        >❌</button>
                     </header>
 
                     <form
@@ -88,48 +87,10 @@ export class ModalClientes extends Componente {
                         <div className="d-flex gap-2 flex-wrap">
 
                             <button
+                                disabled={props.disable}
                                 className="btn btn-primary"
                                 type="submit"
-                                onclick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation();
-
-                                    const form = this.formulario;
-
-                                    if (!form.checkValidity()) {
-
-                                        let errores = {};
-
-                                        form.querySelectorAll("input")
-                                            .forEach(inp => {
-
-                                                const inpErr = erroresClientes[inp.name];
-
-                                                for (const error of Object.keys(inpErr)) {
-                                                    if (inp.validity[error]) {
-                                                        errores[inp.name] = inpErr[error];
-                                                        break;
-                                                    }
-                                                }
-
-                                            })
-
-                                        this.setState({ error: errores })
-                                    } else {
-                                        this.c.alerta.abrir({
-                                            mensaje:
-                                                <span
-                                                    style={{
-                                                        wordWrap: "break-word",
-                                                        overflow: "auto"
-                                                    }}>
-                                                    {JSON.stringify(this.state)}
-                                                </span>,
-                                            estilo: "bg-warning",
-                                            mostrar: true
-                                        })
-                                    }
-                                }}
+                                onclick={handleSubmit.bind(this)}
                             >Submit</button>
 
                             <button
@@ -140,19 +101,8 @@ export class ModalClientes extends Componente {
                             <button
                                 className={`btn ${!props.showAlert ? "btn-success" : "btn-danger"}`}
                                 type="button"
-                                onclick={() => {
-
-                                    this.setState(s => ({ showAlert: !s.showAlert }))
-
-                                    if (this.state.showAlert) {
-                                        this.c.alerta.abrir({
-                                            mensaje: <span>Desde Modal</span>,
-                                            estilo: "bg-danger text-light",
-                                            mostrar: true
-                                        })
-                                    }
-
-                                }}>
+                                onclick={showAlert.bind(this)}
+                            >
                                 {props.showAlert ? "Ocultar Alerta" : "Mostrar Alerta"}
                             </button>
 
