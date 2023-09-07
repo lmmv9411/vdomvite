@@ -14,14 +14,6 @@ const erroresClientes = {
     }
 }
 
-function eliminarCliente(cliente, e) {
-
-    e.preventDefault();
-    const filtro = this.state.clientes.filter(c => c !== cliente);
-    this.setState({ clientes: filtro })
-
-}
-
 function submitCliente(errores, e) {
 
     e.preventDefault();
@@ -52,11 +44,35 @@ function submitCliente(errores, e) {
         this.setState({ error: erroresII })
 
     } else {
-        const { nombre, edad, email, clientes } = this.state
+
+        const { nombre, edad, email } = this.state
+
         form.reset();
-        this.setState({ clientes: [{ nombre, edad, email }, ...clientes], disable: true });
+        add.call(this, [{ nombre, edad, email }]);
+        this.setState({ disable: true });
         this.nombre.focus();
     }
+}
+
+function add(clientes) {
+    clientes = clientes.map(cliente => {
+        return (
+            <tr key={cliente.edad}>
+                <td>{cliente.nombre}</td>
+                <td>{cliente.edad}</td>
+                <td>{cliente.email}</td>
+                <td>
+                    <a
+                        className="btn btn-danger"
+                        href="#"
+                        onclick={() => this.tabla.delete(cliente.edad)}
+                    >Eliminar</a>
+                </td>
+            </tr>
+        )
+    })
+
+    this.tabla.prepend(clientes);
 }
 
 function cambio(errores, e) {
@@ -93,4 +109,4 @@ function cambio(errores, e) {
 
 }
 
-export { eliminarCliente, erroresClientes, cambio, submitCliente };
+export { erroresClientes, cambio, submitCliente, add };

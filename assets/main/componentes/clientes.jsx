@@ -1,7 +1,8 @@
 import { Componente } from "../../vdom/Componente";
 import { Fragment } from "../../vdom/VDom";
-import { cambio, eliminarCliente, erroresClientes, submitCliente } from "./utils/clientesErrores";
+import { add, cambio, erroresClientes, submitCliente } from "./utils/clientesErrores";
 import cls from "../estilos/clientes.module.css"
+import { Tabla } from "./tabla";
 
 export class Clientes extends Componente {
     constructor(props) {
@@ -9,12 +10,19 @@ export class Clientes extends Componente {
             nombre: "",
             edad: 0,
             email: "",
-            clientes: [],
+            montado: false,
             error: {},
             chk: true,
             disable: true,
             ...props,
         })
+
+        this.tabla = (
+            <Tabla
+                pTabla={{ className: "table table-dark" }}
+                titulos={["Nombre", "Edad", "Email", "Acción"]}
+            />
+        );
     }
 
     montado() {
@@ -23,13 +31,22 @@ export class Clientes extends Componente {
 
         fetch("https://jsonplaceholder.typicode.com/users")
             .then(data => data.json())
-            .then(users => users.map(user => ({ edad: user.id, nombre: user.name, email: user.email })))
-            .then(data => this.setState({ clientes: data }))
+            .then(users => users.map(user => {
+                return {
+                    edad: user.id,
+                    nombre: user.name,
+                    email: user.email
+                }
+            }))
+            .then(clientes => {
+                this.setState({ montado: true })
+                add.call(this, clientes);
+            })
     }
 
     render(props) {
 
-        const { nombre, edad, email, clientes, error, chk } = props;
+        const { nombre, edad, email, montado, error, chk } = props;
 
         return (
             <>
@@ -66,7 +83,7 @@ export class Clientes extends Componente {
                             const inp = e.target;
                             const val = inp.value;
                             if (val.length > 2) {
-                                inp.value = inp.value.substring(0, 2)
+                                inp.value = val.substring(0, 2)
                             }
                         }}
                     />
@@ -102,47 +119,21 @@ export class Clientes extends Componente {
                         className="btn btn-primary"
                         type="submit"
                         disabled={props.disable}
-                        onclick={submitCliente.bind(this, erroresClientes)}>
-                        Agregar
-                    </button>
+                        onclick={submitCliente.bind(this, erroresClientes)}
+                    >Agregar</button>
 
                 </form >
 
                 <div className={`overflow-x-auto overflow-y-hidden m-2
-                    ${clientes.length == 0 ? "d-flex justify-content-center" : ""}`.trim()}>
+                    ${!montado ? "d-flex justify-content-center" : ""}`.trim()}>
                     {
-                        clientes.length == 0
+                        !montado
                             ?
                             <div className="spinner-border text-primary" role="status">
                                 <span className="sr-only"></span>
                             </div>
                             :
-                            <table className="table table-dark">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Edad</th>
-                                        <th>Email</th>
-                                        <th>Accion</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        clientes.map(cliente =>
-                                            <tr key={cliente.edad}>
-                                                <td>{cliente.nombre}</td>
-                                                <td>{cliente.edad}</td>
-                                                <td>{cliente.email}</td>
-                                                <td>
-                                                    <a className="btn btn-danger"
-                                                        href="#"
-                                                        onclick={eliminarCliente.bind(this, cliente)}
-                                                    >Eliminar</a>
-                                                </td>
-                                            </tr>)
-                                    }
-                                </tbody>
-                            </table>
+                            this.tabla
                     }
                 </div>
             </>
