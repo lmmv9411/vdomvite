@@ -14,7 +14,6 @@ export class Proveedores extends Componente {
             quitarRef: true
         })
 
-        this.lista = <Lista contextoNombre="lista" />;
         this.cp = ContextoProveedor.children;
         this.cp.proveedores = this;
     }
@@ -79,7 +78,9 @@ export class Proveedores extends Componente {
                             e.stopPropagation()
                             this.setState(s => ({ quitarRef: !s.quitarRef }))
                         }}
-                    >{!props.quitarRef ? "Quitar Referencia" : "Agregar Referencia"}</button>
+                    >
+                        {!props.quitarRef ? "Quitar Referencia" : "Agregar Referencia"}
+                    </button>
 
                     <button
                         className="btn btn-primary"
@@ -89,7 +90,8 @@ export class Proveedores extends Componente {
                             if (this.h1) {
                                 this.h1.textContent = this.state.nombre
                             }
-                        }}>
+                        }}
+                    >
                         Test Referencia
                     </button>
 
@@ -99,12 +101,13 @@ export class Proveedores extends Componente {
                             e.preventDefault();
                             e.stopPropagation()
                             this.cp.lista.cambiarColor();
-                        }}>
+                        }}
+                    >
                         Cambia Color
                     </button>
                 </form>
 
-                {this.lista}
+                <Lista contextoNombre="lista" keepRef={this} />;
 
             </ContextoProveedor.Provider >
         )

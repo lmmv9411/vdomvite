@@ -80,11 +80,35 @@ function h(type, props, ...children) {
 
     if (type instanceof Function) {
         let componente
-        
+
         if (!(type.prototype instanceof Object)) {
+            if (props?.keepRef) {
+                const name = type.prototype.constructor.name.toLowerCase();
+                const contexto = props.keepRef;
+                if (contexto[name]) {
+                    componente = contexto[name];
+                } else {
+                    componente = new type({ ...props, children });
+                    contexto[name] = componente;
+                }
+                delete props.keepRef
+            }
             componente = type({ ...props, children });
         } else {
-            componente = new type({ ...props, children });
+
+            if (props?.keepRef) {
+                const name = type.prototype.constructor.name.toLowerCase();
+                const contexto = props.keepRef;
+                if (contexto[name]) {
+                    componente = contexto[name];
+                } else {
+                    componente = new type({ ...props, children });
+                    contexto[name] = componente;
+                }
+                delete props.keepRef
+            } else {
+                componente = new type({ ...props, children });
+            }
         }
 
         if (typeof componente === "object" && Object.keys(componente).length === 0) {

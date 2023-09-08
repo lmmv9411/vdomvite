@@ -60,7 +60,8 @@ export class Almacen extends Componente {
                                 this.setState({ saludo: "hola" })
                             }
                         }}
-                    >Saludar
+                    >
+                        Saludar
                     </button>
 
                     <p>{props.saludo}</p>
