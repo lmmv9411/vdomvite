@@ -107,7 +107,10 @@ export class Proveedores extends Componente {
                     </button>
                 </form>
 
-                <Lista contextoNombre="lista" keepRef={this} />;
+                <Lista
+                    contextoNombre="lista"
+                    keepRef={{ name: "lista", nodo: this }}
+                />;
 
             </ContextoProveedor.Provider >
         )

@@ -86,7 +86,10 @@ export class ListaEnlazada extends Componente {
                     </ol>
                 </article>
 
-                <Contenedor contextoNombre="contenedor" keepRef={this}>
+                <Contenedor
+                    contextoNombre="contenedor"
+                    keepRef={{ name: "contenedor", node: this }}
+                >
                     <ModalClientes contextoNombre="modalClientes" />
                 </Contenedor>
 

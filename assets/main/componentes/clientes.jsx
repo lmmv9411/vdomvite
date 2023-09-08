@@ -129,7 +129,7 @@ export class Clientes extends Componente {
                             <Tabla
                                 pTabla={{ className: "table table-dark" }}
                                 titulos={["Nombre", "Edad", "Email", "Acción"]}
-                                keepRef={this}
+                                keepRef={{ name: "tabla", nodo: this }}
                             />
                     }
                 </div>
