@@ -87,7 +87,7 @@ function h(type, props, ...children) {
                 if (nodo[name]) {
                     componente = nodo[name];
                 } else {
-                    componente = new type({ ...props, children });
+                    componente = type({ ...props, children });
                     nodo[name] = componente;
                 }
                 delete props.keepRef
