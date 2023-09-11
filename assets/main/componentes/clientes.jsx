@@ -16,6 +16,13 @@ export class Clientes extends Componente {
             disable: true,
             ...props,
         });
+
+        this.tabla = (
+            <Tabla
+                pTabla={{ className: "table table-dark" }}
+                titulos={["Nombre", "Edad", "Email", "Acción"]}
+            />
+        )
     }
 
     montado() {
@@ -126,11 +133,7 @@ export class Clientes extends Componente {
                                 <span className="sr-only"></span>
                             </div>
                             :
-                            <Tabla
-                                pTabla={{ className: "table table-dark" }}
-                                titulos={["Nombre", "Edad", "Email", "Acción"]}
-                                keepRef={{ name: "tabla", nodo: this }}
-                            />
+                            this.tabla
                     }
                 </div>
             </>

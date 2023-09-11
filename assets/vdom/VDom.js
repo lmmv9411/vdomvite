@@ -62,25 +62,6 @@ function reemplazarElemento($parent, nodo) {
     }
 }
 
-function createChildren(props, type) {
-    let componente;
-
-    if (props?.keepRef) {
-        const { name, nodo } = props.keepRef;
-        delete props.keepRef
-        if (nodo[name]) {
-            componente = nodo[name];
-        } else {
-            componente = type();
-            nodo[name] = componente;
-        }
-    } else {
-        componente = type();
-    }
-
-    return componente;
-}
-
 function h(type, props, ...children) {
 
     let key = null;
@@ -101,9 +82,9 @@ function h(type, props, ...children) {
         let componente
 
         if (!(type.prototype instanceof Object)) {
-            componente = createChildren(props, () => type({ children, ...props }));
+            componente = type({ children, ...props });
         } else {
-            componente = createChildren(props, () => new type({ children, ...props }));
+            componente = new type({ children, ...props });
         }
 
         if (typeof componente === "object" && Object.keys(componente).length === 0) {

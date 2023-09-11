@@ -12,6 +12,11 @@ export class ListaEnlazada extends Componente {
         super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false })
         this.size = 0;
         this.c = ctx.children;
+        this.contenedor = (
+            <Contenedor contextoNombre="contenedor">
+                <ModalClientes contextoNombre="modalClientes" />
+            </Contenedor>
+        )
     }
 
     render(props) {
@@ -86,12 +91,7 @@ export class ListaEnlazada extends Componente {
                     </ol>
                 </article>
 
-                <Contenedor
-                    contextoNombre="contenedor"
-                    keepRef={{ name: "contenedor", nodo: this }}
-                >
-                    <ModalClientes contextoNombre="modalClientes" />
-                </Contenedor>
+                {this.contenedor}
 
             </ctx.Provider>
         )
