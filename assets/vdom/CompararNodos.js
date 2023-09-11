@@ -2,7 +2,7 @@
  * Comparar nodos, si son iguales retorna true, si son diferentes retorna false.
  * @param {{children: Array.<Object>, type:String, props: Object}} oldNode 
  * @param {{children: Array.<Object>, type:String, props: Object}} newNode 
- * @returns {Boolean}
+ * @returns {Boolean} Retorna true si son iguales.
  */
 export function compararNodos(oldNode, newNode) {
 
@@ -35,7 +35,7 @@ export function compararNodos(oldNode, newNode) {
     for (let att in newProps) {
         if ((!oldNode.props) || !(att in oldNode.props)
             || newNode.props[att] !== oldNode.props[att]) {
-        
+
             if (att.startsWith("on")) {
                 continue
             }
