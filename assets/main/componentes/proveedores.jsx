@@ -16,9 +16,7 @@ export class Proveedores extends Componente {
 
         this.cp = ContextoProveedor.children;
         this.cp.proveedores = this;
-        this.lista = (
-            <Lista contextoNombre="lista" />
-        )
+        this.lista = <Lista contextoNombre="lista" />;
     }
 
     montado() {
