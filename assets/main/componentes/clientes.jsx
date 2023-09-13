@@ -1,6 +1,6 @@
 import { Componente } from "../../vdom/Componente";
 import { Fragment } from "../../vdom/VDom";
-import { add, cambio, erroresClientes, submitCliente } from "./utils/clientesErrores";
+import { Controlador } from "./utils/clientes";
 import cls from "../estilos/clientes.module.css"
 import { Tabla } from "./tabla";
 
@@ -23,6 +23,7 @@ export class Clientes extends Componente {
                 titulos={["Nombre", "Edad", "Email", "Acción"]}
             />
         )
+        this.controlador = new Controlador(this);
     }
 
     montado() {
@@ -40,7 +41,7 @@ export class Clientes extends Componente {
             }))
             .then(clientes => {
                 this.setState({ montado: true })
-                add.call(this, clientes);
+                this.controlador.add(clientes);
             })
     }
 
@@ -66,7 +67,7 @@ export class Clientes extends Componente {
                         placeholder="Nombre"
                         name="nombre"
                         value={nombre.trim()}
-                        onchange={cambio.bind(this, erroresClientes)}
+                        onchange={(e) => this.controlador.cambio(e)}
                     />
 
                     {error?.edad && <spam className="text-danger d-block">{error.edad}</spam>}
@@ -80,7 +81,7 @@ export class Clientes extends Componente {
                         placeholder="Edad"
                         value={edad}
                         name="edad"
-                        onchange={cambio.bind(this, erroresClientes)}
+                        onchange={(e) => this.controlador.cambio(e)}
                         onFocus={(e) => e.target.value === "0" && (e.target.value = "")}
                         onInput={(e) => {
                             const inp = e.target;
@@ -103,7 +104,7 @@ export class Clientes extends Componente {
                             placeholder="Email"
                             value={email.trim()}
                             name="email"
-                            onchange={cambio.bind(this, erroresClientes)} />
+                            onchange={(e) => this.controlador.cambio(e)} />
 
                         <label className="d-flex align-items-center justify-content-center gap-2">
                             <span className="text-light">Seleccion</span>
@@ -122,7 +123,7 @@ export class Clientes extends Componente {
                         className="btn btn-primary"
                         type="submit"
                         disabled={props.disable}
-                        onclick={submitCliente.bind(this, erroresClientes)}
+                        onclick={(e) => this.controlador.submitCliente(e)}
                     >Agregar</button>
 
                 </form >

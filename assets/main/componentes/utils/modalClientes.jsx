@@ -1,68 +1,85 @@
-const erroresClientes = {
-    name: {
-        tooShort: "Mínimo 4 caracteres",
-        valueMissing: "Nombre obligatorio"
-    },
-    phone: {
-        valueMissing: "Teléfono obligatorio.",
-        patternMismatch: 'Solo números del 0 al 9 y/o "+", "-", "(", ")".',
-        tooShort: "Mínimo 10 números.",
-        tooLong: "Máximo 10 números."
+import { ModalClientes } from "../modales/modalClientes";
+import { cambio } from "./forms/cambio";
+
+export class Controlador {
+
+    errores = {
+        name: {
+            tooShort: "Mínimo 4 caracteres",
+            valueMissing: "Nombre obligatorio"
+        },
+        phone: {
+            valueMissing: "Teléfono obligatorio.",
+            patternMismatch: 'Solo números del 0 al 9 y/o "+", "-", "(", ")".',
+            tooShort: "Mínimo 10 números.",
+            tooLong: "Máximo 10 números."
+        }
     }
-}
 
-function handleSubmit(e) {
-    e.preventDefault()
-    e.stopPropagation();
+    /**
+     * 
+     * @param {ModalClientes} view 
+     */
+    constructor(view) {
+        this.view = view;
+    }
 
-    const form = this.formulario;
+    cambio(e) {
+        cambio(e, this.errores, this.view);
+    }
 
-    if (!form.checkValidity()) {
+    handleSubmit(e) {
+        e.preventDefault()
+        e.stopPropagation();
 
-        let errores = {};
+        const form = this.view.formulario;
 
-        form.querySelectorAll("input")
-            .forEach(inp => {
+        if (!form.checkValidity()) {
 
-                const inpErr = erroresClientes[inp.name];
+            let errores = {};
 
-                for (const error of Object.keys(inpErr)) {
-                    if (inp.validity[error]) {
-                        errores[inp.name] = inpErr[error];
-                        break;
+            form.querySelectorAll("input")
+                .forEach(inp => {
+
+                    const inpErr = erroresClientes[inp.name];
+
+                    for (const error of Object.keys(inpErr)) {
+                        if (inp.validity[error]) {
+                            errores[inp.name] = inpErr[error];
+                            break;
+                        }
                     }
-                }
 
+                })
+
+            this.view.setState({ error: errores })
+        } else {
+            this.view.c.alerta.abrir({
+                mensaje:
+                    <span
+                        style={{
+                            wordWrap: "break-word",
+                            overflow: "auto"
+                        }}
+                    >
+                        {JSON.stringify(this.view.state)}
+                    </span>,
+                estilo: "bg-warning",
+                mostrar: true
             })
-
-        this.setState({ error: errores })
-    } else {
-        this.c.alerta.abrir({
-            mensaje:
-                <span
-                    style={{
-                        wordWrap: "break-word",
-                        overflow: "auto"
-                    }}
-                >
-                    {JSON.stringify(this.state)}
-                </span>,
-            estilo: "bg-warning",
-            mostrar: true
-        })
+        }
     }
-}
 
-function showAlert() {
-    this.setState(s => ({ showAlert: !s.showAlert }))
+    showAlert() {
+        this.view.setState(s => ({ showAlert: !s.showAlert }))
 
-    if (this.state.showAlert) {
-        this.c.alerta.abrir({
-            mensaje: <span>Desde Modal</span>,
-            estilo: "bg-danger text-light",
-            mostrar: true
-        })
+        if (this.view.state.showAlert) {
+            this.view.c.alerta.abrir({
+                mensaje: <span>Desde Modal</span>,
+                estilo: "bg-danger text-light",
+                mostrar: true
+            })
+        }
     }
-}
 
-export { erroresClientes, handleSubmit, showAlert }
+}

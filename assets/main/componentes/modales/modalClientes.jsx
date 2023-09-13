@@ -1,8 +1,7 @@
 import { Componente } from "../../../vdom/Componente";
 import { ctx } from "../listaenlazada";
 import { Fragment } from "../../../vdom/VDom";
-import { erroresClientes, handleSubmit, showAlert } from "../utils/modalClientes";
-import { cambio } from "../utils/clientesErrores";
+import { Controlador } from "../utils/modalClientes";
 import { Alerta } from "./alert";
 import modal from "../../estilos/modal.module.css"
 import style from "../../estilos/alerta.module.css"
@@ -12,6 +11,7 @@ export class ModalClientes extends Componente {
     constructor(props) {
         super({ mostrar: false, disable: true, error: {}, ...props })
         this.c = ctx.children;
+        this.controlador = new Controlador(this);
     }
 
     abrir() {
@@ -63,7 +63,7 @@ export class ModalClientes extends Componente {
                             placeholder="Nombre"
                             required
                             minLength={4}
-                            onchange={cambio.bind(this, erroresClientes)}
+                            onchange={e => this.controlador.cambio(e)}
                             value={props.name ?? ""}
                         />
 
@@ -81,7 +81,7 @@ export class ModalClientes extends Componente {
                             maxLength={10}
                             required
                             value={props.phone ?? ""}
-                            onchange={cambio.bind(this, erroresClientes)}
+                            onchange={e => this.controlador.cambio(e)}
                         />
 
                         <div className="d-flex gap-2 flex-wrap">
@@ -90,7 +90,7 @@ export class ModalClientes extends Componente {
                                 disabled={props.disable}
                                 className="btn btn-primary"
                                 type="submit"
-                                onclick={handleSubmit.bind(this)}
+                                onclick={e => this.controlador.handleSubmit(e)}
                             >Submit</button>
 
                             <button
@@ -104,7 +104,7 @@ export class ModalClientes extends Componente {
                             <button
                                 className={`btn ${!props.showAlert ? "btn-success" : "btn-danger"}`}
                                 type="button"
-                                onclick={showAlert.bind(this)}
+                                onclick={() => this.controlador.showAlert()}
                             >
                                 {props.showAlert ? "Ocultar Alerta" : "Mostrar Alerta"}
                             </button>
