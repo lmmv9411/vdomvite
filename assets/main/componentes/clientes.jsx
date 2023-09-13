@@ -50,7 +50,10 @@ export class Clientes extends Componente {
 
         return (
             <>
-                <form $ref="formulario" action="post" className={`gap-3 d-flex flex-column ${cls.form} card bg-dark p-3`} autocomplete="off">
+                <form $ref="formulario"
+                    action="post"
+                    className={`gap-3 d-flex flex-column ${cls.form} card bg-dark p-3`}
+                    autocomplete="off">
 
                     {error?.nombre && <spam className="text-danger d-block">{error.nombre}</spam>}
 
