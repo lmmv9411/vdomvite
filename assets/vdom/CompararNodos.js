@@ -51,7 +51,7 @@ export function compararNodos(oldNode, newNode) {
         return false;
     }
 
-    for (let i = 0; i < Math.max(oldChildren.length, newChildren.length); i++) {
+    for (let i = 0; i < oldChildren.length; i++) {
         if (!compararNodos(oldChildren[i], newChildren[i])) {
             return false;
         }
