@@ -4,7 +4,7 @@
  * @param {{children: Array.<Object>, type:String, props: Object}} newNode 
  * @returns {Boolean} Retorna true si son iguales.
  */
-export function compararNodos(oldNode, newNode) {
+export function _compararNodos(oldNode, newNode) {
 
     if ((oldNode === undefined && newNode === undefined)
         || (oldNode === null || newNode === null)) {
@@ -51,9 +51,34 @@ export function compararNodos(oldNode, newNode) {
         return false;
     }
 
-    for (let i = 0; i < oldChildren.length; i++) {
+    /*for (let i = 0; i < oldChildren.length; i++) {
         if (!compararNodos(oldChildren[i], newChildren[i])) {
             return false;
+        }
+    }*/
+
+    return true;
+}
+
+export function compararNodos(oldNode, newNode) {
+
+    const stack1 = [oldNode];
+    const stack2 = [newNode];
+
+    while (stack1.length > 0 && stack2.length > 0) {
+
+        const nodo1 = stack1.pop();
+        const nodo2 = stack2.pop();
+
+        // Realiza aquí la comparación deseada entre nodo1 y nodo2
+        if (!_compararNodos(nodo1, nodo2)) {
+            return false;
+        }
+
+        // Agrega los hijos de nodo1 y nodo2 a las pilas
+        if (nodo1.children && nodo2.children) {
+            stack1.push(...nodo1.children);
+            stack2.push(...nodo2.children);
         }
     }
 

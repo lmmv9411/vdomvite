@@ -47,6 +47,7 @@ export class Componente {
        * @returns {void}
        */
     setState(state) {
+
         if (typeof state === "function") {
             const newState = state(this.state);
             this.#update(newState);
@@ -60,7 +61,7 @@ export class Componente {
         if (typeof newState !== "object" || !this.#compareState(newState)) {
             return
         }
-        
+
         newState = this.#copyState(newState)
 
         const newNode = this.render(newState);
