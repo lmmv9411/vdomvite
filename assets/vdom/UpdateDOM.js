@@ -83,10 +83,11 @@ export const reconciliation = (function () {
 
                 let a = false, b = false;
 
-                if (childrenNew && childrenNew.key) {
+                if (childrenNew?.key) {
                     a = !a;
                 }
-                if (childrenOld && childrenOld.key) {
+
+                if (childrenOld?.key) {
                     b = !b;
                 }
 
