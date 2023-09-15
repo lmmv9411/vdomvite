@@ -1,18 +1,16 @@
-/**
- * Comparar nodos, si son iguales retorna true, si son diferentes retorna false.
- * @param {{children: Array.<Object>, type:String, props: Object}} oldNode 
- * @param {{children: Array.<Object>, type:String, props: Object}} newNode 
- * @returns {Boolean} Retorna true si son iguales.
- */
 export function _compararNodos(oldNode, newNode) {
 
-    if ((oldNode === undefined && newNode === undefined)
-        || (oldNode === null || newNode === null)) {
+    if ((oldNode === undefined && newNode === undefined) ||
+        (oldNode === null && newNode === null)) {
+        return true;
+    }
+
+    if ((!oldNode && newNode)) {
         return false;
     }
 
-    if ((!oldNode && newNode) || (oldNode && !newNode)) {
-        return false
+    if (oldNode && !newNode) {
+        return false;
     }
 
     if (oldNode.type !== newNode.type) {
@@ -69,8 +67,8 @@ export function compararNodos(oldNode, newNode) {
 
         const nodo1 = stack1.pop();
         const nodo2 = stack2.pop();
-
         // Realiza aquí la comparación deseada entre nodo1 y nodo2
+
         if (!_compararNodos(nodo1, nodo2)) {
             return false;
         }

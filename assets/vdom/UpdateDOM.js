@@ -13,7 +13,7 @@ export const reconciliation = (function () {
      * @param {Object} vOldNode Nodo Virtual antiguo.
      * @param {Object} vNewNode Nodo Virtual nuevo
      * @returns {Boolean} Retorna true si hubo cabios;
-     * */
+     **/
     const updateDOM = function ($parentNode, vOldNode, vNewNode) {
         parent = vOldNode;
         return _updateDOM($parentNode, vOldNode, vNewNode);
@@ -55,13 +55,9 @@ export const reconciliation = (function () {
             replaceNode($parentNode, vNewNode);
 
         } else {
-
             compareAttributes($parentNode, vOldNode, vNewNode);
             compareChildren($parentNode, vOldNode, vNewNode);
-
         }
-
-
         return true;
     }
 
