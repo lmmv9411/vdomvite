@@ -1,4 +1,4 @@
-export function _compararNodos(oldNode, newNode) {
+function _compararNodos(oldNode, newNode) {
 
     if ((oldNode === undefined && newNode === undefined) ||
         (oldNode === null && newNode === null)) {
