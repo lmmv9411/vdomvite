@@ -1,7 +1,7 @@
+import { buscaDiff } from "./BuscaDiff";
 import { compararNodos } from "./CompararNodos";
 import { VDOM } from "./Render";
 import { Fragment, Portal } from "./VDom";
-
 
 export const reconciliation = (function () {
 

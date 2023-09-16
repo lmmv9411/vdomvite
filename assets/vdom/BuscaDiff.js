@@ -99,8 +99,8 @@ export function buscaDiff(oldNode, newNode) {
 
     const stackOld = [oldNode];
     const stackNew = [newNode];
-    // const rutaOld = [];
-    // const rutaNew = [];
+    const rutaOld = [];
+    const rutaNew = [];
     let resp = true;
 
     while (stackOld.length > 0 && stackNew.length > 0) {
@@ -123,24 +123,13 @@ export function buscaDiff(oldNode, newNode) {
                 resp = false;
 
                 // Marca todos los nodos en la ruta desde el nodo raíz hasta current1 como diferentes
-                // for (const nodo of rutaOld) {
-                //     nodo.diff = equal;
-                // }
-                // for (const nodo of rutaNew) {
-                //     nodo.diff = equal;
-                // }
-
-                let tmp = nodoNew.parent;
-                while (tmp !== undefined) {
-                    tmp.diff = equal;
-                    tmp = tmp.parent;
+                for (const nodo of rutaOld) {
+                    nodo.diff = equal;
+                }
+                for (const nodo of rutaNew) {
+                    nodo.diff = equal;
                 }
 
-                tmp = nodoOld.parent;
-                while (tmp !== undefined) {
-                    tmp.diff = equal;
-                    tmp = tmp.parent;
-                }
             }
         } else {
             if (typeof nodoOld === "object" &&
@@ -163,8 +152,8 @@ export function buscaDiff(oldNode, newNode) {
         if (condicion && nodoOld.children && nodoNew.children) {
             stackOld.push(...nodoOld.children);
             stackNew.push(...nodoNew.children);
-            // rutaOld.push(nodoOld)
-            // rutaNew.push(nodoNew);
+            rutaOld.push(nodoOld)
+            rutaNew.push(nodoNew);
         }
     }
 
