@@ -78,7 +78,6 @@ export class Componente {
                 this.fragmento = [...this.$fragment.children];
             }
         }
-     
     }
 
     /**
