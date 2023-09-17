@@ -1,6 +1,6 @@
 import { compararNodos } from "./CompararNodos";
 
-const COMPARACION = {
+export const COMPARACION = {
     ADD: Symbol("ADD"),
     REMOVE: Symbol("REMOVE"),
     TYPE: Symbol("TYPE"),
@@ -120,17 +120,18 @@ export function buscaDiff(oldNode, newNode) {
                 nodoOld.diff = equal;
                 nodoNew.diff = equal;
 
-                resp = false;
-
-                // Marca todos los nodos en la ruta desde el nodo raíz hasta current1 como diferentes
-                for (const nodo of rutaOld) {
-                    nodo.diff = equal;
-                }
-                for (const nodo of rutaNew) {
-                    nodo.diff = equal;
-                }
-
             }
+
+            resp = false;
+
+            // Marca todos los nodos en la ruta desde el nodo raíz hasta current1 como diferentes
+            for (const nodo of rutaOld) {
+                nodo.diff = equal;
+            }
+            for (const nodo of rutaNew) {
+                nodo.diff = equal;
+            }
+
         } else {
             if (typeof nodoOld === "object" &&
                 typeof nodoNew === "object") {

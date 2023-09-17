@@ -1,4 +1,4 @@
-import { buscaDiff } from "./BuscaDiff";
+import { COMPARACION, buscaDiff } from "./BuscaDiff";
 import { compararNodos } from "./CompararNodos";
 import { VDOM } from "./Render";
 import { Fragment, Portal } from "./VDom";
@@ -15,8 +15,16 @@ export const reconciliation = (function () {
      * @returns {Boolean} Retorna true si hubo cabios;
      **/
     const updateDOM = function ($parentNode, vOldNode, vNewNode) {
+
+        // parent = vOldNode;
+        // return _updateDOM($parentNode, vOldNode, vNewNode);
+
         parent = vOldNode;
-        return _updateDOM($parentNode, vOldNode, vNewNode);
+        if (!buscaDiff(vOldNode, vNewNode)) {
+            _updateDOM($parentNode, vOldNode, vNewNode);
+            return true;
+        }
+        return false;
     }
 
     const _updateDOM = function ($parentNode, vOldNode, vNewNode) {
@@ -39,16 +47,8 @@ export const reconciliation = (function () {
         } else if (vOldNode === undefined || vOldNode === null) {
 
             const $ref = VDOM.render(vNewNode, parent);
-
-            if (Array.isArray($ref)) {
-                for (let i = 0; i < $ref.length; i++) {
-                    $parentNode.appendChild($ref[i]);
-                    setReff(vNewNode[i], $ref[i]);
-                }
-            } else {
-                $parentNode.appendChild($ref);
-                setReff(vNewNode, $ref);
-            }
+            $parentNode.appendChild($ref);
+            setReff(vNewNode, $ref);
 
         } else if (compareNodes(vOldNode, vNewNode)) {
 
@@ -57,8 +57,33 @@ export const reconciliation = (function () {
         } else {
             compareAttributes($parentNode, vOldNode, vNewNode);
             compareChildren($parentNode, vOldNode, vNewNode);
+            buscarCambios($parentNode, vOldNode, vNewNode);
         }
         return true;
+    }
+
+    const buscarCambios = function ($parentNode, vOldNode, vNewNode) {
+        let cambio = false;
+
+        const max = Math.max(vOldNode.children?.length ?? 0, vNewNode.children?.length ?? 0);
+
+        for (let i = 0; i < max; i++) {
+            const chOld = vOldNode.children[i];
+            const chNew = vNewNode.children[i];
+            const $ref = $parentNode.children[i] ?? $parentNode;
+
+            if ((chOld && chOld.diff) || (chNew && chNew.diff)) {
+                // debugger
+                cambio = true;
+                compareChildren($ref, chOld, chNew);
+            }
+        }
+
+        if (!cambio && (vOldNode.diff || vNewNode.diff)) {
+            //  debugger
+            compareChildren($parentNode, vOldNode, vNewNode);
+        }
+
     }
 
     const compareChildren = function ($parentNode, vOldNode, vNewNode) {
