@@ -132,12 +132,6 @@ export function buscaDiff(oldNode, newNode) {
                 nodo.diff = equal;
             }
 
-        } else {
-            if (typeof nodoOld === "object" &&
-                typeof nodoNew === "object") {
-                delete nodoOld.diff;
-                delete nodoNew.diff;
-            }
         }
 
         // Agrega los hijos de nodo1 y nodo2 a las pilas

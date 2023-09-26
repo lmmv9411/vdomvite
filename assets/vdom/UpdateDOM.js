@@ -1,4 +1,4 @@
-import { COMPARACION, buscaDiff } from "./BuscaDiff";
+//import { COMPARACION, buscaDiff } from "./BuscaDiff";
 import { compararNodos } from "./CompararNodos";
 import { VDOM } from "./Render";
 import { Fragment, Portal } from "./VDom";
@@ -16,15 +16,16 @@ export const reconciliation = (function () {
      **/
     const updateDOM = function ($parentNode, vOldNode, vNewNode) {
 
-        // parent = vOldNode;
-        // return _updateDOM($parentNode, vOldNode, vNewNode);
-
         parent = vOldNode;
+        return _updateDOM($parentNode, vOldNode, vNewNode);
+
+        /*parent = vOldNode;
+        debugger
         if (!buscaDiff(vOldNode, vNewNode)) {
             _updateDOM($parentNode, vOldNode, vNewNode);
             return true;
         }
-        return false;
+        return false;*/
     }
 
     const _updateDOM = function ($parentNode, vOldNode, vNewNode) {
@@ -57,12 +58,13 @@ export const reconciliation = (function () {
         } else {
             compareAttributes($parentNode, vOldNode, vNewNode);
             compareChildren($parentNode, vOldNode, vNewNode);
-            buscarCambios($parentNode, vOldNode, vNewNode);
+            //buscarCambios($parentNode, vOldNode, vNewNode);
         }
         return true;
     }
 
     const buscarCambios = function ($parentNode, vOldNode, vNewNode) {
+
         let cambio = false;
 
         const max = Math.max(vOldNode.children?.length ?? 0, vNewNode.children?.length ?? 0);
@@ -97,8 +99,9 @@ export const reconciliation = (function () {
         for (let i = 0; i < size.maxChildren; i++) {
 
             let tmpParent;
-            childrenNew = vNewNode?.children[i];
-            childrenOld = vOldNode?.children[i];
+
+            childrenNew = vNewNode?.children ? vNewNode?.children[i] : undefined;
+            childrenOld = vOldNode?.children ? vOldNode?.children[i] : undefined;
 
             $refChildren = $parentNode.childNodes[i] ?? $parentNode;
 
