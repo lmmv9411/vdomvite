@@ -68,8 +68,6 @@ export class Componente {
 
         let $ref = this.type === Fragment ? this.$fragment : this.$element
 
-        const start = performance.now();
-
         if (reconciliation.updateDOM($ref, this, newNode)) {
             this.state = newState;
             for (const k of Object.keys(newNode)) {
@@ -81,9 +79,6 @@ export class Componente {
             }
         }
 
-        const end = performance.now();
-
-        console.log(`${Object.getPrototypeOf(this).constructor.name} -> ${end - start}ms`);
     }
 
     /**
