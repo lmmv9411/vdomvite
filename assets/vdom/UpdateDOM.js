@@ -44,9 +44,7 @@ export const reconciliation = (function () {
             setReff(vNewNode, $ref);
 
         } else if (compareNodes(vOldNode, vNewNode)) {
-
             replaceNode($parentNode, vNewNode);
-
         } else {
             compareAttributes($parentNode, vOldNode, vNewNode);
             compareChildren($parentNode, vOldNode, vNewNode);
@@ -161,7 +159,10 @@ export const reconciliation = (function () {
         } else if ($parentNode.children?.length > size.childrenOldNode) {
             vOldNode.children.splice(i, 0, childrenNew);
             size.childrenOldNode = vOldNode.children.length;
+        }else{
+            vOldNode.children[i] = childrenNew;
         }
+
 
         return i;
     }
