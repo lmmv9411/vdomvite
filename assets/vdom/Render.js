@@ -15,7 +15,11 @@ export const VDOM = (function () {
     const render = function (node, p, $nodeParent) {
         parent = p ?? node;
         $parent = $nodeParent;
-        return _render(node);
+        try {
+            return _render(node);
+        } catch (error) {
+            throw new Error(error.stack)
+        }
     }
 
     const _render = function (node) {
@@ -47,7 +51,7 @@ export const VDOM = (function () {
             $element = document.createElement(node.type);
         }
 
-        if (!!node.props && typeof node.props === 'object') {
+        if (node.props && typeof node.props === 'object') {
 
             for (let [k, v] of Object.entries(node.props)) {
 
@@ -143,7 +147,7 @@ export const VDOM = (function () {
             }
 
         } else {
-            if (node.children.length > 0) {
+            if (node.children?.length > 0) {
                 $element.textContent = node.children;
             }
         }

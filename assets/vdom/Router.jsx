@@ -3,27 +3,20 @@ import { Fragment, reemplazarElemento } from "./VDom";
 
 const instancias = [];
 
-const estilos = {
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    position: "absolute"
-}
-
-const load = VDOM.render(
-    <div style={estilos}>
-        <div className="spinner-border text-primary" role="status">
-            <span className="sr-only"></span>
-        </div>
-    </div>
-)
-
 export class Router {
 
-    constructor({ idContenedor, pathBase, children, rutaComponentes }) {
+    /**
+     * 
+     * @param {String} idContenedor ID de etiqutea donde se cargará contenido dinámicamente.
+     * @param {String} pathBase Ruta base donde arranca aplicacioón.
+     * @param {Object} children Nodos virutuales.
+     * @param {Function} rutaComponentes Función que retorna rutas dinámicamente.
+     */
+    constructor({ idContenedor, pathBase, children, rutaComponentes, cambioInstancia }) {
 
+        this.cambioInstancia = cambioInstancia;
         this.idContenedor = idContenedor
-        this.pathBase = pathBase;
+        this.pathBase = pathBase ?? "";
         this.componentes = {};
         this.rutaComponentes = rutaComponentes;
 
@@ -32,6 +25,8 @@ export class Router {
         window.addEventListener('popstate', (e) => {
             e.preventDefault()
             e.stopPropagation()
+            const a = document.querySelector(`a[href="${window.location.pathname}"]`)
+            this.target = a;
             this.navigateTo()
         });
 
@@ -39,19 +34,21 @@ export class Router {
         this.children = children;
         this.type = Fragment;
 
-        const observador = new MutationObserver((mutations, observer) => {
-            mutations.forEach(mutation => {
-                mutation.addedNodes.forEach(node => {
-                    if (node.id === this.idContenedor) {
-                        this.navigateTo();
-                        observer.disconnect();
-                    }
-                })
-            })
+        document.addEventListener("DOMContentLoaded", () => {
+            this.firstCheck();
+            this.navigateTo();
         })
 
-        observador.observe(document.body, { childList: true, subtree: true });
+    }
 
+    firstCheck() {
+
+        this.main = document.getElementById(this.idContenedor);
+
+        if (!this.main) {
+            this.manejarError('¡Contenedor "main" inválido!.');
+            throw new Error("Contenedor inválido");
+        }
     }
 
     async navigateTo() {
@@ -61,17 +58,12 @@ export class Router {
         let nombreClase = ""
 
         if (paths.length === 1) {
-            nombreClase = this.componentes[paths[0]];
+            const ruta = paths[0];
+            nombreClase = this.componentes[ruta == "" ? "/" : ruta];
         } else {
             const i = paths.findIndex(path => path === this.pathBase);
-            nombreClase = this.componentes[paths[i + 1]]
-        }
-
-        const main = document.getElementById(this.idContenedor);
-
-        if (!main) {
-            this.manejarError('¡Contenedor "main" inválido!.');
-            return;
+            const ruta = paths[i + 1];
+            nombreClase = this.componentes[ruta]
         }
 
         if (!nombreClase) {
@@ -79,12 +71,26 @@ export class Router {
             return;
         }
 
-        document.title = nombreClase?.titulo;
+        if (nombreClase.titulo !== document.title) {
+            document.title = nombreClase.titulo;
+        }
+
+        if (nombreClase.props.render !== null && typeof nombreClase.props.render === "function") {
+            try {
+                await this.buscarRutaDinamica(this.main, nombreClase, nombreClase.props.render);
+            } catch (error) {
+                this.manejarError(`${error.message}, clase: "${nombreClase.componente}"`);
+                throw new Error(`${error.message}, clase: "${nombreClase.componente}"`)
+            }
+            return;
+        }
+
 
         try {
-            await this.buscarRutaDinamica(main, nombreClase);
+            await this.buscarRutaDinamica(this.main, nombreClase);
         } catch (error) {
             this.manejarError(`${error.message}, clase: "${nombreClase.componente}"`);
+            throw new Error(`${error.message}, clase: "${nombreClase.componente}"`)
         }
 
     }
@@ -100,51 +106,100 @@ export class Router {
         ));
     }
 
-    async buscarRutaDinamica(main, nombreClase) {
+    async buscarRutaDinamica(main, nombreClase, render = null) {
 
         main.innerHTML = "";
-        main.appendChild(load);
+        let instancia;
 
         let i = instancias.findIndex(i => i.key === nombreClase.componente);
 
+        instancias.forEach(obj => {
+            obj.instancia.activa = false;
+            if (obj.instancia.setInactivate) {
+                obj.instancia.setInactivate();
+            }
+        });
+
         if (i === -1) {
 
-            let modulo;
+            if (render === null) {
+                let modulo;
 
-            try {
-                modulo = await this.rutaComponentes(nombreClase.componente.toLowerCase());
-            } catch (error) {
-                throw new Error(`${error.message} ${error.stack}`)
-            }
+                try {
+                    modulo = await this.rutaComponentes(nombreClase.componente.toLowerCase());
+                } catch (error) {
+                    throw new Error(`${error.message} ${error.stack}`)
+                }
 
-            let instancia;
+                let clase = await modulo[nombreClase.componente];
 
-            let clase = await modulo[nombreClase.componente];
+                if (!(clase.prototype instanceof Object)) {
+                    instancia = clase({ ...nombreClase.props });
+                } else {
+                    instancia = new clase({ ...nombreClase.props });
+                }
 
-            if (!(clase.prototype instanceof Object)) {
-                instancia = clase({ ...nombreClase.props });
+                instancias.push({ key: nombreClase.componente, instancia });
+
+                i = instancias.length - 1;
+
             } else {
-                instancia = new clase({ ...nombreClase.props });
+                if (!(render.prototype instanceof Object)) {
+                    //let classe = await render();
+                    // instancia = new classe({});
+                    instancia = await render();
+                } else {
+                    instancia = new render({});
+                }
+
+                instancias.push({ key: nombreClase.componente, instancia });
+
+                i = instancias.length - 1;
+
             }
-
-            instancias.push({ key: nombreClase.componente, instancia });
-
-            i = instancias.length - 1;
         }
 
         reemplazarElemento(
             main,
             instancias[i].instancia
         )
+
+        instancias[i].instancia.activa = true;
+
+        if (instancias[i].instancia.setActivate) {
+            instancias[i].instancia.setActivate();
+        }
+
+        if (this.cambioInstancia) {
+            this.cambioInstancia({ instancia: instancias[i].instancia, target: this.target });
+        }
+
     }
 
-    redirect(e) {
+    redirect(ch, e) {
+
         e.stopPropagation();
         e.preventDefault();
+
+        const isLink = e.target.tagName === 'A';
+
+        if (!isLink) {
+
+            if (ch.props?.href) {
+                const url = ch.props.href;
+                window.history.pushState(null, null, url);
+                const a = document.querySelector(`a[href="${window.location.pathname}"]`)
+                this.target = a;
+                this.navigateTo();
+            }
+
+            return;
+        }
 
         const url = e.target.href;
         window.history.pushState(null, null, url);
 
+        this.target = e.target;
         this.navigateTo();
     }
 
@@ -153,8 +208,9 @@ export class Router {
         let tmpPath = this.pathBase;
 
         if (ch.type === "a") {
+
             const componente = ch.props.componente;
-            const props = ch.props.data ?? {};
+            const props = ch.props ?? {};
             const titulo = ch.props.titulo;
 
             const url = ch.props.href === "" ? tmpPath : ch.props.href;
@@ -167,7 +223,7 @@ export class Router {
                 delete ch.props.titulo;
             }
 
-            ch.props.onclick = this.redirect.bind(this);
+            ch.props.onclick = this.redirect.bind(this, ch);
 
             if (tmpPath === "") {
                 tmpPath = "/"
@@ -192,15 +248,19 @@ export const Link = (props) => {
 
     let { to, titulo, url, children, ...p } = props;
 
-    if (url === undefined || url === null) {
-        url = to.toLowerCase();
+    if (!to) {
+        throw new Error(`"to" no puede ser vacío ${titulo} ${url} ${to}`)
+    }
+
+    if (!url || url === "/") {
+        titulo = document.title;
     }
 
     return (
         <a
             titulo={titulo}
             componente={to}
-            href={url}
+            href={url ?? to}
             {...p}
         >{children}</a>
     )

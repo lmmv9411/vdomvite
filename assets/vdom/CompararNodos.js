@@ -5,11 +5,16 @@ function _compararNodos(oldNode, newNode) {
         return true;
     }
 
-    if ((!oldNode && newNode)) {
-        return false;
-    }
+    /*  if ((!oldNode && newNode)) {
+         return false;
+     }
+ 
+     if (oldNode && !newNode) {
+         return false;
+     } */
 
-    if (oldNode && !newNode) {
+    if (oldNode === undefined || newNode === undefined ||
+        oldNode === null || newNode === null) {
         return false;
     }
 

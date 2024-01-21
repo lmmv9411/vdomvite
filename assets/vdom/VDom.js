@@ -45,7 +45,7 @@ function reemplazarElemento($parent, nodo) {
 
     if (!$parent.hasChildNodes()) {
         if (nodo.type === Fragment) {
-            $parent.appendChild(...nodo.fragmento);
+            $parent.append(...nodo.fragmento);
         } else {
             $parent.appendChild($ref);
         }

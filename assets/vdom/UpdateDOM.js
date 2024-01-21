@@ -1,4 +1,3 @@
-//import { COMPARACION, buscaDiff } from "./BuscaDiff";
 import { compararNodos } from "./CompararNodos";
 import { VDOM } from "./Render";
 import { Fragment, Portal } from "./VDom";
@@ -19,13 +18,6 @@ export const reconciliation = (function () {
         parent = vOldNode;
         return _updateDOM($parentNode, vOldNode, vNewNode);
 
-        /*parent = vOldNode;
-        debugger
-        if (!buscaDiff(vOldNode, vNewNode)) {
-            _updateDOM($parentNode, vOldNode, vNewNode);
-            return true;
-        }
-        return false;*/
     }
 
     const _updateDOM = function ($parentNode, vOldNode, vNewNode) {
@@ -58,34 +50,9 @@ export const reconciliation = (function () {
         } else {
             compareAttributes($parentNode, vOldNode, vNewNode);
             compareChildren($parentNode, vOldNode, vNewNode);
-            //buscarCambios($parentNode, vOldNode, vNewNode);
         }
+
         return true;
-    }
-
-    const buscarCambios = function ($parentNode, vOldNode, vNewNode) {
-
-        let cambio = false;
-
-        const max = Math.max(vOldNode.children?.length ?? 0, vNewNode.children?.length ?? 0);
-
-        for (let i = 0; i < max; i++) {
-            const chOld = vOldNode.children[i];
-            const chNew = vNewNode.children[i];
-            const $ref = $parentNode.children[i] ?? $parentNode;
-
-            if ((chOld && chOld.diff) || (chNew && chNew.diff)) {
-                // debugger
-                cambio = true;
-                compareChildren($ref, chOld, chNew);
-            }
-        }
-
-        if (!cambio && (vOldNode.diff || vNewNode.diff)) {
-            //  debugger
-            compareChildren($parentNode, vOldNode, vNewNode);
-        }
-
     }
 
     const compareChildren = function ($parentNode, vOldNode, vNewNode) {
@@ -118,83 +85,43 @@ export const reconciliation = (function () {
                 if (childrenOld?.key) {
                     b = !b;
                 }
-
                 conKeys = (a || b);
-
             }
 
-            const diferentesNodos = compareNodes(childrenOld, childrenNew);
+            if (conKeys) {
 
-            if (conKeys || diferentesNodos) {
+                if (childrenNew !== undefined && childrenOld !== undefined &&
+                    childrenNew?.key !== childrenOld?.key) {
+                    reemplazarNodos(childrenOld, childrenNew, vOldNode, vNewNode, $refChildren, i);
 
-                if (childrenNew?.key !== childrenOld?.key || diferentesNodos) {
+                } else if (size.childrenNewNode > size.childrenOldNode) {
+                    const index = i + 1 === size.childrenNewNode ? i + 1 : i;
 
-                    if (size.childrenNewNode > size.childrenOldNode) {
-                        const index = i + 1 === size.childrenNewNode ? i + 1 : i;
+                    const $ref = VDOM.render(childrenNew, parent);
 
-                        const $ref = VDOM.render(childrenNew, parent);
+                    const $nextSibling = $parentNode.children[index];
 
-                        const $nextSibling = $parentNode.children[index];
-
-                        if ($nextSibling) {
-                            $parentNode.insertBefore($ref, $nextSibling);
-                        } else {
-                            $parentNode.appendChild($ref);
-                        }
-
-                        setReff(childrenNew, $ref);
-
-                        vOldNode.children.splice(i, 0, childrenNew);
-
-                    } else if (size.childrenNewNode < size.childrenOldNode) {
-
-                        if (childrenOld.type === Fragment) {
-                            const $childrens = vOldNode.children[i].fragmento;
-                            $childrens.forEach($ch => $parentNode.removeChild($ch))
-                        } else {
-                            $refChildren.remove();
-                        }
-
-                        vOldNode.children.splice(i--, 1);
-
+                    if ($nextSibling) {
+                        $parentNode.insertBefore($ref, $nextSibling);
                     } else {
-
-                        if (childrenOld.type === Fragment) {
-
-                            const $childrens = vOldNode.children[i].fragmento;
-
-                            vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
-
-                            $childrens.forEach(($ch, idx) => {
-                                if (!compararNodos(childrenOld.children[idx], childrenNew.children[idx])) {
-                                    const $ref = replaceNode($ch, childrenNew.children[idx])
-                                    vNewNode.children[i].fragmento[idx] = $ref;
-                                }
-                            })
-
-                        } else {
-                            replaceNode($refChildren, childrenNew);
-                            vOldNode.children[i] = childrenNew;
-                        }
-
+                        $parentNode.appendChild($ref);
                     }
-                } else {
+
+                    setReff(childrenNew, $ref);
+
+                    vOldNode.children.splice(i, 0, childrenNew);
+
+                } else if (size.childrenNewNode < size.childrenOldNode) {
 
                     if (childrenOld.type === Fragment) {
-
-                        const $children = vOldNode.children[i].fragmento;
-
-                        $children.forEach(($ch, i) => {
-                            _updateDOM($ch, childrenOld.children[i], childrenNew.children[i])
-                        });
-
-                        if (!vNewNode.children[i].fragmento) {
-                            vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
-                        }
-
+                        const $childrens = vOldNode.children[i].fragmento;
+                        $childrens.forEach($ch => $parentNode.removeChild($ch))
                     } else {
-                        _updateDOM($refChildren, childrenOld, childrenNew);
+                        $refChildren.remove();
                     }
+
+                    vOldNode.children.splice(i--, 1);
+
                 }
 
             } else {
@@ -216,6 +143,7 @@ export const reconciliation = (function () {
 
                 } else {
                     _updateDOM($refChildren, childrenOld, childrenNew);
+                    i = checkLenghtChildren($parentNode, size, vOldNode, childrenNew, i);
                 }
             }
 
@@ -223,6 +151,38 @@ export const reconciliation = (function () {
 
         }
 
+    }
+
+    const checkLenghtChildren = function ($parentNode, size, vOldNode, childrenNew, i) {
+        if ($parentNode.children?.length < size.childrenOldNode) {
+            vOldNode.children.splice(--i, 1);
+            size.childrenOldNode = vOldNode.children.length;
+            size.maxChildren--;
+        } else if ($parentNode.children?.length > size.childrenOldNode) {
+            vOldNode.children.splice(i, 0, childrenNew);
+            size.childrenOldNode = vOldNode.children.length;
+        }
+        return i;
+    }
+
+    const reemplazarNodos = function (childrenOld, childrenNew, vOldNode, vNewNode, $refChildren, i) {
+        if (childrenOld.type === Fragment) {
+
+            const $childrens = vOldNode.children[i].fragmento;
+
+            vNewNode.children[i].fragmento = vOldNode.children[i].fragmento;
+
+            $childrens.forEach(($ch, idx) => {
+                if (!compararNodos(childrenOld.children[idx], childrenNew.children[idx])) {
+                    const $ref = replaceNode($ch, childrenNew.children[idx])
+                    vNewNode.children[i].fragmento[idx] = $ref;
+                }
+            })
+
+        } else {
+            replaceNode($refChildren, childrenNew);
+            vOldNode.children[i] = childrenNew;
+        }
     }
 
     const getSizeChildren = function (size) {
@@ -324,6 +284,10 @@ export const reconciliation = (function () {
 
                 if (typeof v === "object") {
                     const tmpNewNode = JSON.stringify(v);
+                    if (!vOldNode.props) {
+                        vOldNode.props = {};
+                        vOldNode.props[att] = {};
+                    }
                     const tmpOldNode = JSON.stringify(vOldNode.props[att]);
                     if (tmpNewNode === tmpOldNode) {
                         continue;
