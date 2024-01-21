@@ -88,7 +88,7 @@ export const reconciliation = (function () {
                 conKeys = (a || b);
             }
 
-            if (conKeys) {
+            if (conKeys && childrenNew?.key !== childrenOld?.key) {
 
                 if (childrenNew !== undefined && childrenOld !== undefined &&
                     childrenNew?.key !== childrenOld?.key) {
@@ -162,6 +162,7 @@ export const reconciliation = (function () {
             vOldNode.children.splice(i, 0, childrenNew);
             size.childrenOldNode = vOldNode.children.length;
         }
+
         return i;
     }
 
@@ -262,7 +263,11 @@ export const reconciliation = (function () {
                                 delete vOldNode.props[att][key];
                             })
                         } else {
-                            $node[att] = "";
+                            try {
+                                $node[att] = "";
+                            } catch (error) {
+                                $node.removeAttribute(att)
+                            }
                             delete vOldNode.props[att];
                         }
 
@@ -305,7 +310,11 @@ export const reconciliation = (function () {
                                 vOldNode.props[att][key] = v;
                             })
                         } else {
-                            $node[att] = v;
+                            try {
+                                $node[att] = v;
+                            } catch (error) {
+                                $node.setAttribute(att, v)
+                            }
                             vOldNode.props[att] = v;
                         }
 

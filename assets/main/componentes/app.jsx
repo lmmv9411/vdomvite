@@ -23,7 +23,7 @@ export class App extends Componente {
                     </h1>
                 </header>
 
-                <Router idContenedor="main" pathBase="" rutaComponentes={this.handleRoute}>
+                <Router idContenedor="main" rutaComponentes={this.handleRoute}>
 
                     <nav>
                         <ul
@@ -32,7 +32,7 @@ export class App extends Componente {
                             <li>
                                 <Link
                                     className={menu.link}
-                                    url=""
+                                    url="/"
                                     to="HomeInit"
                                     titulo="Inicio De Virtual Dom"
                                 >Home</Link>
@@ -63,7 +63,8 @@ export class App extends Componente {
                                 <Link
                                     className={menu.link}
                                     to="ListaEnlazada"
-                                    titulo="Lista Enlazada">Lista Enlazada</Link>
+                                    titulo="Lista Enlazada"
+                                >Lista Enlazada</Link>
                             </li>
                         </ul>
                     </nav>
