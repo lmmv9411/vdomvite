@@ -34,10 +34,32 @@ export class Router {
         this.children = children;
         this.type = Fragment;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            this.firstCheck();
-            this.navigateTo();
-        })
+        if (document.readyState === "complete") {
+
+            const config = { attributes: true, childList: true, subtree: true };
+
+            const callback = (mutationsList) => {
+                for (let mutation of mutationsList) {
+                    mutation.addedNodes.forEach(n => {
+                        if (n.id === this.idContenedor) {
+                            this.firstCheck();
+                            this.navigateTo();
+                            observer.disconnect();
+                        }
+                    })
+
+                }
+            };
+
+            const observer = new MutationObserver(callback);
+            observer.observe(document.body, config);
+
+        } else {
+            document.addEventListener("DOMContentLoaded", () => {
+                this.firstCheck();
+                this.navigateTo();
+            })
+        }
 
     }
 

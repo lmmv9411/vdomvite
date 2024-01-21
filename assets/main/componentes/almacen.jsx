@@ -22,7 +22,7 @@ export class Almacen extends Componente {
             <>
                 <header>
                     <h3>Soy el Almacen</h3>
-                    <Router idContenedor="articulo" pathBase="almacen" rutaComponentes={this.handleRoute}>
+                    <Router idContenedor="articulo" pathBase="Almacen" rutaComponentes={this.handleRoute}>
                         <nav>
                             <ul
                                 className="d-flex flex-wrap"
