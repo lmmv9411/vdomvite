@@ -1,11 +1,12 @@
 import { Componente } from "../../vdom/Componente";
 
-import { ContextoProveedor } from "./proveedores";
+import { ctxProveedor } from "./proveedores";
 
 export class Lista extends Componente {
     constructor(props) {
+
         super({ ...props, values: [] });
-        this.cp = ContextoProveedor.children;
+
         this.items = [
             "list-group-item list-group-item-primary",
             "list-group-item list-group-item-secondary",
@@ -43,7 +44,7 @@ export class Lista extends Componente {
     agregarItem(item) {
 
         item = this.color(item);
-        const { proveedores } = this.cp;
+        const { proveedores } = ctxProveedor;
         const { values } = this.state;
 
         if (!this.map.has(item.v.toLowerCase())) {
@@ -68,7 +69,7 @@ export class Lista extends Componente {
 
     editar(key) {
 
-        const { proveedores } = this.cp;
+        const { proveedores } = ctxProveedor;
 
         if (this.map.has(key.toLowerCase())) {
 
@@ -113,7 +114,7 @@ export class Lista extends Componente {
 
                             <button
                                 className="btn btn-warning me-1"
-                                onclick={() => this.cp.proveedores.agregar()}>
+                                onclick={() => ctxProveedor.proveedores.agregar()}>
                                 Saludar
                             </button>
 

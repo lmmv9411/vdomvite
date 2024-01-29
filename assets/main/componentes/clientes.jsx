@@ -16,12 +16,6 @@ export class Clientes extends Componente {
             ...props,
         });
 
-        this.tabla = (
-            <Tabla
-                pTabla={{ className: "table table-dark" }}
-                titulos={["Nombre", "Edad", "Email", "Acción"]}
-            />
-        )
         this.controlador = new Controlador(this);
     }
 
@@ -136,7 +130,11 @@ export class Clientes extends Componente {
                                 <span className="sr-only"></span>
                             </div>
                             :
-                            this.tabla
+                            <Tabla
+                                pTabla={{ className: "table table-dark" }}
+                                reff="tabla"
+                                titulos={["Nombre", "Edad", "Email", "Acción"]}
+                            />
                     }
                 </div>
             </>

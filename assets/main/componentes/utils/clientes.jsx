@@ -78,14 +78,18 @@ export class Controlador {
                         <a
                             className="btn btn-danger"
                             href="#"
-                            onclick={() => this.view.tabla.delete(cliente.edad)}
+                            onclick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.view.instancias.tabla.delete(cliente.edad)
+                            }}
                         >Eliminar</a>
                     </td>
                 </tr>
             )
         })
 
-        this.view.tabla.prepend(clientes);
+        this.view.instancias.tabla.prepend(clientes);
     }
 
     cambio(e) {

@@ -1,8 +1,8 @@
 import { Componente } from "../../vdom/Componente";
-import { CreateContext } from "../../vdom/Context";
+import { Contexto } from "../../vdom/Context";
 import { Lista } from "./lista";
 
-export const ContextoProveedor = new CreateContext();
+export const ctxProveedor = new Contexto();
 
 export class Proveedores extends Componente {
 
@@ -12,11 +12,8 @@ export class Proveedores extends Componente {
             nombre: "",
             crear: false,
             quitarRef: true
-        })
-
-        this.cp = ContextoProveedor.children;
-        this.cp.proveedores = this;
-        this.lista = <Lista contextoNombre="lista" />;
+        });
+        ctxProveedor.proveedores = this;
     }
 
     montado() {
@@ -28,7 +25,6 @@ export class Proveedores extends Componente {
         e?.preventDefault();
         e?.stopPropagation();
 
-        const { lista } = ContextoProveedor.children;
         const { nombre } = this.state;
 
         if (!nombre) {
@@ -36,7 +32,7 @@ export class Proveedores extends Componente {
             return;
         }
 
-        lista.agregarItem(nombre);
+        ctxProveedor.lista.agregarItem(nombre);
 
         this.setState({ nombre: "" })
 
@@ -46,7 +42,7 @@ export class Proveedores extends Componente {
     render(props) {
 
         return (
-            <ContextoProveedor.Provider>
+            <ctxProveedor.Provider>
 
                 {!props.quitarRef && <h3 $ref="h1">Prueba de $Referencia</h3>}
 
@@ -101,16 +97,16 @@ export class Proveedores extends Componente {
                         onclick={(e) => {
                             e.preventDefault();
                             e.stopPropagation()
-                            this.cp.lista.cambiarColor();
+                            ctxProveedor.lista.cambiarColor();
                         }}
                     >
                         Cambia Color
                     </button>
                 </form>
 
-                {this.lista}
+                <Lista ctx="lista" />;
 
-            </ContextoProveedor.Provider >
+            </ctxProveedor.Provider >
         )
     }
 
