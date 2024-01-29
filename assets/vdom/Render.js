@@ -1,5 +1,5 @@
-import { Componente } from "./Componente.js";
-import { Contexto, Fragment, Portal } from "./VDom.js";
+import { Componente } from "./Componente";
+import { k } from "./VDom";
 
 export const VDOM = (function () {
 
@@ -13,9 +13,9 @@ export const VDOM = (function () {
      * @returns {HTMLElement} Elemento Html;
      */
     const render = function (node, p, $nodeParent) {
-        parent = p ?? node;
-        $parent = $nodeParent;
         try {
+            parent = p ?? node;
+            $parent = $nodeParent;
             return _render(node);
         } catch (error) {
             throw new Error(error.stack)
@@ -24,8 +24,10 @@ export const VDOM = (function () {
 
     const _render = function (node) {
 
-        if (node instanceof Componente) {
+        if (node instanceof Componente && !node.creado) {
+            const copy = $parent;
             node.construir();
+            $parent = copy;
         }
 
         if (!node || !node.type) {
@@ -41,17 +43,18 @@ export const VDOM = (function () {
 
         let $element;
 
-        if (node.type === Fragment) {
+        if (node.type === k.Fragment) {
             $element = document.createDocumentFragment();
             node.$fragment = $parent;
-        } else if (node.type === Portal) {
+        } else if (node.type === k.Portal) {
             recursividadHijos(node, node.$element);
             return;
         } else {
             $element = document.createElement(node.type);
         }
 
-        if (node.props && typeof node.props === 'object') {
+
+        if (typeof node.type === "string" && node.props && typeof node.props === 'object') {
 
             for (let [k, v] of Object.entries(node.props)) {
 
@@ -60,6 +63,7 @@ export const VDOM = (function () {
                 if (k === "$ref") {
                     parent[v] = $element;
                 } else if (k.startsWith("on")) {
+
                     k = k.substring(2).toLowerCase();
 
                     switch (k) {
@@ -69,6 +73,9 @@ export const VDOM = (function () {
                         case "blur":
                             $element.addEventListener("focusout", v);
                             break;
+                        case "doubleclick":
+                            $element.addEventListener("dblclick", v);
+                            break
                         default:
                             $element.addEventListener(k, v);
                     }
@@ -92,8 +99,8 @@ export const VDOM = (function () {
 
         recursividadHijos(node, $element);
 
-        if (node.type === Fragment) {
-            node.fragmento = [...$element.children];
+        if (node.type === k.Fragment) {
+            node.childrenFragment = [...$element.children];
         }
 
         return $element;
@@ -115,19 +122,25 @@ export const VDOM = (function () {
             parent = node;
         }
 
-        if (node.type !== Fragment) {
+        if (node.type !== k.Fragment) {
             $parent = $element;
         }
 
-        if (node.is === Contexto) {
+        if (node.is === k.Contexto) {
             contexto = node;
         }
 
         if (Array.isArray(node.children) && node.children.length > 0) {
 
-            for (let ch of node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+
+                const ch = node.children[i];
 
                 const $children = _render(ch);
+
+                if (ch.is === k.Portal) {
+                    node.children.splice(i--, 1);
+                }
 
                 if ($children) {
                     $element.appendChild($children)
@@ -135,14 +148,16 @@ export const VDOM = (function () {
 
                 if (ch instanceof Componente) {
 
-                    if (ch.type !== Portal) {
+                    if (ch.is !== k.Portal) {
                         ch.construido($children);
                     }
 
-                    if (contexto) {
-                        contexto.padre.children[ch.state.contextoNombre] = ch;
+                    if (contexto && ch.state?.ctx) {
+                        contexto.padre[ch.state.ctx] = ch
                     }
+
                 }
+
 
             }
 

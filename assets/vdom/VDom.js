@@ -19,8 +19,8 @@ function insertarElemento($parent, nodo) {
         $ref = tmp;
     }
 
-    if (nodo.type === Fragment) {
-        $parent.append(...nodo.fragmento);
+    if (nodo.type === k.Fragment) {
+        $parent.append(...nodo.childrenFragment);
     } else {
         $parent.appendChild($ref);
     }
@@ -32,7 +32,6 @@ function insertarElemento($parent, nodo) {
 }
 
 function reemplazarElemento($parent, nodo) {
-
     const tmp = nodo.$fragment ?? nodo.$element;
 
     let $ref;
@@ -44,14 +43,14 @@ function reemplazarElemento($parent, nodo) {
     }
 
     if (!$parent.hasChildNodes()) {
-        if (nodo.type === Fragment) {
-            $parent.append(...nodo.fragmento);
+        if (nodo.type === k.Fragment) {
+            $parent.append(...nodo.childrenFragment);
         } else {
             $parent.appendChild($ref);
         }
     } else {
         if (nodo.type === Fragment) {
-            $parent.replaceChildren(...nodo.fragmento);
+            $parent.replaceChildren(...nodo.childrenFragment);
         } else {
             $parent.replaceChildren($ref);
         }
@@ -62,57 +61,90 @@ function reemplazarElemento($parent, nodo) {
     }
 }
 
-function h(type, props, ...children) {
+export const k = (function () {
 
-    let key = null;
+    const Fragment = Symbol('Fragment');
+    const Portal = Symbol("Portal");
+    const Contexto = Symbol("Contexto");
+    let nodo = null;
 
-    if (Array.isArray(children) && children.length === 1 && Array.isArray(children[0])) {
-        children = children[0];
-    }
+    const h = function (type, props, ...children) {
 
-    //quitar null o undefine
-    children = children.filter(ch => ch !== undefined && ch !== null && typeof ch !== "boolean");
+        let key = null;
 
-    if (props?.key !== undefined) {
-        key = props.key;
-        delete props.key;
-    }
-
-    if (type instanceof Function) {
-        let componente
-
-        if (!(type.prototype instanceof Object)) {
-            componente = type({ children, ...props });
-        } else {
-            componente = new type({ children, ...props });
+        if (Array.isArray(children) && children.length === 1 && Array.isArray(children[0])) {
+            children = children[0];
         }
 
-        if (typeof componente === "object" && Object.keys(componente).length === 0) {
-            if (children.length > 1) {
-                return h(Fragment, null, children);
+        //quitar null o undefine
+        children = children.filter(ch => ch !== undefined && ch !== null && (typeof ch !== "boolean"));
+
+        if (props?.key !== undefined) {
+            key = props.key;
+            delete props.key;
+        }
+
+
+        if (typeof type === 'function') {
+            let componente
+
+            if (!(type.prototype instanceof Object)) {
+                componente = type({ children, ...props });
+            } else {
+
+                if (props?.reff) {
+
+                    if (!k.nodo.instancias) {
+                        k.nodo.instancias = {};
+                    }
+
+                    const tmpComponent = k.nodo.instancias[props.reff];
+
+                    if (tmpComponent) {
+                        const copyNodo = k.nodo;
+                        k.nodo = null;
+                        tmpComponent.setState({ children, ...props });
+                        k.nodo = copyNodo;
+                        return tmpComponent;
+                    } else {
+                        componente = new type({ children, ...props });
+                        k.nodo.instancias[props.reff] = componente;
+                    }
+                } else {
+                    componente = new type({ children, ...props });
+                    if (componente.construir) {
+                        const copyNodo = k.nodo;
+                        k.nodo = null;
+                        componente.construir();
+                        k.nodo = copyNodo;
+                    }
+                }
             }
-            return children[0];
-        }
 
-        if (componente) {
-            componente.key = key
-            return componente;
-        } else {
-            if (children.length > 1) {
-                return h(Fragment, null, children);
+            if (typeof componente === "object" && Object.keys(componente).length === 0) {
+                if (children.length > 1) {
+                    return h(Fragment, null, children);
+                }
+                return children[0];
             }
-            return children[0];
+
+            if (componente) {
+                componente.key = key
+                return componente;
+            } else {
+                if (children.length > 1) {
+                    return h(Fragment, null, children);
+                }
+                return children[0];
+            }
+
         }
 
+        return { type, props, children, key };
     }
 
-    return { type, props, children, key };
-}
+    return { h, Fragment, Portal, Contexto, nodo }
+})();
 
-export const Portal = Symbol("Portal");
+export { insertarElemento, reemplazarElemento };
 
-export const Fragment = Symbol("Fragment");
-
-export const Contexto = Symbol("Contexto");
-
-export { reemplazarElemento, insertarElemento, h };

@@ -1,11 +1,9 @@
-import { Contexto, Fragment } from "./VDom";
+import { k } from "./VDom";
 
-export class CreateContext {
+export class Contexto {
     constructor() {
-        this.children = {};
-
-        this.Provider = ({ children }) => {
-            return { type: Fragment, is: Contexto, children, props: null, padre: this }
+        this.Provider = ({ children, ...props }) => {
+            return { type: k.Fragment, is: k.Contexto, children, props, padre: this }
         }
     }
 }

@@ -1,5 +1,5 @@
 import { VDOM } from "./Render";
-import { Fragment, reemplazarElemento } from "./VDom";
+import { reemplazarElemento } from "./VDom";
 
 const instancias = [];
 
@@ -32,9 +32,9 @@ export class Router {
 
         this.props = {};
         this.children = children;
-        this.type = Fragment;
+        this.type = k.Fragment;
 
-        if (document.readyState === "complete") {
+         if (document.readyState === "complete") {
 
             const config = { attributes: true, childList: true, subtree: true };
 
@@ -60,6 +60,7 @@ export class Router {
                 this.navigateTo();
             })
         }
+
 
     }
 
@@ -111,8 +112,8 @@ export class Router {
         try {
             await this.buscarRutaDinamica(this.main, nombreClase);
         } catch (error) {
-            this.manejarError(`${error.message}, clase: "${nombreClase.componente}"`);
-            throw new Error(`${error.message}, clase: "${nombreClase.componente}"`)
+            this.manejarError(`clase: "${nombreClase.componente}": ${error.stack}`);
+            throw new Error(`${error.stack}, clase: "${nombreClase.componente}"`)
         }
 
     }
@@ -120,8 +121,8 @@ export class Router {
     manejarError(mensaje) {
         document.body.innerHTML = ""
         document.body.appendChild(VDOM.render(
-            <div className="d-flex justify-content-center align-items-center vh-100">
-                <span className="alert alert-danger" role="alert">
+            <div className="tarjeta">
+                <span className="color-danger">
                     {mensaje}
                 </span >
             </div>

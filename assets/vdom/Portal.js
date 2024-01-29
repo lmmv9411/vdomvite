@@ -1,4 +1,5 @@
-import { Portal } from "./VDom";
+import { Componente } from "./Componente";
+import { k } from "./VDom";
 
 /**
  * Crea un portal entre un árbol de Virtual DOM y una ubicación en el DOM real.
@@ -6,7 +7,22 @@ import { Portal } from "./VDom";
  * @param {HTMLElement} $parent - El elemento DOM en el que se va a montar el portal.
  * @return {{type: Symbol, $element: HTMLElement, children: Array.<Object>}} - El nodo portalizado y su información asociada.
  */
+function crearPortal(nodo, $parent) {
+    const children = nodo !== undefined && nodo !== null && typeof nodo !== "boolean" ? [nodo] : [];
+    return { type: k.Portal, $element: $parent, children };
+}
 
-export function crearPortal(nodo, $parent) {
-    return { type: Portal, $element: $parent, children: [nodo] }
+export class Portal extends Componente {
+    constructor(props) {
+        super({ ...props });
+        this.is = k.Portal;
+    }
+
+    render(props) {
+        return crearPortal(this.getNodo(props), props.parent)
+    }
+
+    getNodo() {
+        return {};
+    }
 }

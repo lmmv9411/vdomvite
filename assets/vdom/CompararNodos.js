@@ -5,14 +5,6 @@ function _compararNodos(oldNode, newNode) {
         return true;
     }
 
-    /*  if ((!oldNode && newNode)) {
-         return false;
-     }
- 
-     if (oldNode && !newNode) {
-         return false;
-     } */
-
     if (oldNode === undefined || newNode === undefined ||
         oldNode === null || newNode === null) {
         return false;
@@ -36,13 +28,22 @@ function _compararNodos(oldNode, newNode) {
     }
 
     for (let att in newProps) {
-        if ((!oldNode.props) || !(att in oldNode.props)
-            || newNode.props[att] !== oldNode.props[att]) {
 
-            if (att.startsWith("on")) {
-                continue
+        if ((!oldNode.props) || !(att in oldNode.props)) {
+            return false;
+        }
+
+        if (att.startsWith("on")) {
+            continue
+        }
+
+        if (typeof newNode.props[att] === "object") {
+            const tmpNewNode = JSON.stringify(newNode.props[att]);
+            const tmpOldNode = JSON.stringify(oldNode.props[att]);
+            if (tmpNewNode !== tmpOldNode) {
+                return false;
             }
-
+        } else if (newNode.props[att] !== oldNode.props[att]) {
             return false;
         }
     }
@@ -63,7 +64,17 @@ function _compararNodos(oldNode, newNode) {
     return true;
 }
 
+/**
+ * Comparar dos Nodos Virtuales, si son iguales retorna true.
+ * @param {Object} oldNode 
+ * @param {Object} newNode 
+ * @returns {Boolean}
+ */
 export function compararNodos(oldNode, newNode) {
+
+    if (oldNode === undefined && newNode === undefined) {
+        return true;
+    }
 
     const stack1 = [oldNode];
     const stack2 = [newNode];
