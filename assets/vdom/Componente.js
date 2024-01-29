@@ -13,7 +13,7 @@ export class Componente {
     }
 
     construir() {
-
+        
         this.instancias = null;
         k.nodo = this;
 

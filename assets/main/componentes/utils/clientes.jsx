@@ -25,6 +25,7 @@ export class Controlador {
      */
     constructor(view) {
         this.view = view;
+        this.tabla = this.view.instancias.tabla;
     }
 
     submitCliente(e) {
@@ -81,7 +82,7 @@ export class Controlador {
                             onclick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                this.view.instancias.tabla.delete(cliente.edad)
+                                this.tabla.delete(cliente.edad)
                             }}
                         >Eliminar</a>
                     </td>
@@ -89,7 +90,7 @@ export class Controlador {
             )
         })
 
-        this.view.instancias.tabla.prepend(clientes);
+        this.tabla.prepend(clientes);
     }
 
     cambio(e) {

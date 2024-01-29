@@ -15,8 +15,6 @@ export class Clientes extends Componente {
             disable: true,
             ...props,
         });
-
-        this.controlador = new Controlador(this);
     }
 
     montado() {
@@ -33,7 +31,8 @@ export class Clientes extends Componente {
                 }
             }))
             .then(clientes => {
-                this.setState({ montado: true })
+                this.setState({ montado: true });
+                this.controlador = new Controlador(this);
                 this.controlador.add(clientes);
             })
     }
