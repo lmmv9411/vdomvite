@@ -1,12 +1,15 @@
-import { Componente } from "../../../vdom/Componente";
-import { crearPortal } from "../../../vdom/Portal";
-import { Fragment } from "../../../vdom/VDom";
 import style from "../../estilos/alerta.module.css"
 import { VDOM } from "../../../vdom/Render";
+import { Portal } from "../../../vdom/Portal";
 
-export class Alerta extends Componente {
+export class Alerta extends Portal {
     constructor(props) {
-        super({ mostrar: false, mensaje: "", ...props })
+        super({
+            parent: document.getElementById("portal"),
+            mostrar: false,
+            mensaje: "",
+            ...props
+        })
         this.alertas = [];
     }
 
@@ -37,12 +40,12 @@ export class Alerta extends Componente {
         portal.alerta.remove();
     }
 
-    render(props) {
+    getNodo(props) {
         return (
-
-            <>
-                {crearPortal(
+            <article>
+                {
                     props.mostrar &&
+
                     <div
                         $ref="alerta"
                         class={`${props.estilo} ${style.alerta} ${props.mostrar ? style.show : style.hidden}`}
@@ -53,9 +56,9 @@ export class Alerta extends Componente {
                             className={style["btn-close"]}>
                             ❌
                         </button>
-                    </div>, document.getElementById("portal")
-                )}
-            </>
+                    </div>
+                }
+            </article>
 
         )
     }

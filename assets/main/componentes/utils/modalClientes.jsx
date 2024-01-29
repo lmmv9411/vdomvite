@@ -1,5 +1,6 @@
 import { ModalClientes } from "../modales/modalClientes";
 import { cambio } from "./forms/cambio";
+import { ctx } from "../listaenlazada";
 
 export class Controlador {
 
@@ -54,7 +55,7 @@ export class Controlador {
 
             this.view.setState({ error: errores })
         } else {
-            this.view.c.alerta.abrir({
+            ctx.alerta.abrir({
                 mensaje:
                     <span
                         style={{
@@ -74,7 +75,7 @@ export class Controlador {
         this.view.setState(s => ({ showAlert: !s.showAlert }))
 
         if (this.view.state.showAlert) {
-            this.view.c.alerta.abrir({
+            ctx.alerta.abrir({
                 mensaje: <span>Desde Modal</span>,
                 estilo: "bg-danger text-light",
                 mostrar: true

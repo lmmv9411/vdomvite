@@ -1,10 +1,13 @@
-import { Componente } from "../../../vdom/Componente";
-import { crearPortal } from "../../../vdom/Portal";
+import { Portal } from '../../../vdom/Portal'
 import modal from "../../estilos/modal.module.css"
 
-export class Contenedor extends Componente {
+export class Contenedor extends Portal {
     constructor(props) {
-        super({ mostrar: false, ...props });
+        super({
+            parent: document.getElementById("portal"),
+            mostrar: false,
+            ...props
+        });
         this.portal = document.getElementById("portal");
     }
 
@@ -32,17 +35,17 @@ export class Contenedor extends Componente {
         }
     }
 
-    render(props) {
 
-        return crearPortal(
+    getNodo(props) {
+
+        return (
             <article
                 id="contenedorModal"
                 onclick={this.handleClick.bind(this)}
                 className={`${modal.contenedor} ${props.mostrar ? modal["contenedor-show"] : ""}`}>
-                {props.children}
+                {...props.children}
             </article>
-            , this.portal)
-
+        )
     }
 
 }

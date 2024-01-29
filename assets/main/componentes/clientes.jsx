@@ -1,5 +1,4 @@
 import { Componente } from "../../vdom/Componente";
-import { Fragment } from "../../vdom/VDom";
 import { Controlador } from "./utils/clientes";
 import cls from "../estilos/clientes.module.css"
 import { Tabla } from "./tabla";

@@ -1,5 +1,5 @@
 import { Componente } from "../../vdom/Componente";
-import { Fragment } from "../../vdom/VDom";
+
 import { ContextoProveedor } from "./proveedores";
 
 export class Lista extends Componente {
@@ -105,7 +105,7 @@ export class Lista extends Componente {
 
                 {props.values.map(item => (
 
-                    <Fragment key={item.v}>
+                    <k.Fragment key={item.v}>
 
                         <li className={item.c}>
 
@@ -131,7 +131,7 @@ export class Lista extends Componente {
 
                         </li>
 
-                    </Fragment>
+                    </k.Fragment>
                 ))}
             </ul>
         )

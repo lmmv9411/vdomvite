@@ -1,21 +1,18 @@
 import { Componente } from "../../../vdom/Componente";
+import style from "../../estilos/alerta.module.css";
+import modal from "../../estilos/modal.module.css";
 import { ctx } from "../listaenlazada";
-import { Fragment } from "../../../vdom/VDom";
 import { Controlador } from "../utils/modalClientes";
-import { Alerta } from "./alert";
-import modal from "../../estilos/modal.module.css"
-import style from "../../estilos/alerta.module.css"
 
 export class ModalClientes extends Componente {
 
     constructor(props) {
         super({ mostrar: false, disable: true, error: {}, ...props })
-        this.c = ctx.children;
         this.controlador = new Controlador(this);
     }
 
     abrir() {
-        this.c.contenedor.mostrarContenedor(() => {
+        ctx.contenedor.mostrarContenedor(() => {
             this.setState({ mostrar: true })
             this.nombre?.focus();
             this.setState({ animar: true })
@@ -23,7 +20,7 @@ export class ModalClientes extends Componente {
     }
 
     cerrar() {
-        this.c.contenedor.cerrarContenedor(() => {
+        ctx.contenedor.cerrarContenedor(() => {
             this.setState({ animar: false });
             setTimeout(() => {
                 this.setState({ mostrar: false });
@@ -151,8 +148,6 @@ export class ModalClientes extends Componente {
                     }
 
                 </section >
-
-                <Alerta contextoNombre="alerta" />
             </>
 
         )

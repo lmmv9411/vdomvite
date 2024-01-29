@@ -1,28 +1,35 @@
 import { Componente } from "../../vdom/Componente";
-import { CreateContext } from "../../vdom/Context";
+import { Contexto } from '../../vdom/Context';
+import ctl from "../controladores/listaenlazada";
+import { Alerta } from "./modales/alert";
 import { Contenedor } from "./modales/contenedor";
 import { ModalClientes } from "./modales/modalClientes";
-import ctl from "../controladores/listaenlazada";
 
-export const ctx = new CreateContext();
+export const ctx = new Contexto();
 
-export class ListaEnlazada extends Componente {
+export const ListaEnlazada = () => {
+
+    return (
+        <ctx.Provider>
+            <Contenedor ctx="contenedor">
+                <ModalClientes ctx="modalClientes" />
+            </Contenedor>
+            <Alerta ctx="alerta" />
+            <Lista ctx="lista" />
+        </ctx.Provider>
+    )
+}
+class Lista extends Componente {
 
     constructor() {
         super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false })
         this.size = 0;
-        this.c = ctx.children;
-        this.contenedor = (
-            <Contenedor contextoNombre="contenedor">
-                <ModalClientes contextoNombre="modalClientes" />
-            </Contenedor>
-        )
     }
 
     render(props) {
 
         return (
-            <ctx.Provider>
+            <>
                 <header className="p-3">
                     <h1>{`Cabeza: ${props.cabeza?.valor ?? ""}`}</h1>
                     <h1>{`Cola: ${props.cola?.valor ?? ""}`}</h1>
@@ -79,7 +86,7 @@ export class ListaEnlazada extends Componente {
                     <button
                         className="btn btn-primary"
                         type="button"
-                        onclick={() => this.c.modalClientes.abrir()}>
+                        onclick={() => ctx.modalClientes.abrir()}>
                         Mostrar
                     </button>
 
@@ -90,10 +97,7 @@ export class ListaEnlazada extends Componente {
                         {this.leerCabeza(props.cabeza)}
                     </ol>
                 </article>
-
-                {this.contenedor}
-
-            </ctx.Provider>
+            </>
         )
     }
 

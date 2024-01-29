@@ -1,5 +1,3 @@
-import { Fragment } from "../../../vdom/VDom";
-
 export const Tetas = () => (
     <>
         <header>

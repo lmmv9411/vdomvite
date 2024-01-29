@@ -1,6 +1,5 @@
 import { Componente } from "../../vdom/Componente";
 import { Link, Router } from "../../vdom/Router";
-import { Fragment } from "../../vdom/VDom";
 import menu from "../estilos/menu.module.css"
 
 export class Almacen extends Componente {

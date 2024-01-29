@@ -1,5 +1,4 @@
 import { Componente } from "../../vdom/Componente";
-import { Fragment } from "../../vdom/VDom";
 import { Link, Router } from "../../vdom/Router";
 import menu from "../estilos/menu.module.css"
 
