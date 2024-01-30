@@ -10,6 +10,10 @@ export const HomeInit = () => {
                     <p>Este es una prueba y correción de errores del anterior <em>VDOM</em></p>
                 </section>
             </article>
+            <>
+                <div>TestI</div>
+                <div>TestII</div>
+            </>
         </>
     )
 }

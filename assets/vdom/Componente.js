@@ -1,4 +1,4 @@
-import { reconciliation } from "./UpdateDOM.js";
+import { reconciliation } from "./UpdateDOMII.js";
 import { k } from "./VDom.js";
 
 export class Componente {

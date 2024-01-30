@@ -104,7 +104,7 @@ export class Proveedores extends Componente {
                     </button>
                 </form>
 
-                <Lista ctx="lista" />;
+                <Lista ctx="lista" />
 
             </ctxProveedor.Provider >
         )

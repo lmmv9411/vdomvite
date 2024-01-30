@@ -22,19 +22,11 @@ export class Router {
 
         children.forEach(ch => this.setEvent(ch))
 
-        window.addEventListener('popstate', (e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            const a = document.querySelector(`a[href="${window.location.pathname}"]`)
-            this.target = a;
-            this.navigateTo()
-        });
-
         this.props = {};
         this.children = children;
         this.type = k.Fragment;
 
-         if (document.readyState === "complete") {
+        if (document.readyState === "complete") {
 
             const config = { attributes: true, childList: true, subtree: true };
 
@@ -55,6 +47,15 @@ export class Router {
             observer.observe(document.body, config);
 
         } else {
+
+            window.addEventListener('popstate', (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                const a = document.querySelector(`a[href="${window.location.pathname}"]`)
+                this.target = a;
+                this.navigateTo()
+            });
+
             document.addEventListener("DOMContentLoaded", () => {
                 this.firstCheck();
                 this.navigateTo();
