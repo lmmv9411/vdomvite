@@ -7,9 +7,8 @@ export const reconciliation = (function () {
 
     const ADD = Symbol('add');
     const DELETE = Symbol('delte');
-    const REPLACE = Symbol('replace');
     let action = null;
-    let nodeAction = null;
+    let idxFragment = null;
     let parent;
 
     /**
@@ -43,29 +42,42 @@ export const reconciliation = (function () {
 
         if (vNewNode === undefined || vNewNode === null) {
 
+            action = { type: DELETE }
+
             if (vOldNode.type === k.Fragment) {
                 vOldNode.childrenFragment?.forEach($ch => $ch.remove());
-                nodeAction = [vOldNode, vOldNode.childrenFragment];
+                action.childrenFragment = vOldNode.childrenFragment;
             } else {
                 $parentNode.remove();
-                nodeAction = [vOldNode, $parentNode];
             }
-
-            action = DELETE;
 
         } else if (vOldNode === undefined || vOldNode === null) {
 
             const $ref = VDOM.render(vNewNode, parent);
-            $parentNode.appendChild($ref);
-            setReff(vNewNode, $ref);
 
-            action = ADD;
+            action = { type: ADD };
+
+            if (idxFragment) {
+
+                const $nextSibling = $parentNode.children[idxFragment];
+
+                if ($nextSibling) {
+                    $parentNode.insertBefore($ref, $nextSibling);
+                } else {
+                    $parentNode.appendChild($ref);
+                }
+
+            } else {
+                $parentNode.appendChild($ref);
+            }
 
             if (vNewNode.type === k.Fragment) {
-                nodeAction = [vNewNode, vNewNode.childrenFragment]
+                action.childrenFragment = vNewNode.childrenFragment;
             } else {
-                nodeAction = [vNewNode, $ref];
+                action.reff = $ref;
             }
+
+            setReff(vNewNode, $ref);
 
         } else if (compareNodes(vOldNode, vNewNode)) {
 
@@ -137,7 +149,7 @@ export const reconciliation = (function () {
 
                     setReff(childrenNew, $ref);
 
-                    vOldNode.children.splice(i, 0, childrenNew);
+                    vOldNode?.children.splice(i, 0, childrenNew);
                     size.childrenOldNode++;
 
                     if (childrenNew.type === k.Fragment) {
@@ -148,7 +160,7 @@ export const reconciliation = (function () {
 
                     if (childrenOld.type === k.Fragment) {
                         const $childrens = childrenOld.childrenFragment;
-                        $childrens.forEach($ch => $ch.remove() /* $parentNode.removeChild($ch) */)
+                        $childrens.forEach($ch => $ch.remove());
                     } else {
                         $refChildren.remove();
                     }
@@ -162,16 +174,14 @@ export const reconciliation = (function () {
 
             } else {
                 if (childrenOld?.type === k.Fragment) {
-                    let $children = vOldNode.children[i].childrenFragment ?? $parentNode.children;
-                    let max = Math.max(vOldNode.children[i].children.length, vNewNode.children[i].children.length);
+                    let $children = childrenOld.childrenFragment ?? $parentNode.children;
+                    //let $children = Array.from($parentNode.children).slice(i, childrenOld.children.length + i);
 
-                    if ($children instanceof HTMLCollection) {
-                        $children = Array.from($children).splice(i);
-                    }
+                    let max = Math.max(childrenOld.children.length, childrenNew.children.length);
 
                     childrenNew.childrenFragment = [];
 
-                    for (let index = 0; index <= max; index++) {
+                    for (let index = 0; index < max; index++) {
 
                         let $ch = $children[index];
 
@@ -183,37 +193,41 @@ export const reconciliation = (function () {
                             $ch = $parentNode;
                         }
 
-                        _updateDOM($ch, childrenOld?.children[index], childrenNew?.children[index])
+                        const chOld = childrenOld?.children[index];
+                        const chNew = childrenNew?.children[index];
+                        idxFragment = index + 1;
 
-                        switch (action) {
+                        _updateDOM($ch, chOld, chNew);
+
+                        if (!action) continue;
+
+                        switch (action.type) {
                             case ADD:
-                                if (Array.isArray(nodeAction[1])) {
-                                    childrenNew.childrenFragment.splice(index, 0, ...nodeAction[1])
+                                if (action.childrenFragment) {
+                                    childrenNew.childrenFragment.splice(index, 0, ...action.childrenFragment)
                                 } else {
-                                    childrenNew.childrenFragment.splice(index, 0, nodeAction[1])
+                                    childrenNew.childrenFragment.splice(index, 0, action.reff)
                                 }
                                 break;
                             case DELETE:
                                 childrenNew.childrenFragment.splice(index, 1);
                                 break;
-                            case REPLACE:
-                                debugger
-                                break;
                         }
 
                         action = null;
-                        nodeAction = null;
+                        idxFragment = null;
 
                     }
 
-                    indexParent = childrenNew.children.length - 1;
+                    indexParent = childrenNew.children.length;
 
                 } else {
                     _updateDOM($refChildren, childrenOld, childrenNew);
                 }
 
                 action = null;
-                nodeAction = null;
+                idxFragment = null;
+
             }
 
         }
@@ -222,7 +236,7 @@ export const reconciliation = (function () {
 
     const checkAndUpdate = function (vOldNode, vNewNode, childrenOld, childrenNew, $refChildren, i) {
 
-        if (childrenOld.type === k.Fragment) {
+        if (childrenOld && childrenOld.type === k.Fragment) {
 
             const $childrens = vOldNode.children[i].childrenFragment;
 
@@ -262,7 +276,15 @@ export const reconciliation = (function () {
         return false;
     }
 
-    const reemplazarNodos = function (childrenOld, childrenNew, vOldNode, vNewNode, $refChildren, i) {
+    const reemplazarNodos = function (
+        childrenOld,
+        childrenNew,
+        vOldNode,
+        vNewNode,
+        $refChildren,
+        i
+    ) {
+
         if (childrenOld.type === k.Fragment) {
 
             const $childrens = vOldNode.children[i].childrenFragment;
@@ -327,9 +349,6 @@ export const reconciliation = (function () {
             $n.replaceWith($ref);
             setReff(vNewNode, $ref);
         }
-
-        action = REPLACE;
-        nodeAction = [vNewNode, $ref];
 
         return $ref;
     }

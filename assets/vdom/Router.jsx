@@ -26,7 +26,7 @@ export class Router {
         this.children = children;
         this.type = k.Fragment;
 
-        if (document.readyState === "complete") {
+         if (document.readyState === "complete") {
 
             const config = { attributes: true, childList: true, subtree: true };
 

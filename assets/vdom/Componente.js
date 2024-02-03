@@ -1,4 +1,4 @@
-import { reconciliation } from "./UpdateDOMII.js";
+import { reconciliation } from "./UpdateDOM.js";
 import { k } from "./VDom.js";
 
 export class Componente {
@@ -13,7 +13,7 @@ export class Componente {
     }
 
     construir() {
-        
+
         this.instancias = null;
         k.nodo = this;
 
