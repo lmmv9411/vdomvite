@@ -25,8 +25,12 @@ function insertarElemento($parent, nodo) {
         $parent.appendChild($ref);
     }
 
-    if (!tmp && nodo.construido) {
+    if (!tmp && nodo.construido && nodo.type !== k.Fragment) {
         nodo.construido($ref);
+    }
+
+    if (nodo.type === k.Fragment) {
+        delete nodo.$fragment;
     }
 
 }
@@ -56,8 +60,12 @@ function reemplazarElemento($parent, nodo) {
         }
     }
 
-    if (!tmp && nodo.construido) {
+    if (!tmp && nodo.construido && nodo.type !== k.Fragment) {
         nodo.construido($ref);
+    }
+
+    if (nodo.type === k.Fragment) {
+        delete nodo.$fragment;
     }
 }
 

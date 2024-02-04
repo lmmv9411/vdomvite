@@ -104,15 +104,23 @@ export const reconciliation = (function () {
             vNewNode.childrenFragment = vOldNode.childrenFragment;
         }
 
-        for (let i = 0; i < size.maxChildren; i++) {
+        if (!isNaN(vOldNode.idx)) {
+            indexParent = vOldNode.idx;
+            $parentNode = vOldNode.$element;
+            vNewNode.idx = vOldNode.idx;
+            vNewNode.$element = vOldNode.$element;
+        }
 
-            if (indexParent) {
-                indexParent++;
-            }
+        for (let i = 0; i < size.maxChildren; i++) {
 
             childrenNew = vNewNode?.children ? vNewNode?.children[i] : undefined;
             childrenOld = vOldNode?.children ? vOldNode?.children[i] : undefined;
-            $refChildren = $parentNode.childNodes[indexParent ?? i] ?? $parentNode;
+
+            if (vOldNode.type === k.Fragment) {
+                $refChildren = $parentNode.childNodes[indexParent++];
+            } else {
+                $refChildren = $parentNode.childNodes[indexParent ?? i] ?? $parentNode;
+            }
 
             const conKeys = containsKeys(childrenOld, childrenNew);
 
@@ -135,7 +143,11 @@ export const reconciliation = (function () {
 
                 if (size.childrenNewNode > size.childrenOldNode) {
 
-                    const index = i + 1 === size.childrenNewNode ? i + 1 : i;
+                    let index = i + 1 === size.childrenNewNode ? i + 1 : i;
+
+                    if (vOldNode.type === k.Fragment) {
+                        index = indexParent - i + 1;
+                    }
 
                     const $ref = VDOM.render(childrenNew, parent);
 
@@ -159,6 +171,10 @@ export const reconciliation = (function () {
                 } else if (size.childrenNewNode < size.childrenOldNode) {
 
                     if (childrenOld.type === k.Fragment) {
+                        const size = indexParent - 1 + childrenOld.children.length;
+                        for (let index = indexParent - 1; index < size; index++) {
+                            $parentNode.children[index].remove();
+                        }
                         const $childrens = childrenOld.childrenFragment;
                         $childrens.forEach($ch => $ch.remove());
                     } else {
@@ -173,57 +189,61 @@ export const reconciliation = (function () {
                 }
 
             } else {
-                if (childrenOld?.type === k.Fragment) {
-                    let $children = childrenOld.childrenFragment ?? $parentNode.children;
-                    //let $children = Array.from($parentNode.children).slice(i, childrenOld.children.length + i);
+                //   if (childrenOld?.type === k.Fragment) {
+                /* let $children = childrenOld.childrenFragment ?? $parentNode.children;
+                 //let $children = Array.from($parentNode.children).slice(i, childrenOld.children.length + i);
 
-                    let max = Math.max(childrenOld.children.length, childrenNew.children.length);
+                 let max = Math.max(childrenOld.children.length, childrenNew.children.length);
 
-                    childrenNew.childrenFragment = [];
+                 childrenNew.childrenFragment = [];
 
-                    for (let index = 0; index < max; index++) {
+                 for (let index = 0; index < max; index++) {
 
-                        let $ch = $children[index];
+                     let $ch = $children[index];
 
-                        if ($ch && !childrenNew.childrenFragment[index]) {
-                            childrenNew.childrenFragment[index] = $ch
-                        }
+                     if ($ch && !childrenNew.childrenFragment[index]) {
+                         childrenNew.childrenFragment[index] = $ch
+                     }
 
-                        if (!$ch) {
-                            $ch = $parentNode;
-                        }
+                     if (!$ch) {
+                         $ch = $parentNode;
+                     }
 
-                        const chOld = childrenOld?.children[index];
-                        const chNew = childrenNew?.children[index];
-                        idxFragment = index + 1;
+                     const chOld = childrenOld?.children[index];
+                     const chNew = childrenNew?.children[index];
+                     idxFragment = index + 1;
 
-                        _updateDOM($ch, chOld, chNew);
+                     _updateDOM($ch, chOld, chNew);
 
-                        if (!action) continue;
+                     if (!action) continue;
 
-                        switch (action.type) {
-                            case ADD:
-                                if (action.childrenFragment) {
-                                    childrenNew.childrenFragment.splice(index, 0, ...action.childrenFragment)
-                                } else {
-                                    childrenNew.childrenFragment.splice(index, 0, action.reff)
-                                }
-                                break;
-                            case DELETE:
-                                childrenNew.childrenFragment.splice(index, 1);
-                                break;
-                        }
+                     switch (action.type) {
+                         case ADD:
+                             if (action.childrenFragment) {
+                                 childrenNew.childrenFragment.splice(index, 0, ...action.childrenFragment)
+                             } else {
+                                 childrenNew.childrenFragment.splice(index, 0, action.reff)
+                             }
+                             break;
+                         case DELETE:
+                             childrenNew.childrenFragment.splice(index, 1);
+                             break;
+                     }
 
-                        action = null;
-                        idxFragment = null;
+                     action = null;
+                     idxFragment = null;
 
-                    }
+                 }
 
-                    indexParent = childrenNew.children.length;
-
+                 indexParent = childrenNew.children.length;
+*/
+                //} else {
+                if (childrenOld.type === k.Fragment) {
+                    _updateDOM($parentNode, childrenOld, childrenNew);
                 } else {
                     _updateDOM($refChildren, childrenOld, childrenNew);
                 }
+                //   }
 
                 action = null;
                 idxFragment = null;

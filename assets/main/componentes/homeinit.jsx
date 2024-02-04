@@ -18,7 +18,7 @@ export class HomeInit extends Componente {
                     </section>
                     <form>
                         <input type="button" value="Cambiar"
-                            onClick={() => { debugger; this.setState(s => ({ show: !s.show })) }}
+                            onClick={() => this.setState(s => ({ show: !s.show }))}
                         />
                     </form>
                 </article>

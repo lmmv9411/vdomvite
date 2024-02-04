@@ -105,6 +105,8 @@ export const VDOM = (function () {
 
         if (node.type === k.Fragment) {
             node.childrenFragment = [...$element.children];
+            node.$element = $parent;
+            delete node.$fragment;
         }
 
         return $element;

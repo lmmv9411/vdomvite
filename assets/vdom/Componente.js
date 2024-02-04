@@ -76,15 +76,13 @@ export class Componente {
         const newNode = this.render(newState);
         k.nodo = null;
 
-        let $ref = this.type === k.Fragment ? this.$fragment : this.$element
-
-        if (reconciliation.updateDOM($ref, this, newNode)) {
+        if (reconciliation.updateDOM(this.$element, this, newNode)) {
             for (const k of Object.keys(newNode)) {
                 this[k] = newNode[k];
             }
 
             if (this.type === k.Fragment && this.childrenFragment) {
-                this.childrenFragment = [...this.$fragment.children];
+                this.childrenFragment = [...this.$element.children];
             }
         }
 
