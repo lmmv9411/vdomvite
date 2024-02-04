@@ -179,7 +179,7 @@ export const VDOM = (function () {
         }
 
         if (node === contexto) {
-            contexto = null
+            contexto = null;
             delete node.padre;
         }
 
