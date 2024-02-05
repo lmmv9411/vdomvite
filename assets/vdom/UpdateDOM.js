@@ -106,9 +106,6 @@ export const reconciliation = (function () {
 
                     if (childrenNew.type === k.Fragment) {
 
-                        childrenNew.parent = childrenOld.parent;
-                        childrenNew.idx = childrenOld.idx;
-
                         for (let index = 0; index < childrenNew.children.length; index++) {
                             const $ch = $parentNode.children[i + index];
                             replaceNode($ch, childrenNew.children[index]);
