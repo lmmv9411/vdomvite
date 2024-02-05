@@ -139,7 +139,9 @@ export const reconciliation = (function () {
                     let index = i + 1 === size.childrenNewNode ? i + 1 : i;
 
                     if (vOldNode.type === k.Fragment) {
-                        index = indexParent - i + 1;
+                        if (indexParent > 0) {
+                            index = indexParent - 1;
+                        }
                     }
 
                     const $ref = VDOM.render(childrenNew, parent);
