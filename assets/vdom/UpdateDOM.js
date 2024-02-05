@@ -36,7 +36,7 @@ export const reconciliation = (function () {
             return false;
         }
 
-        if (vNewNode === undefined || vNewNode === null) {
+        if ((vNewNode === undefined || vNewNode === null) && vOldNode.type !== k.Fragment) {
 
             $parentNode.remove();
 
@@ -46,7 +46,7 @@ export const reconciliation = (function () {
             $parentNode.appendChild($ref);
             setReff(vNewNode, $ref);
 
-        } else if (compareNodes(vOldNode, vNewNode)) {
+        } else if (compareNodes(vOldNode, vNewNode) && vOldNode.type !== k.Fragment) {
 
             replaceNode($parentNode, vNewNode);
 
@@ -70,8 +70,10 @@ export const reconciliation = (function () {
         if (!isNaN(vOldNode.idx)) {
             indexParent = vOldNode.idx ?? 0;
             $parentNode = vOldNode.$element ?? $parentNode;
-            vNewNode.idx = vOldNode.idx;
-            vNewNode.$element = vOldNode.$element ?? $parentNode;
+            if (vNewNode) {
+                vNewNode.idx = vOldNode.idx;
+                vNewNode.$element = vOldNode.$element ?? $parentNode;
+            }
         }
 
         if (!indexParent) {
@@ -101,7 +103,9 @@ export const reconciliation = (function () {
             if (conKeys || isDiffNode) {
 
                 if (childrenNew !== undefined && childrenOld !== undefined &&
-                    childrenNew?.key !== childrenOld?.key &&
+                    childrenNew.key !== undefined && childrenOld.key !== undefined &&
+                    childrenNew.key !== null && childrenOld.key !== null &&
+                    childrenNew.key !== childrenOld.key &&
                     vNewNode.children.length === vOldNode.children.length) {
 
                     if (childrenNew.type === k.Fragment) {
@@ -157,7 +161,6 @@ export const reconciliation = (function () {
                     if (childrenNew.type === k.Fragment) {
                         childrenNew.idx = i;
                         childrenNew.$element = $parentNode;
-                        debugger
                         indexParent += childrenNew.children.length + 1;
                     }
 
@@ -168,27 +171,25 @@ export const reconciliation = (function () {
 
                     if (childrenOld.type === k.Fragment) {
 
-                        let s = childrenOld.children.length + i;
-
                         let index = i;
 
                         if (indexParent > 0) {
                             index = indexParent - 1;
-                            s = childrenOld.children.length + indexParent - 1;
                         }
 
-                        for (; index < s; index++) {
-                            $parentNode.children[index].remove();
-                            if (childrenOld.children.length > 1) {
-                                s = $parentNode.children.length;
-                                index--;
-                            }
-                        }
+                        childrenOld.idx = index
+
+                        _updateDOM($parentNode, childrenOld, childrenNew);
                     } else {
                         $refChildren.remove();
                     }
 
                     vOldNode.children.splice(i--, 1);
+
+                    if (indexParent > 0) {
+                        indexParent--;
+                    }
+
                     size.maxChildren = vOldNode.children?.length ?? 0;
 
                 } else {
