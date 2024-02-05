@@ -154,6 +154,11 @@ export const reconciliation = (function () {
 
                     setReff(childrenNew, $ref);
 
+                    if (childrenNew.type === k.Fragment) {
+                        childrenNew.idx = i;
+                        childrenNew.$element = $parentNode;
+                    }
+
                     vOldNode?.children.splice(i, 0, childrenNew);
                     size.childrenOldNode++;
 
@@ -172,6 +177,10 @@ export const reconciliation = (function () {
 
                         for (; index < s; index++) {
                             $parentNode.children[index].remove();
+                            if (childrenOld.children.length > 1) {
+                                s = $parentNode.children.length;
+                                index--;
+                            }
                         }
                     } else {
                         $refChildren.remove();

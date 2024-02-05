@@ -108,13 +108,10 @@ export class ModalClientes extends Componente {
 
                             <button
                                 type="button"
-                                onclick={() => this.setState(s => (
-                                    { ocultarSeccion: !s.ocultarSeccion }
-                                ))}
+                                onclick={() => this.setState(s => ({ ocultarSeccion: !s.ocultarSeccion }))}
                                 className={`btn ${!props.ocultarSeccion ? "btn-danger" : "btn-warning"}`}
-                            >{!props.ocultarSeccion ?
-                                "Reemplazar Seccion I" :
-                                "Regresar Seccion I"}
+                            >
+                                {!props.ocultarSeccion ? "Ocultar Seccion I" : "Mostrar Seccion I"}
                             </button>
 
                         </div>
@@ -128,11 +125,13 @@ export class ModalClientes extends Componente {
                             </header>
                             <article>
                                 {
-                                    props.ocultarSeccion ?
+                                    props.ocultarSeccion
+                                        ?
                                         <article>
                                             <h4>Introducción:</h4>
                                             <p>En la actualidad, el estrés y la ansiedad son desafíos comunes que enfrentamos en nuestra vida cotidiana. Ante esta realidad, la meditación ha emergido como una herramienta poderosa para promover la salud mental y el bienestar emocional. En este artículo, exploraremos cómo la práctica regular de la meditación puede tener un impacto positivo en nuestra salud mental.</p>
-                                        </article> :
+                                        </article>
+                                        :
                                         <section>
                                             <h4>Beneficios de la Meditación</h4>
                                             <p>La meditación ofrece una serie de beneficios para la salud mental. En primer lugar, ayuda a reducir el estrés al permitirnos desconectar de las preocupaciones y las tensiones del día a día. A través de técnicas de respiración y enfoque mental, la meditación fomenta la relajación y la calma interior, lo que contribuye a disminuir los niveles de cortisol, la hormona del estrés.</p>
