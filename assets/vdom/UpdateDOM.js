@@ -5,10 +5,6 @@ import { k } from "./VDom";
 
 export const reconciliation = (function () {
 
-    const ADD = Symbol('add');
-    const DELETE = Symbol('delte');
-    let action = null;
-    let idxFragment = null;
     let parent;
 
     /**
@@ -42,41 +38,12 @@ export const reconciliation = (function () {
 
         if (vNewNode === undefined || vNewNode === null) {
 
-            action = { type: DELETE }
-
-            if (vOldNode.type === k.Fragment) {
-                vOldNode.childrenFragment?.forEach($ch => $ch.remove());
-                action.childrenFragment = vOldNode.childrenFragment;
-            } else {
-                $parentNode.remove();
-            }
+            $parentNode.remove();
 
         } else if (vOldNode === undefined || vOldNode === null) {
 
             const $ref = VDOM.render(vNewNode, parent);
-
-            action = { type: ADD };
-
-            if (idxFragment) {
-
-                const $nextSibling = $parentNode.children[idxFragment];
-
-                if ($nextSibling) {
-                    $parentNode.insertBefore($ref, $nextSibling);
-                } else {
-                    $parentNode.appendChild($ref);
-                }
-
-            } else {
-                $parentNode.appendChild($ref);
-            }
-
-            if (vNewNode.type === k.Fragment) {
-                action.childrenFragment = vNewNode.childrenFragment;
-            } else {
-                action.reff = $ref;
-            }
-
+            $parentNode.appendChild($ref);
             setReff(vNewNode, $ref);
 
         } else if (compareNodes(vOldNode, vNewNode)) {
@@ -100,15 +67,15 @@ export const reconciliation = (function () {
         let childrenOld, childrenNew;
         let indexParent = null;
 
-        if (vOldNode?.type === k.Fragment && vNewNode?.type === k.Fragment) {
-            vNewNode.childrenFragment = vOldNode.childrenFragment;
+        if (!isNaN(vOldNode.idx)) {
+            indexParent = vOldNode.idx ?? 0;
+            $parentNode = vOldNode.$element ?? $parentNode;
+            vNewNode.idx = vOldNode.idx;
+            vNewNode.$element = vOldNode.$element ?? $parentNode;
         }
 
-        if (!isNaN(vOldNode.idx)) {
-            indexParent = vOldNode.idx;
-            $parentNode = vOldNode.$element;
-            vNewNode.idx = vOldNode.idx;
-            vNewNode.$element = vOldNode.$element;
+        if (!indexParent) {
+            indexParent = 0;
         }
 
         for (let i = 0; i < size.maxChildren; i++) {
@@ -119,7 +86,12 @@ export const reconciliation = (function () {
             if (vOldNode.type === k.Fragment) {
                 $refChildren = $parentNode.childNodes[indexParent++];
             } else {
-                $refChildren = $parentNode.childNodes[indexParent ?? i] ?? $parentNode;
+                $refChildren = $parentNode.childNodes[i] ?? $parentNode;
+            }
+
+            if (childrenNew?.type === k.Fragment && childrenOld?.type === k.Fragment) {
+                childrenNew.idx = childrenOld.idx;
+                childrenNew.$element = childrenOld.$element ?? $parentNode;
             }
 
             const conKeys = containsKeys(childrenOld, childrenNew);
@@ -129,15 +101,36 @@ export const reconciliation = (function () {
             if (conKeys || isDiffNode) {
 
                 if (childrenNew !== undefined && childrenOld !== undefined &&
-                    childrenNew?.key !== childrenOld?.key) {
-                    reemplazarNodos(childrenOld, childrenNew, vOldNode, vNewNode, $refChildren, i);
+                    childrenNew?.key !== childrenOld?.key &&
+                    vNewNode.children.length === vOldNode.children.length) {
+
+                    if (childrenNew.type === k.Fragment) {
+
+                        childrenNew.parent = childrenOld.parent;
+                        childrenNew.idx = childrenOld.idx;
+
+                        for (let index = 0; index < childrenNew.children.length; index++) {
+                            const $ch = $parentNode.children[i + index];
+                            replaceNode($ch, childrenNew.children[index]);
+                        }
+
+                    } else {
+                        reemplazarNodos(childrenOld, childrenNew, vOldNode, vNewNode, $refChildren, i);
+                    }
+
                     continue
                 }
 
                 if (childrenNew !== undefined && childrenOld !== undefined &&
                     childrenNew.key && childrenOld.key &&
                     childrenNew?.key === childrenOld?.key) {
-                    checkAndUpdate(vOldNode, vNewNode, childrenOld, childrenNew, $refChildren, i);
+
+                    if (childrenNew.type === k.Fragment) {
+                        childrenOld.idx = i;
+                        compareChildren($refChildren, childrenOld, childrenNew);
+                    } else {
+                        checkAndUpdate(vOldNode, vNewNode, childrenOld, childrenNew, $refChildren, i);
+                    }
                     continue
                 }
 
@@ -164,19 +157,22 @@ export const reconciliation = (function () {
                     vOldNode?.children.splice(i, 0, childrenNew);
                     size.childrenOldNode++;
 
-                    if (childrenNew.type === k.Fragment) {
-                        indexParent = childrenNew.childrenFragment.length - 1;
-                    }
-
                 } else if (size.childrenNewNode < size.childrenOldNode) {
 
                     if (childrenOld.type === k.Fragment) {
-                        const size = indexParent - 1 + childrenOld.children.length;
-                        for (let index = indexParent - 1; index < size; index++) {
+
+                        let s = childrenOld.children.length + i;
+
+                        let index = i;
+
+                        if (indexParent > 0) {
+                            index = indexParent - 1;
+                            s = childrenOld.children.length + indexParent - 1;
+                        }
+
+                        for (; index < s; index++) {
                             $parentNode.children[index].remove();
                         }
-                        const $childrens = childrenOld.childrenFragment;
-                        $childrens.forEach($ch => $ch.remove());
                     } else {
                         $refChildren.remove();
                     }
@@ -189,64 +185,14 @@ export const reconciliation = (function () {
                 }
 
             } else {
-                //   if (childrenOld?.type === k.Fragment) {
-                /* let $children = childrenOld.childrenFragment ?? $parentNode.children;
-                 //let $children = Array.from($parentNode.children).slice(i, childrenOld.children.length + i);
 
-                 let max = Math.max(childrenOld.children.length, childrenNew.children.length);
 
-                 childrenNew.childrenFragment = [];
-
-                 for (let index = 0; index < max; index++) {
-
-                     let $ch = $children[index];
-
-                     if ($ch && !childrenNew.childrenFragment[index]) {
-                         childrenNew.childrenFragment[index] = $ch
-                     }
-
-                     if (!$ch) {
-                         $ch = $parentNode;
-                     }
-
-                     const chOld = childrenOld?.children[index];
-                     const chNew = childrenNew?.children[index];
-                     idxFragment = index + 1;
-
-                     _updateDOM($ch, chOld, chNew);
-
-                     if (!action) continue;
-
-                     switch (action.type) {
-                         case ADD:
-                             if (action.childrenFragment) {
-                                 childrenNew.childrenFragment.splice(index, 0, ...action.childrenFragment)
-                             } else {
-                                 childrenNew.childrenFragment.splice(index, 0, action.reff)
-                             }
-                             break;
-                         case DELETE:
-                             childrenNew.childrenFragment.splice(index, 1);
-                             break;
-                     }
-
-                     action = null;
-                     idxFragment = null;
-
-                 }
-
-                 indexParent = childrenNew.children.length;
-*/
-                //} else {
                 if (childrenOld.type === k.Fragment) {
                     _updateDOM($parentNode, childrenOld, childrenNew);
                 } else {
                     _updateDOM($refChildren, childrenOld, childrenNew);
                 }
-                //   }
 
-                action = null;
-                idxFragment = null;
 
             }
 
@@ -256,23 +202,23 @@ export const reconciliation = (function () {
 
     const checkAndUpdate = function (vOldNode, vNewNode, childrenOld, childrenNew, $refChildren, i) {
 
-        if (childrenOld && childrenOld.type === k.Fragment) {
-
-            const $childrens = vOldNode.children[i].childrenFragment;
-
-            vNewNode.children[i].childrenFragment = vOldNode.children[i].childrenFragment;
-
-            $childrens.forEach(($ch, idx) => {
-                if (!compararNodos(childrenOld.children[idx], childrenNew.children[idx])) {
-                    _updateDOM($ch, childrenOld.children[idx], childrenNew.children[idx]);
-                }
-            })
-
-        } else {
-            if (!compararNodos(childrenOld, childrenNew)) {
-                _updateDOM($refChildren, childrenOld, childrenNew);
-            }
+        /*   if (childrenOld && childrenOld.type === k.Fragment) {
+  
+              const $childrens = vOldNode.children[i].childrenFragment;
+  
+              vNewNode.children[i].childrenFragment = vOldNode.children[i].childrenFragment;
+  
+              $childrens.forEach(($ch, idx) => {
+                  if (!compararNodos(childrenOld.children[idx], childrenNew.children[idx])) {
+                      _updateDOM($ch, childrenOld.children[idx], childrenNew.children[idx]);
+                  }
+              })
+  
+          } else { */
+        if (!compararNodos(childrenOld, childrenNew)) {
+            _updateDOM($refChildren, childrenOld, childrenNew);
         }
+        //}
 
     }
 

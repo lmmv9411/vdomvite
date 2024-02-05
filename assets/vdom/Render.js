@@ -104,7 +104,7 @@ export const VDOM = (function () {
         recursividadHijos(node, $element);
 
         if (node.type === k.Fragment) {
-            node.childrenFragment = [...$element.children];
+            // node.childrenFragment = [...$element.children];
             node.$element = $parent;
             delete node.$fragment;
         }
@@ -151,11 +151,14 @@ export const VDOM = (function () {
 
                 if (ch.type === k.Fragment) {
                     ch.idx = $element.children.length - ch.children.length;
+                    if (node.type === k.Fragment) {
+                        node.$element = $parent;
+                    }
                 }
 
                 if (ch instanceof Componente) {
 
-                    if (ch.is !== k.Portal) {
+                    if (ch.is !== k.Portal && ch.type !== k.Fragment) {
                         ch.construido($children);
                     }
 

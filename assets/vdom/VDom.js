@@ -15,6 +15,9 @@ function insertarElemento($parent, nodo) {
 
     if (!tmp) {
         $ref = VDOM.render(nodo, null, $parent);
+        if (nodo.type === k.Fragment) {
+            nodo.childrenFragment = [...$ref.children]
+        }
     } else {
         $ref = tmp;
     }
@@ -25,12 +28,12 @@ function insertarElemento($parent, nodo) {
         $parent.appendChild($ref);
     }
 
-    if (!tmp && nodo.construido && nodo.type !== k.Fragment) {
-        nodo.construido($ref);
-    }
-
-    if (nodo.type === k.Fragment) {
-        delete nodo.$fragment;
+    if (!tmp && nodo.construido) {
+        if (nodo.type !== k.Fragment) {
+            nodo.construido($ref);
+        } else {
+            nodo.montado();
+        }
     }
 
 }
@@ -42,6 +45,9 @@ function reemplazarElemento($parent, nodo) {
 
     if (!tmp) {
         $ref = VDOM.render(nodo, null, $parent);
+        if (nodo.type === k.Fragment) {
+            nodo.childrenFragment = [...$ref.children]
+        }
     } else {
         $ref = tmp;
     }
@@ -60,13 +66,14 @@ function reemplazarElemento($parent, nodo) {
         }
     }
 
-    if (!tmp && nodo.construido && nodo.type !== k.Fragment) {
-        nodo.construido($ref);
+    if (!tmp && nodo.construido) {
+        if (nodo.type !== k.Fragment) {
+            nodo.construido($ref);
+        } else {
+            nodo.montado();
+        }
     }
 
-    if (nodo.type === k.Fragment) {
-        delete nodo.$fragment;
-    }
 }
 
 export const k = (function () {
