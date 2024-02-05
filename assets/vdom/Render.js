@@ -47,7 +47,6 @@ export const VDOM = (function () {
             $element = document.createDocumentFragment();
             node.$fragment = $parent;
             if (parent !== node) {
-                node.parent = parent;
                 node.idx = 0;
             }
         } else if (node.type === k.Portal) {
