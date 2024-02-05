@@ -115,7 +115,8 @@ export const reconciliation = (function () {
                         }
 
                     } else {
-                        reemplazarNodos(childrenOld, childrenNew, vOldNode, vNewNode, $refChildren, i);
+                        replaceNode($refChildren, childrenNew);
+                        vOldNode.children[i] = childrenNew;
                     }
 
                     continue
@@ -129,7 +130,7 @@ export const reconciliation = (function () {
                         childrenOld.idx = i;
                         compareChildren($refChildren, childrenOld, childrenNew);
                     } else {
-                        checkAndUpdate(vOldNode, vNewNode, childrenOld, childrenNew, $refChildren, i);
+                        checkAndUpdate(childrenOld, childrenNew, $refChildren);
                     }
                     continue
                 }
@@ -192,11 +193,10 @@ export const reconciliation = (function () {
                     size.maxChildren = vOldNode.children?.length ?? 0;
 
                 } else {
-                    checkAndUpdate(vOldNode, vNewNode, childrenOld, childrenNew, $refChildren, i);
+                    checkAndUpdate(childrenOld, childrenNew, $refChildren);
                 }
 
             } else {
-
 
                 if (childrenOld.type === k.Fragment) {
                     _updateDOM($parentNode, childrenOld, childrenNew);
@@ -204,32 +204,17 @@ export const reconciliation = (function () {
                     _updateDOM($refChildren, childrenOld, childrenNew);
                 }
 
-
             }
 
         }
 
     }
 
-    const checkAndUpdate = function (vOldNode, vNewNode, childrenOld, childrenNew, $refChildren, i) {
+    const checkAndUpdate = function (childrenOld, childrenNew, $refChildren) {
 
-        /*   if (childrenOld && childrenOld.type === k.Fragment) {
-  
-              const $childrens = vOldNode.children[i].childrenFragment;
-  
-              vNewNode.children[i].childrenFragment = vOldNode.children[i].childrenFragment;
-  
-              $childrens.forEach(($ch, idx) => {
-                  if (!compararNodos(childrenOld.children[idx], childrenNew.children[idx])) {
-                      _updateDOM($ch, childrenOld.children[idx], childrenNew.children[idx]);
-                  }
-              })
-  
-          } else { */
         if (!compararNodos(childrenOld, childrenNew)) {
             _updateDOM($refChildren, childrenOld, childrenNew);
         }
-        //}
 
     }
 
@@ -251,34 +236,6 @@ export const reconciliation = (function () {
         }
 
         return false;
-    }
-
-    const reemplazarNodos = function (
-        childrenOld,
-        childrenNew,
-        vOldNode,
-        vNewNode,
-        $refChildren,
-        i
-    ) {
-
-        if (childrenOld.type === k.Fragment) {
-
-            const $childrens = vOldNode.children[i].childrenFragment;
-
-            vNewNode.children[i].childrenFragment = vOldNode.children[i].childrenFragment;
-
-            $childrens.forEach(($ch, idx) => {
-                if (!compararNodos(childrenOld.children[idx], childrenNew.children[idx])) {
-                    const $ref = replaceNode($ch, childrenNew.children[idx])
-                    vNewNode.children[i].childrenFragment[idx] = $ref;
-                }
-            })
-
-        } else {
-            replaceNode($refChildren, childrenNew);
-            vOldNode.children[i] = childrenNew;
-        }
     }
 
     const getSizeChildren = function (size) {
