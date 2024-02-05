@@ -65,6 +65,9 @@ export class App extends Componente {
                                     titulo="Lista Enlazada"
                                 >Lista Enlazada</Link>
                             </li>
+                            <li>
+                                <Link className={menu.link} to="Test">Test</Link>
+                            </li>
                         </ul>
                     </nav>
 

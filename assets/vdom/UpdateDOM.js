@@ -86,7 +86,7 @@ export const reconciliation = (function () {
             if (vOldNode.type === k.Fragment) {
                 $refChildren = $parentNode.childNodes[indexParent++];
             } else {
-                $refChildren = $parentNode.childNodes[i] ?? $parentNode;
+                $refChildren = $parentNode.childNodes[indexParent > 0 ? indexParent : i] ?? $parentNode;
             }
 
             if (childrenNew?.type === k.Fragment && childrenOld?.type === k.Fragment) {
@@ -157,6 +157,8 @@ export const reconciliation = (function () {
                     if (childrenNew.type === k.Fragment) {
                         childrenNew.idx = i;
                         childrenNew.$element = $parentNode;
+                        debugger
+                        indexParent += childrenNew.children.length + 1;
                     }
 
                     vOldNode?.children.splice(i, 0, childrenNew);
