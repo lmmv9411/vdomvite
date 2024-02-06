@@ -37,14 +37,14 @@ export class HomeInit extends Componente {
                         &&
                         <>
                             <article style={{ backgroundColor: "darkcyan", display: "inline" }}>Primero Que Luis Yo "article"</article>
-                            <div>
+                            <>
                                 <div>Miracle</div>
                                 <div>Oráculo</div>
                                 <>
                                     <p>Mi amor</p>
                                     <p>Lorena</p>
                                 </>
-                            </div>
+                            </>
                         </>
                     }
                     <div>Luis despues de article III Fragment</div>
