@@ -22,7 +22,7 @@ export class Test extends Componente {
             <>
                 {
                     props.showII &&
-                    <div style={{ border: "1px solid white", padding: "1rem", borderRadius: "5px" }}>
+                    <>
                         <div>Div Variable I</div>
                         <div>Div Variable II</div>
                         <Boton
@@ -30,7 +30,7 @@ export class Test extends Componente {
                             bg="bg-success"
                             onClick={() => this.handleBtnAgregar()}
                         />
-                    </div>
+                    </>
                 }
 
                 <article className="d-flex gap-1" style={{ border: "1px solid white", padding: "1rem", borderRadius: "5px" }}>

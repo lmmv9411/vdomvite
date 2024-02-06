@@ -159,9 +159,14 @@ export const reconciliation = (function () {
                     setReff(childrenNew, $ref);
 
                     if (childrenNew.type === k.Fragment) {
-                        childrenNew.idx = i;
                         childrenNew.$element = $parentNode;
-                        indexParent += childrenNew.children.length + 1;
+                        childrenNew.idx = i;
+
+                        if (indexParent - 1 === 0) {
+                            indexParent = childrenNew.children.length;
+                        } else {
+                            indexParent += childrenNew.children.length + 1;
+                        }
                     }
 
                     vOldNode?.children.splice(i, 0, childrenNew);
@@ -170,16 +175,7 @@ export const reconciliation = (function () {
                 } else if (size.childrenNewNode < size.childrenOldNode) {
 
                     if (childrenOld.type === k.Fragment) {
-
-                        let index = i;
-
-                        if (indexParent > 0) {
-                            index = indexParent - 1;
-                        }
-
-                        childrenOld.idx = index
-
-                        _updateDOM($parentNode, childrenOld, childrenNew);
+                        deleteFragments($parentNode, childrenOld, childrenNew, i, indexParent);
                     } else {
                         $refChildren.remove();
                     }
@@ -200,12 +196,43 @@ export const reconciliation = (function () {
 
                 if (childrenOld.type === k.Fragment) {
                     _updateDOM($parentNode, childrenOld, childrenNew);
+                    indexParent += childrenNew.children.length - 1;
                 } else {
                     _updateDOM($refChildren, childrenOld, childrenNew);
                 }
 
             }
 
+        }
+
+    }
+
+    const deleteFragments = function ($parentNode, childrenOld, childrenNew, index, indexParent) {
+        debugger
+        let idx = index;
+
+        if (indexParent > 0) {
+            idx = indexParent - 1;
+        }
+
+        childrenOld.idx = idx
+
+        let size = childrenOld.children.length;
+
+        size += indexParent + idx;
+
+        for (; idx < size; idx++) {
+            const ch = childrenOld.children.shift();
+            if (ch.type === k.Fragment) {
+                deleteFragments($parentNode, ch, null, idx, indexParent);
+                continue;
+            }
+            const $ch = $parentNode.children[idx--];
+            $ch.remove();
+            size = childrenOld.children.length + indexParent + index;
+            if (childrenOld.children.length === 0) {
+                break;
+            }
         }
 
     }
