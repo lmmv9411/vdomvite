@@ -175,7 +175,7 @@ export const reconciliation = (function () {
                 } else if (size.childrenNewNode < size.childrenOldNode) {
 
                     if (childrenOld.type === k.Fragment) {
-                        deleteFragments($parentNode, childrenOld, childrenNew, i, indexParent);
+                        deleteFragments($parentNode, childrenOld, i, indexParent);
                     } else {
                         $refChildren.remove();
                     }
@@ -207,8 +207,8 @@ export const reconciliation = (function () {
 
     }
 
-    const deleteFragments = function ($parentNode, childrenOld, childrenNew, index, indexParent) {
-        debugger
+    const deleteFragments = function ($parentNode, childrenOld, index, indexParent) {
+
         let idx = index;
 
         if (indexParent > 0) {
@@ -224,7 +224,7 @@ export const reconciliation = (function () {
         for (; idx < size; idx++) {
             const ch = childrenOld.children.shift();
             if (ch.type === k.Fragment) {
-                deleteFragments($parentNode, ch, null, idx, indexParent);
+                deleteFragments($parentNode, ch, idx, indexParent);
                 continue;
             }
             const $ch = $parentNode.children[idx--];
