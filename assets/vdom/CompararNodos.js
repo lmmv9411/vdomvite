@@ -1,3 +1,5 @@
+import { k } from "./VDom";
+
 function _compararNodos(oldNode, newNode) {
 
     if ((oldNode === undefined && newNode === undefined) ||
@@ -13,6 +15,12 @@ function _compararNodos(oldNode, newNode) {
     if (oldNode.type !== newNode.type) {
         return false;
     }
+
+    if (oldNode.type === k.Fragment) {
+        newNode.idx = oldNode.idx;
+        newNode.$element = oldNode.$element;
+    }
+
     if (typeof newNode === "number" ||
         typeof newNode === "string") {
         return oldNode === newNode;

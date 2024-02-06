@@ -4,6 +4,7 @@ import ctl from "../controladores/listaenlazada";
 import { Alerta } from "./modales/alert";
 import { Contenedor } from "./modales/contenedor";
 import { ModalClientes } from "./modales/modalClientes";
+import { Boton } from "./utils/boton"
 
 export const ctx = new Contexto();
 
@@ -22,7 +23,14 @@ export const ListaEnlazada = () => {
 class Lista extends Componente {
 
     constructor() {
-        super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false, size: 0 })
+        super({
+            cabeza: null,
+            valor: "",
+            cola: null,
+            pos: 0,
+            mostrar: false,
+            size: 0
+        })
     }
 
     render(props) {
@@ -49,19 +57,9 @@ class Lista extends Componente {
                         onchange={e => this.setState({ valor: e.target.value })}
                     />
 
-                    <button
-                        className="btn btn-primary"
-                        type="button"
-                        onclick={ctl.agregarCola.bind(this)}>
-                        Agregar Cola
-                    </button>
+                    <Boton name="Agg Cola" onClick={ctl.agregarCola.bind(this)} />
 
-                    <button
-                        className="btn btn-primary"
-                        type="button"
-                        onclick={ctl.agregarCabeza.bind(this)}>
-                        Agregar Cabeza
-                    </button>
+                    <Boton name="Agg Cabeza" onClick={ctl.agregarCabeza.bind(this)} />
 
                     <input
                         name="valorEn"
@@ -75,19 +73,9 @@ class Lista extends Componente {
                         onchange={(e) => this.setState({ pos: Number(e.target.value) })}
                     />
 
-                    <button
-                        className="btn btn-primary"
-                        type="button"
-                        onclick={ctl.agregarEn.bind(this)}>
-                        Agregar en
-                    </button>
+                    <Boton name="Agg en" onClick={ctl.agregarEn.bind(this)} />
 
-                    <button
-                        className="btn btn-primary"
-                        type="button"
-                        onclick={() => ctx.modalClientes.abrir()}>
-                        Mostrar
-                    </button>
+                    <Boton name="Mostrar" onClick={() => ctx.modalClientes.abrir()} />
 
                 </form>
 

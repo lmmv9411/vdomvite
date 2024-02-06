@@ -160,13 +160,14 @@ export const reconciliation = (function () {
 
                     if (childrenNew.type === k.Fragment) {
                         childrenNew.$element = $parentNode;
-                        childrenNew.idx = i;
 
                         if (indexParent - 1 === 0) {
                             indexParent = childrenNew.children.length;
                         } else {
                             indexParent += childrenNew.children.length + 1;
                         }
+                        
+                        childrenNew.idx = i;
                     }
 
                     vOldNode?.children.splice(i, 0, childrenNew);
@@ -194,11 +195,16 @@ export const reconciliation = (function () {
 
             } else {
 
+                if (!compararNodos(childrenOld, childrenNew)) {
+                    if (childrenOld.type === k.Fragment) {
+                        _updateDOM($parentNode, childrenOld, childrenNew);
+                    } else {
+                        _updateDOM($refChildren, childrenOld, childrenNew);
+                    }
+                }
+
                 if (childrenOld.type === k.Fragment) {
-                    _updateDOM($parentNode, childrenOld, childrenNew);
                     indexParent += childrenNew.children.length - 1;
-                } else {
-                    _updateDOM($refChildren, childrenOld, childrenNew);
                 }
 
             }

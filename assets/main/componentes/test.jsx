@@ -5,13 +5,13 @@ import { Tabla } from "./tabla";
 export class Test extends Componente {
     constructor(props) {
         super({
-            btnShowStyles: "bg-primary",
+            btnShowStyles: "btn-primary",
             showII: false,
             showIII: false,
             showIV: false,
             txt: '',
             btnShow: 'Show',
-            btnShowIIStyles: 'bg-success',
+            btnShowIIStyles: 'btn-success',
             nameShowII: 'Show II',
             filas: [],
             show: false, ...props
