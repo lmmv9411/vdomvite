@@ -13,6 +13,7 @@ export class Test extends Componente {
             btnShow: 'Show',
             btnShowIIStyles: 'btn-success',
             nameShowII: 'Show II',
+            nameShowIII: 'Show III',
             filas: [],
             show: false, ...props
         })
@@ -95,9 +96,14 @@ export class Test extends Componente {
                             />
 
                             <Boton
-                                name="ShowIII"
+                                name={props.nameShowIII}
                                 bg="bg-primary"
-                                onClick={() => this.setState(s => ({ showIII: !s.showIII }))}
+                                onClick={() => this.setState(s => {
+                                    return {
+                                        showIII: !s.showIII,
+                                        nameShowIII: !s.showIII ? 'Hidden III' : 'Show III'
+                                    }
+                                })}
                             />
 
                             <Tabla titulos={["Id", "Name", "Acciones"]} filas={props.filas} />
@@ -120,7 +126,7 @@ export class Test extends Componente {
 
                     <div style={{ border: "1px solid white", padding: "1rem", borderRadius: "5px" }}>
                         <p>Marcos Fijo después de 'ShowIII' 'Somos Una Nación'</p>
-                        <p>DAvid Fijo</p>
+                        <p>David Fijo</p>
                     </div>
 
                 </article>

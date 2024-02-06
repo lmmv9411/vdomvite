@@ -76,7 +76,7 @@ export const reconciliation = (function () {
             }
         }
 
-        if (!indexParent) {
+        if (indexParent === undefined || indexParent === null) {
             indexParent = 0;
         }
 
@@ -161,10 +161,13 @@ export const reconciliation = (function () {
                     if (childrenNew.type === k.Fragment) {
                         childrenNew.$element = $parentNode;
 
-                        if (indexParent - 1 === 0) {
-                            indexParent = childrenNew.children.length;
+                        if (indexParent - 1 === 0 || indexParent === 0) {
+                            indexParent = childrenNew.countChildren;
+                            if (i > 0) {
+                                indexParent++
+                            }
                         } else {
-                            indexParent += childrenNew.children.length + 1;
+                            indexParent += childrenNew.countChildren - 1;
                         }
 
                         childrenNew.idx = i;

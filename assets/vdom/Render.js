@@ -46,7 +46,7 @@ export const VDOM = (function () {
         if (node.type === k.Fragment) {
             $element = document.createDocumentFragment();
             node.$fragment = $parent;
-            if (parent !== node) {
+            if (parent === node) {
                 node.idx = 0;
             }
         } else if (node.type === k.Portal) {
@@ -122,6 +122,9 @@ export const VDOM = (function () {
 
         let tmpParent, $tmpParent = $parent;
 
+
+        node.countChildren = 0;
+
         if (node instanceof Componente) {
             tmpParent = parent;
             parent = node;
@@ -153,6 +156,9 @@ export const VDOM = (function () {
                     if (node.type === k.Fragment) {
                         node.$element = $parent;
                     }
+                    node.countChildren += ch.children.length;
+                } else {
+                    node.countChildren++;
                 }
 
                 if (ch instanceof Componente) {
