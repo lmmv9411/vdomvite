@@ -166,7 +166,7 @@ export const reconciliation = (function () {
                         } else {
                             indexParent += childrenNew.children.length + 1;
                         }
-                        
+
                         childrenNew.idx = i;
                     }
 
