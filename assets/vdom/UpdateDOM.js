@@ -210,6 +210,7 @@ export const reconciliation = (function () {
     const deleteFragments = function ($parentNode, childrenOld, index, indexParent) {
 
         let idx = index;
+        let deleted = 0;
 
         if (indexParent > 0) {
             idx = indexParent - 1;
@@ -222,18 +223,29 @@ export const reconciliation = (function () {
         size += indexParent + idx;
 
         for (; idx < size; idx++) {
+
             const ch = childrenOld.children.shift();
+
             if (ch.type === k.Fragment) {
-                deleteFragments($parentNode, ch, idx, indexParent);
+                const d = deleteFragments($parentNode, ch, idx, indexParent);
+                deleted += d;
+                idx -= d;
+                size = childrenOld.children.length + indexParent + index;
+                if (childrenOld.children.length === 0) {
+                    break;
+                }
+
                 continue;
             }
-            const $ch = $parentNode.children[idx--];
-            $ch.remove();
+            $parentNode.children[idx--].remove();
+            deleted++;
             size = childrenOld.children.length + indexParent + index;
             if (childrenOld.children.length === 0) {
                 break;
             }
         }
+
+        return deleted;
 
     }
 

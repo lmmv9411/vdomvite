@@ -8,6 +8,7 @@ export class Test extends Componente {
             btnShowStyles: "bg-primary",
             showII: false,
             showIII: false,
+            showIV: false,
             txt: '',
             btnShow: 'Show',
             btnShowIIStyles: 'bg-success',
@@ -23,12 +24,19 @@ export class Test extends Componente {
                 {
                     props.showII &&
                     <>
+                        {
+                            props.showIV
+                            &&
+                            <>
+                                <h1>Hola 3000</h1>
+                            </>
+                        }
                         <div>Div Variable I</div>
                         <div>Div Variable II</div>
                         <Boton
                             name="Saludar"
                             bg="bg-success"
-                            onClick={() => this.handleBtnAgregar()}
+                            onClick={() => this.setState(s => ({ showIV: !s.showIV }))}
                         />
                     </>
                 }
@@ -71,6 +79,7 @@ export class Test extends Componente {
                             <h3>H3 variable</h3>
 
                             <input
+                                placeholder="Variable"
                                 autoComplete="off"
                                 $ref='txt'
                                 name="txt"
