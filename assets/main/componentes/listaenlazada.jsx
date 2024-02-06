@@ -22,8 +22,7 @@ export const ListaEnlazada = () => {
 class Lista extends Componente {
 
     constructor() {
-        super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false })
-        this.size = 0;
+        super({ cabeza: null, valor: "", cola: null, pos: 0, mostrar: false, size: 0 })
     }
 
     render(props) {
@@ -33,7 +32,7 @@ class Lista extends Componente {
                 <header className="p-3">
                     <h1>{`Cabeza: ${props.cabeza?.valor ?? ""}`}</h1>
                     <h1>{`Cola: ${props.cola?.valor ?? ""}`}</h1>
-                    <h2>{`Tamaño: ${this.size ?? 0}`}</h2>
+                    <h2>{`Tamaño: ${props.size ?? 0}`}</h2>
                 </header>
 
                 <form id="frmLista" className="d-flex gap-3 align-items-end flex-wrap">
@@ -115,7 +114,7 @@ class Lista extends Componente {
                     <button
                         className="btn btn-danger"
                         type="button"
-                        onclick={() => ctl.eliminar.bind(this, nodo.valor)}
+                        onclick={ctl.eliminar.bind(this, nodo.valor)}
                     >Eliminar
                     </button>
                 </li>;

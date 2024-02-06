@@ -15,7 +15,6 @@ export default (() => {
 
             while (tmp) {
                 if (tmp.valor === nodo) {
-                    this.size--;
 
                     //cola
                     if (tmp.siguiente === undefined && tmp.anterior !== undefined) {
@@ -28,7 +27,7 @@ export default (() => {
                     } else {
                         tmp.anterior.siguiente = tmp.siguiente;
                         tmp.siguiente.anterior = tmp.anterior;
-                        this.setState({})
+                        this.setState({ size: this.state.size - 1 })
                     }
 
                     break;
@@ -40,7 +39,7 @@ export default (() => {
 
         agregarCola: function () {
 
-            this.size++;
+            this.setState({ size: this.state.size + 1 })
 
             let { cabeza, cola, valor } = this.state;
 
@@ -60,6 +59,7 @@ export default (() => {
 
         agregarEn: function () {
 
+            this.setState({ size: this.state.size + 1 })
             let tmp = this.state.cabeza;
             let idx = 0;
             const pos = this.state.pos === 0 ? 0 : this.state.pos - 1;
@@ -72,21 +72,21 @@ export default (() => {
                         const c = this.state.cola;
                         c.siguiente = tmpNodo
                         tmpNodo.anterior = c;
-                        this.size++;
+
                         this.setState({ cola: tmpNodo })
                     } else if (tmp.anterior === undefined && tmp.siguiente !== undefined) {
                         //cabeza
                         const c = this.state.cabeza;
                         c.anterior = tmpNodo
                         tmpNodo.siguiente = c;
-                        this.size++;
+
                         this.setState({ cabeza: tmpNodo })
                     } else {
                         tmpNodo.siguiente = tmp;
                         tmpNodo.anterior = tmp.anterior;
                         tmp.anterior.siguiente = tmpNodo
                         tmp.anterior = tmpNodo;
-                        this.size++;
+
                         this.setState({})
                     }
                     this.setState({ valor: "" })
@@ -103,7 +103,7 @@ export default (() => {
 
         agregarCabeza: function () {
 
-            this.size++;
+            this.setState({ size: this.state.size + 1 })
 
             let { cabeza, valor, cola } = this.state;
 
