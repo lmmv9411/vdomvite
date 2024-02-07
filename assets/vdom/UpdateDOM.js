@@ -159,6 +159,7 @@ export const reconciliation = (function () {
                     setReff(childrenNew, $ref);
 
                     if (childrenNew.type === k.Fragment) {
+
                         childrenNew.$element = $parentNode;
 
                         if (indexParent - 1 === 0 || indexParent === 0) {
