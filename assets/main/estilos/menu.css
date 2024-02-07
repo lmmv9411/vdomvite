@@ -1,4 +1,4 @@
-.link {
+a {
     text-decoration: none;
     padding: 0.4rem;
     background-color: #333;
@@ -6,6 +6,6 @@
     display: block;
 }
 
-.link:hover {
+a:hover {
     background-color: #222;
 }

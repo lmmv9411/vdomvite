@@ -1,6 +1,6 @@
 import { Componente } from "../../vdom/Componente";
 import { Link, Router } from "../../vdom/Router";
-import menu from "../estilos/menu.module.css"
+import "../estilos/menu.css"
 
 export class App extends Componente {
 
@@ -15,70 +15,45 @@ export class App extends Componente {
     render() {
 
         return (
-            <>
+            <Router idContenedor="main" rutaComponentes={this.handleRoute}>
+
                 <header>
                     <h1>
                         <strong>VDOM</strong>
                     </h1>
                 </header>
 
-                <Router idContenedor="main" rutaComponentes={this.handleRoute}>
+                <nav>
+                    <ul className="d-flex flex-wrap" style={{ listStyle: "none", padding: "0" }}>
+                        <li>
+                            <Link url="/" to="HomeInit">Home</Link>
+                        </li>
+                        <li>
+                            <Link to="Clientes">Clientes</Link>
+                        </li>
+                        <li>
+                            <Link to="Proveedores">Proveedores</Link>
+                        </li>
+                        <li>
+                            <Link to="Almacen">Almacen</Link>
+                        </li>
+                        <li>
+                            <Link to="ListaEnlazada">Lista Enlazada</Link>
+                        </li>
+                        <li>
+                            <Link to="Test">Test</Link>
+                        </li>
+                    </ul>
+                </nav>
 
-                    <nav>
-                        <ul
-                            className="d-flex flex-wrap"
-                            style={{ listStyle: "none", padding: "0" }}>
-                            <li>
-                                <Link
-                                    className={menu.link}
-                                    url="/"
-                                    to="HomeInit"
-                                    titulo="Inicio De Virtual Dom"
-                                >Home</Link>
-                            </li>
-
-                            <li>
-                                <Link
-                                    className={menu.link}
-                                    to="Clientes"
-                                    titulo="Clientes"
-                                >Clientes</Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className={menu.link}
-                                    to="Proveedores"
-                                    titulo="Preveedores 🏭"
-                                >Proveedores</Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className={menu.link}
-                                    to="Almacen"
-                                    titulo="Almacen 🏭"
-                                >Almacen</Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className={menu.link}
-                                    to="ListaEnlazada"
-                                    titulo="Lista Enlazada"
-                                >Lista Enlazada</Link>
-                            </li>
-                            <li>
-                                <Link className={menu.link} to="Test">Test</Link>
-                            </li>
-                        </ul>
-                    </nav>
-
-                    <main id="main"></main>
-
-                </Router >
+                <main id="main"></main>
 
                 <footer style={{ position: "absolute", bottom: 0 }}>
                     <h6>Creado por: Luis Murillo</h6>
                 </footer>
-            </>
+
+            </Router >
+
         )
     }
 }
