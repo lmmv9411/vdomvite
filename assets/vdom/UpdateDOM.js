@@ -80,8 +80,6 @@ export const reconciliation = (function () {
             indexParent = 0;
         }
 
-        let isAddedFragment = false;
-
         for (let i = 0; i < size.maxChildren; i++) {
 
             childrenNew = vNewNode?.children ? vNewNode?.children[i] : undefined;
@@ -103,12 +101,10 @@ export const reconciliation = (function () {
                 } else {
                     index = i;
 
-                    if (childrenOld?.type === k.Fragment &&
-                        childrenOld.idx !== index) {
+                    if (childrenOld?.type === k.Fragment) {
                         childrenOld.idx = index;
                         indexParent = index;
                         indexParent++;
-                        isAddedFragment = true;
                     }
                 }
 
@@ -194,13 +190,13 @@ export const reconciliation = (function () {
                         if (indexParent - 1 === 0 || indexParent === 0) {
                             indexParent = childrenNew.countChildren;
                             if (i > 0) {
-                                indexParent++
+                                indexParent += i;
                             }
                         } else {
                             indexParent += childrenNew.countChildren - 1;
                         }
 
-                        childrenNew.idx = i;
+                        childrenNew.idx = i - 1;
                     }
 
                     vOldNode?.children.splice(i, 0, childrenNew);
@@ -240,11 +236,7 @@ export const reconciliation = (function () {
                 }
 
                 if (childrenOld.type === k.Fragment) {
-                    if (!isAddedFragment) {
-                        indexParent += childrenNew.children.length - 1;
-                    } else {
-                        isAddedFragment = false;
-                    }
+                    indexParent += childrenNew.children.length - 1;
                 }
             }
 
