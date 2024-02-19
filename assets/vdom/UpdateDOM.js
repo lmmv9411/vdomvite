@@ -80,15 +80,44 @@ export const reconciliation = (function () {
             indexParent = 0;
         }
 
+        let isAddedFragment = false;
+
         for (let i = 0; i < size.maxChildren; i++) {
 
             childrenNew = vNewNode?.children ? vNewNode?.children[i] : undefined;
             childrenOld = vOldNode?.children ? vOldNode?.children[i] : undefined;
 
+            if ((childrenOld && childrenOld.type === k.Portal) ||
+                (childrenNew && childrenNew.type === k.Portal)) {
+                continue;
+            }
+
             if (vOldNode.type === k.Fragment) {
                 $refChildren = $parentNode.childNodes[indexParent++];
             } else {
-                $refChildren = $parentNode.childNodes[indexParent > 0 ? indexParent : i] ?? $parentNode;
+                let index;
+
+                if (indexParent > 0) {
+                    index = indexParent;
+                    indexParent++;
+                } else {
+                    index = i;
+
+                    if (childrenOld?.type === k.Fragment &&
+                        childrenOld.idx !== index) {
+                        childrenOld.idx = index;
+                        indexParent = index;
+                        indexParent++;
+                        isAddedFragment = true;
+                    }
+                }
+
+                $refChildren = $parentNode.childNodes[index] ?? $parentNode;
+            }
+
+            if ((vOldNode.is === k.Portal || vNewNode.is === k.Portal) &&
+                (childrenOld.props?.id)) {
+                $refChildren = document.getElementById(childrenOld.props.id);
             }
 
             if (childrenNew?.type === k.Fragment && childrenOld?.type === k.Fragment) {
@@ -193,6 +222,9 @@ export const reconciliation = (function () {
 
                     size.maxChildren = vOldNode.children?.length ?? 0;
 
+                } else if (isDiffNode && size.childrenNewNode === size.childrenOldNode) {
+                    replaceNode($refChildren, childrenNew);
+                    vOldNode.children[i] = childrenNew;
                 } else {
                     checkAndUpdate(childrenOld, childrenNew, $refChildren);
                 }
@@ -208,9 +240,12 @@ export const reconciliation = (function () {
                 }
 
                 if (childrenOld.type === k.Fragment) {
-                    indexParent += childrenNew.children.length - 1;
+                    if (!isAddedFragment) {
+                        indexParent += childrenNew.children.length - 1;
+                    } else {
+                        isAddedFragment = false;
+                    }
                 }
-
             }
 
         }
